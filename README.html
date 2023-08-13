@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-08-13 Sun 17:37 -->
+<!-- 2023-08-13 Sun 18:15 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Computational Semantics, Fall 2023</title>
@@ -198,20 +198,7 @@
 <script src="jquery.min.js"></script>
 <script src="bootstrap.min.js"></script>
 <script type="text/javascript" src="readtheorg.js"></script>
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-TeX: {
-Macros: {
-divd: "\\ |\\ ",
-IF: ["[\\![#1]\\!]",1],
-banana: ["(\\!|#1|\\!)",1],
-bind: ">\\!\\!>\\!\\!=",
-defeq: ":\\!=",
-append: ["#1\\!\\!::\\!\\!#2",2]
-}
-}
-});
-</script>
+$$\def\IF#1{[\hspace{-0.8mm}[#1]\hspace{-0.8mm}]}$$
 <script>
   window.MathJax = {
     tex: {
@@ -252,23 +239,23 @@ append: ["#1\\!\\!::\\!\\!#2",2]
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org1b4e130">1. Overview</a></li>
-<li><a href="#orgbdc1a7a">2. Schedule</a></li>
-<li><a href="#org42b67b8">3. Installing Haskell</a>
+<li><a href="#orgd00c8b6">1. Overview</a></li>
+<li><a href="#org10f9de0">2. Schedule</a></li>
+<li><a href="#org0efda69">3. Installing Haskell</a>
 <ul>
-<li><a href="#org12b75cb">3.1. Using Windows or Linux</a></li>
-<li><a href="#org620d050">3.2. Using MacOS</a></li>
-<li><a href="#org303a875">3.3. Using Nix shells</a></li>
+<li><a href="#org2778392">3.1. Using Windows or Linux</a></li>
+<li><a href="#org4431d0d">3.2. Using MacOS</a></li>
+<li><a href="#org68de602">3.3. Using Nix shells</a></li>
 </ul>
 </li>
-<li><a href="#org59319ac">4. Your development environment</a></li>
-<li><a href="#org991691d">5. Logistics</a></li>
+<li><a href="#org5aa9099">4. Your development environment</a></li>
+<li><a href="#orgca2e479">5. Logistics</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org1b4e130" class="outline-2">
-<h2 id="org1b4e130"><span class="section-number-2">1.</span> Overview</h2>
+<div id="outline-container-orgd00c8b6" class="outline-2">
+<h2 id="orgd00c8b6"><span class="section-number-2">1.</span> Overview</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Welcome to Computational Semantics!
@@ -314,8 +301,8 @@ think it will now.
 </div>
 </div>
 
-<div id="outline-container-orgbdc1a7a" class="outline-2">
-<h2 id="orgbdc1a7a"><span class="section-number-2">2.</span> Schedule</h2>
+<div id="outline-container-org10f9de0" class="outline-2">
+<h2 id="org10f9de0"><span class="section-number-2">2.</span> Schedule</h2>
 <div class="outline-text-2" id="text-2">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -408,7 +395,7 @@ think it will now.
 </tr>
 
 <tr>
-<td class="org-left">Octobre 4</td>
+<td class="org-left">October 4</td>
 <td class="org-left">Propositional logic: structural rules</td>
 <td class="org-left">&#xa0;</td>
 <td class="org-left">&#xa0;</td>
@@ -437,7 +424,7 @@ think it will now.
 
 <tr>
 <td class="org-left">October 23</td>
-<td class="org-left">The \([[\cdot]]\) pipeline</td>
+<td class="org-left">The \(\IF{\cdot}\) pipeline</td>
 <td class="org-left">&#xa0;</td>
 <td class="org-left">&#xa0;</td>
 </tr>
@@ -544,8 +531,8 @@ think it will now.
 </div>
 </div>
 
-<div id="outline-container-org42b67b8" class="outline-2">
-<h2 id="org42b67b8"><span class="section-number-2">3.</span> Installing Haskell</h2>
+<div id="outline-container-org0efda69" class="outline-2">
+<h2 id="org0efda69"><span class="section-number-2">3.</span> Installing Haskell</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 This course will be <a href="https://www.haskell.org/">Haskell</a>-based, so if you don't have a Haskell development
@@ -569,8 +556,8 @@ Haskell code.</li>
 </ul>
 </div>
 
-<div id="outline-container-org12b75cb" class="outline-3">
-<h3 id="org12b75cb"><span class="section-number-3">3.1.</span> Using Windows or Linux</h3>
+<div id="outline-container-org2778392" class="outline-3">
+<h3 id="org2778392"><span class="section-number-3">3.1.</span> Using Windows or Linux</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 If you are on a Linux distribution or Windows, you should try installing
@@ -581,8 +568,8 @@ but it can sometimes be difficult to configure properly.
 </div>
 </div>
 
-<div id="outline-container-org620d050" class="outline-3">
-<h3 id="org620d050"><span class="section-number-3">3.2.</span> Using MacOS</h3>
+<div id="outline-container-org4431d0d" class="outline-3">
+<h3 id="org4431d0d"><span class="section-number-3">3.2.</span> Using MacOS</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 If you are on macOS, you can install stack <a href="https://brew.sh/"><code>homebrew</code></a>. You should first
@@ -611,8 +598,8 @@ instructions provided <a href="https://www.haskell.org/downloads/">here</a>.
 </div>
 </div>
 
-<div id="outline-container-org303a875" class="outline-3">
-<h3 id="org303a875"><span class="section-number-3">3.3.</span> Using Nix shells</h3>
+<div id="outline-container-org68de602" class="outline-3">
+<h3 id="org68de602"><span class="section-number-3">3.3.</span> Using Nix shells</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 I tend to run Haskell only inside of <a href="https://nixos.org/"><code>nix</code></a> shells. During development, these
@@ -652,8 +639,8 @@ pkgs.stdenv.mkDerivation {
 </div>
 </div>
 
-<div id="outline-container-org59319ac" class="outline-2">
-<h2 id="org59319ac"><span class="section-number-2">4.</span> Your development environment</h2>
+<div id="outline-container-org5aa9099" class="outline-2">
+<h2 id="org5aa9099"><span class="section-number-2">4.</span> Your development environment</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 You can develop Haskell code using whatever text editor you want! But for
@@ -712,13 +699,15 @@ Haskell, I would very highly recommend <a href="https://www.gnu.org/software/ema
 </div>
 </div>
 
-<div id="outline-container-org991691d" class="outline-2">
-<h2 id="org991691d"><span class="section-number-2">5.</span> Logistics</h2>
+<div id="outline-container-orgca2e479" class="outline-2">
+<h2 id="orgca2e479"><span class="section-number-2">5.</span> Logistics</h2>
+<div class="outline-text-2" id="text-5">
+</div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-08-13 Sun 17:37</p>
+<p class="date">Created: 2023-08-13 Sun 18:15</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

@@ -5,25 +5,10 @@
 #+html_head: <script src="bootstrap.min.js"></script>
 #+html_head: <script type="text/javascript" src="readtheorg.js"></script>
 
-#+html_head: <script type="text/x-mathjax-config">
-#+html_head: MathJax.Hub.Config({
-#+html_head:  TeX: {
-#+html_head:    Macros: {
-#+html_head:      divd: "\\ |\\ ",
-#+html_head:      IF: ["[\\![#1]\\!]",1],
-#+html_head:      banana: ["(\\!|#1|\\!)",1],
-#+html_head:      bind: ">\\!\\!>\\!\\!=",
-#+html_head:      defeq: ":\\!=",
-#+html_head:      append: ["#1\\!\\!::\\!\\!#2",2]
-#+html_head:    }
-#+html_head:  }
-#+html_head: });
-#+html_head: </script>
+#+html_head: $$\def\IF#1{[\hspace{-0.8mm}[#1]\hspace{-0.8mm}]}$$
 
 #+Author: Julian Grove
 #+Title: Computational Semantics, Fall 2023
-
-#+bibliography: computational_semantics.bib
 
 * Overview
   Welcome to Computational Semantics!
@@ -68,11 +53,11 @@
   | Septemeber 25 | Untyped λ-calculus: fixed points and recursive functions                 |                        |           |
   | September 27  | Propositional logic: natural deduction                                   |                        |           |
   | October 2     | Propositional logic: minimal logic, proofs, and reductions               |                        |           |
-  | Octobre 4     | Propositional logic: structural rules                                    |                        |           |
+  | October 4     | Propositional logic: structural rules                                    |                        |           |
   | October 9     | Applicative categorial grammar                                           |                        |           |
   | October 11    | Term-theoretic fragments                                                 |                        |           |
   | October 18    | Model-theoretic fragments                                                |                        |           |
-  | October 23    | The $[[\cdot]]$ pipeline                                                     |                        |           |
+  | October 23    | The $\IF{\cdot}$ pipeline                                                |                        |           |
   | October 25    | Logical detour: proving in classical FOL                                 |                        |           |
   | October 30    | Proof-theoretic fragments                                                |                        |           |
   | November 1    | Interpretation with a knowledge base                                     |                        |           |
@@ -211,3 +196,5 @@ pkgs.stdenv.mkDerivation {
   #+end_src
 
 * Logistics
+
+#+bibliography: computational_semantics.bib
