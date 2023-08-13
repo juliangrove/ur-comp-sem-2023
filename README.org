@@ -43,7 +43,7 @@
 
 * Schedule
   | Date          | Topic                                                                    | Notes (with exercises) | Resources |
-  | -             | -                                                                        | -                      | -         |
+  |---------------+--------------------------------------------------------------------------+------------------------+-----------|
   | August 30     | Formal preliminaries                                                     |                        |           |
   | September 6   | Haskell: types, type classes, data structures, and variables             |                        |           |
   | September 11  | Haskell: patterns, recursion, and higher-order polymorphism              |                        |           |
