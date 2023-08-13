@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2023-08-13 Sun 17:32 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Computational Semantics, Fall 2023</title>
+<meta name="author" content="Julian Grove" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="readtheorg.css"/>
+<script src="jquery.min.js"></script>
+<script src="bootstrap.min.js"></script>
+<script type="text/javascript" src="readtheorg.js"></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+TeX: {
+Macros: {
+divd: "\\ |\\ ",
+IF: ["[\\![#1]\\!]",1],
+banana: ["(\\!|#1|\\!)",1],
+bind: ">\\!\\!>\\!\\!=",
+defeq: ":\\!=",
+append: ["#1\\!\\!::\\!\\!#2",2]
+}
+}
+});
+</script>
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Computational Semantics, Fall 2023</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org7ad10c1">1. Overview</a></li>
+<li><a href="#org2ed20b8">2. Schedule</a></li>
+<li><a href="#org6a9ff42">3. Installing Haskell</a>
+<ul>
+<li><a href="#org7128e57">3.1. Using Windows or Linux</a></li>
+<li><a href="#orgcd1aa2c">3.2. Using MacOS</a></li>
+<li><a href="#org8214db8">3.3. Using Nix shells</a></li>
+</ul>
+</li>
+<li><a href="#org60e637f">4. Your development environment</a></li>
+<li><a href="#orgaf28e35">5. Logistics</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7ad10c1" class="outline-2">
+<h2 id="org7ad10c1"><span class="section-number-2">1.</span> Overview</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Welcome to Computational Semantics!
+</p>
+
+<p>
+I'm <a href="https://juliangrove.github.io/">Julian Grove</a>, a post-doc in the <a href="http://factslab.io/">FACTS.lab</a> directed by <a href="http://aaronstevenwhite.io/">Aaron Steven White</a>.
+I'm teaching Computational Semantics this semester in order for us to explore
+how functional programming, and specifically the λ-calculus, can be used as a
+powerful tool in the semantic analysis of natural language, as well as the
+computational modeling of linguistic behavior.
+</p>
+
+<p>
+The general trajectory of the course will be as follows. In the first part,
+we'll cover the untyped λ-calculus and type theory. This will take a little
+bit of time because we'll be building everything from the ground up, covering
+the syntax of each, as well as their operational semantics and the so-called
+``Curry-Howard correspondence''.
+</p>
+
+<p>
+In the second part, we'll use the tools developed in the first part in order
+to study the compositional semantics of natural language (English) by building
+fragments. We'll enrich our semantic fragments with theories of computational
+effects; and finally, things will culminate in an approach to theorizing about
+human linguistic  behavior (in an experimental setting) in terms of Bayesian
+computational models. As we'll see, the theories of computational effects
+we'll have investigated will be important here.
+</p>
+
+<p>
+Throughout this course, we'll make heavy use of the <a href="https://www.haskell.org/">Haskell</a> programming
+language, as we rely on it as a metalanguage to state our theories.
+</p>
+
+<p>
+We'll rely on the following schedule, which I will tweak throughout the
+semester (though not in any way that affects the basic structure of the
+course). My general expectation is that everything will take longer than I
+think it will now.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2ed20b8" class="outline-2">
+<h2 id="org2ed20b8"><span class="section-number-2">2.</span> Schedule</h2>
+<div class="outline-text-2" id="text-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">Date</td>
+<td class="org-left">Topic</td>
+<td class="org-left">Notes (with exercises)</td>
+<td class="org-left">Resources</td>
+</tr>
+
+<tr>
+<td class="org-left">-</td>
+<td class="org-left">-</td>
+<td class="org-left">-</td>
+<td class="org-left">-</td>
+</tr>
+
+<tr>
+<td class="org-left">August 30</td>
+<td class="org-left">Formal preliminaries</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">September 6</td>
+<td class="org-left">Haskell: types, type classes, data structures, and variables</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">September 11</td>
+<td class="org-left">Haskell: patterns, recursion, and higher-order polymorphism</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">September 13</td>
+<td class="org-left">Untyped λ-calculus: what is it?</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">Septemeber 18</td>
+<td class="org-left">Untyped λ-calculus: Church encodings</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">September 20</td>
+<td class="org-left">Untyped λ-calculus: natural number arithmetic</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">Septemeber 25</td>
+<td class="org-left">Untyped λ-calculus: fixed points and recursive functions</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">September 27</td>
+<td class="org-left">Propositional logic: natural deduction</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">October 2</td>
+<td class="org-left">Propositional logic: minimal logic, proofs, and reductions</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">Octobre 4</td>
+<td class="org-left">Propositional logic: structural rules</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">October 9</td>
+<td class="org-left">Applicative categorial grammar</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">October 11</td>
+<td class="org-left">Term-theoretic fragments</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">October 18</td>
+<td class="org-left">Model-theoretic fragments</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">October 23</td>
+<td class="org-left">The \([[\cdot]]\) pipeline</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">October 25</td>
+<td class="org-left">Logical detour: proving in classical FOL</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">October 30</td>
+<td class="org-left">Proof-theoretic fragments</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">November 1</td>
+<td class="org-left">Interpretation with a knowledge base</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">November 6</td>
+<td class="org-left">Abstract interfaces: functors (can't do much)</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">November 8</td>
+<td class="org-left">Abstract interfaces: applicative functors and composition</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">November 13</td>
+<td class="org-left">Abstract interfaces: monads, scopal composition, and <b>in situ</b> composition</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">November 15</td>
+<td class="org-left">Abstract interfaces: monads and <b>in situ</b> composition</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">November 20</td>
+<td class="org-left">Probabilistic programming with finite distributions</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">November 27</td>
+<td class="org-left">Probabilistic semantics via `Reader`</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">November 29</td>
+<td class="org-left">Hybrid probabilistic/FOL systems</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">December 4</td>
+<td class="org-left">Expanding the probabilistic interface</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">December 6</td>
+<td class="org-left">Two levels of probabilistic involvement</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">December 11</td>
+<td class="org-left">Probabilistic programs as Bayesian models: part 1</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">December 13</td>
+<td class="org-left">Probabilistic programs as Bayesian models: part 2</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org6a9ff42" class="outline-2">
+<h2 id="org6a9ff42"><span class="section-number-2">3.</span> Installing Haskell</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+This course will be <a href="https://www.haskell.org/">Haskell</a>-based, so if you don't have a Haskell development
+environment installed on your machine, you'll need to install one.
+</p>
+
+<p>
+You have a number of options here. One common way to do install Haskell is
+using a tool called <a href="https://docs.haskellstack.org/en/stable/README/"><code>stack</code></a>, which provides the following functionality:
+</p>
+<ul class="org-ul">
+<li>It supplies ghc, the standard Haskell compiler, along with ghci, its
+associated interactive environment (i.e., a repl).</li>
+<li>It supplies <code>base</code>, the package containing the standard Haskell libraries
+that go into the default prelude.</li>
+<li>It interacts with the <a href="https://www.stackage.org/">Stackage repository</a>, which provides many libraries
+that you can use in Haskell projects.</li>
+<li>It can be used as a build tool, i.e., to compile binaries, open a repl,
+provide code documentation (via <a href="https://hackage.haskell.org/package/haddock">Haddock</a>) in HTML format from annotated
+Haskell code.</li>
+</ul>
+</div>
+
+<div id="outline-container-org7128e57" class="outline-3">
+<h3 id="org7128e57"><span class="section-number-3">3.1.</span> Using Windows or Linux</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+If you are on a Linux distribution or Windows, you should try installing
+stack manually using <a href="https://docs.haskellstack.org/en/stable/README/#how-to-install">these instructions</a>. If you are on Linux and want to
+install it from a repository provided by your distribution, this is possible,
+but it can sometimes be difficult to configure properly. 
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgcd1aa2c" class="outline-3">
+<h3 id="orgcd1aa2c"><span class="section-number-3">3.2.</span> Using MacOS</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+If you are on macOS, you can install stack <a href="https://brew.sh/"><code>homebrew</code></a>. You should first
+install the xcode developer utilities:
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">$ xcode-select --install
+</pre>
+</div>
+<p>
+To install homebrew, follow the instructions <a href="https://brew.sh/">here</a>. You can then install stack
+by running:
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">$ brew install haskell-stack
+</pre>
+</div>
+<p>
+After doing this, you may need to update gcc, which you can do using homebrew.
+</p>
+
+<p>
+Another option for macOS users is to install <a href="https://www.haskell.org/ghcup/"><code>GHCP</code></a> by following the
+instructions provided <a href="https://www.haskell.org/downloads/">here</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org8214db8" class="outline-3">
+<h3 id="org8214db8"><span class="section-number-3">3.3.</span> Using Nix shells</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+I tend to run Haskell only inside of <a href="https://nixos.org/"><code>nix</code></a> shells. During development, these
+are automatically invoked by <a href="https://www.gnu.org/software/emacs/">Emacs</a> using the amazing <a href="https://github.com/jyp/dante"><code>dante</code></a> package.
+</p>
+
+<p>
+The following shell installs <code>base</code> without any special packages:
+</p>
+<div class="org-src-container">
+<pre class="src src-nix"><span style="color: #fb4933;">let</span> <span style="color: #83a598;">nixpkgs_source</span> = (<span style="color: #fe8019;">fetchTarball</span> <span style="color: #d3869b;">https://github.com/NixOS/nixpkgs/archive/nixos-23.05.tar.gz</span>);
+<span style="color: #fb4933;">in</span>
+{ pkgs ? <span style="color: #fe8019;">import</span> nixpkgs_source {
+    <span style="color: #fb4933;">inherit</span> system;
+  }
+, system ? builtins.currentSystem
+}:
+<span style="color: #fb4933;">let</span>
+  <span style="color: #83a598;">ghc</span> = pkgs.haskellPackages.ghcWithPackages (ps: <span style="color: #fb4933;">with</span> ps; ([
+    cabal-install
+  ]));
+<span style="color: #fb4933;">in</span>
+pkgs.stdenv.mkDerivation {
+  <span style="color: #83a598;">name</span> = <span style="color: #b8bb26;">"my-env-0"</span>;
+  <span style="color: #83a598;">buildInputs</span> = [
+    ghc
+  ];
+  <span style="color: #83a598;">shellHook</span> = <span style="color: #b8bb26;">''</span>
+<span style="color: #b8bb26;">    export LANG=C.UTF-8</span>
+<span style="color: #b8bb26;">    export LC_ALL=C.UTF-8</span>
+<span style="color: #b8bb26;">    eval $(egrep ^export </span><span style="color: #fe8019;">${</span>ghc<span style="color: #fe8019;">}</span><span style="color: #b8bb26;">/bin/ghc)</span>
+<span style="color: #b8bb26;">  ''</span>;
+}
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org60e637f" class="outline-2">
+<h2 id="org60e637f"><span class="section-number-2">4.</span> Your development environment</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+You can develop Haskell code using whatever text editor you want! But for
+Haskell, I would very highly recommend <a href="https://www.gnu.org/software/emacs/">Emacs</a>. I use <a href="https://github.com/haskell/haskell-mode"><code>haskell-mode</code></a> along with
+<a href="https://github.com/jyp/dante"><code>dante</code></a> and <a href="https://github.com/jyp/attrap/tree/master"><code>attrap</code></a>, with the following configuration in my init file:
+</p>
+<div class="org-src-container">
+<pre class="src src-lisp"><span style="color: #928374;">;; </span><span style="color: #928374;">haskell</span>
+(<span style="color: #fb4933;">require</span> '<span style="color: #d3869b;">haskell-mode</span>)
+(custom-set-variables '(haskell-process-type 'cabal-repl))
+(<span style="color: #fb4933;">require</span> '<span style="color: #d3869b;">haskell-interactive-mode</span>)
+(<span style="color: #fb4933;">require</span> '<span style="color: #d3869b;">haskell-process</span>)
+(custom-set-variables
+ '(haskell-process-suggest-remove-import-lines t)
+ '(haskell-process-auto-import-loaded-modules t)
+ '(haskell-process-log t))
+(add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+
+(<span style="color: #fb4933;">defun</span> <span style="color: #fabd2f;">insert-pragma</span> ()
+  (interactive)
+  (insert <span style="color: #b8bb26;">"{-# LANGUAGE  #-}\n"</span>)
+  (backward-char 5))
+(<span style="color: #fb4933;">defun</span> <span style="color: #fabd2f;">add-haskell-pragma-binding</span> ()
+   (local-set-key (kbd <span style="color: #b8bb26;">"C-x p"</span>) #'insert-pragma))
+(add-hook 'haskell-mode-hook #'add-haskell-pragma-binding)
+
+(<span style="color: #fb4933;">defun</span> <span style="color: #fabd2f;">insert-brackets</span> ()
+  (interactive)
+  (insert <span style="color: #b8bb26;">"{-#  #-}"</span>)
+  (backward-char 4))
+(<span style="color: #fb4933;">defun</span> <span style="color: #fabd2f;">add-haskell-brackets-binding</span> ()
+   (local-set-key (kbd <span style="color: #b8bb26;">"C-x r"</span>) #'insert-brackets))
+(add-hook 'haskell-mode-hook #'add-haskell-brackets-binding)
+
+(<span style="color: #fb4933;">defun</span> <span style="color: #fabd2f;">insert-repl</span> ()
+  (interactive)
+  (insert <span style="color: #b8bb26;">"-- &gt;&gt;&gt; \n"</span>)
+  (backward-char 1))
+(<span style="color: #fb4933;">defun</span> <span style="color: #fabd2f;">add-haskell-repl-binding</span> ()
+   (local-set-key (kbd <span style="color: #b8bb26;">"C-x i"</span>) #'insert-repl))
+
+(use-package dante
+  <span style="color: #fe8019;">:after</span> haskell-mode
+  <span style="color: #fe8019;">:commands</span> 'dante-mode
+  <span style="color: #fe8019;">:init</span>
+  (add-hook 'haskell-mode-hook 'flycheck-mode)
+  (add-hook 'haskell-mode-hook 'dante-mode)
+  (add-hook 'haskell-mode-hook #'add-haskell-repl-binding))
+(setq dante-debug '(inputs outputs responses))
+(setq dante-repl-command-line '(<span style="color: #b8bb26;">"nix-shell"</span> <span style="color: #b8bb26;">"--run"</span> <span style="color: #b8bb26;">"cabal repl"</span>))
+(use-package attrap
+  <span style="color: #fe8019;">:ensure</span> t
+  <span style="color: #fe8019;">:bind</span> ((<span style="color: #b8bb26;">"C-x /"</span> . attrap-attrap))) <span style="color: #928374;">;; </span><span style="color: #928374;">use any binding of your choice</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgaf28e35" class="outline-2">
+<h2 id="orgaf28e35"><span class="section-number-2">5.</span> Logistics</h2>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Julian Grove</p>
+<p class="date">Created: 2023-08-13 Sun 17:32</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

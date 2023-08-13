@@ -1,0 +1,213 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="readtheorg.css"/>
+
+#+html_head: <script src="jquery.min.js"></script>
+#+html_head: <script src="bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="readtheorg.js"></script>
+
+#+html_head: <script type="text/x-mathjax-config">
+#+html_head: MathJax.Hub.Config({
+#+html_head:  TeX: {
+#+html_head:    Macros: {
+#+html_head:      divd: "\\ |\\ ",
+#+html_head:      IF: ["[\\![#1]\\!]",1],
+#+html_head:      banana: ["(\\!|#1|\\!)",1],
+#+html_head:      bind: ">\\!\\!>\\!\\!=",
+#+html_head:      defeq: ":\\!=",
+#+html_head:      append: ["#1\\!\\!::\\!\\!#2",2]
+#+html_head:    }
+#+html_head:  }
+#+html_head: });
+#+html_head: </script>
+
+#+Author: Julian Grove
+#+Title: Computational Semantics, Fall 2023
+
+#+bibliography: computational_semantics.bib
+
+* Overview
+  Welcome to Computational Semantics!
+
+  I'm [[https://juliangrove.github.io/][Julian Grove]], a post-doc in the [[http://factslab.io/][FACTS.lab]] directed by [[http://aaronstevenwhite.io/][Aaron Steven White]].
+  I'm teaching Computational Semantics this semester in order for us to explore
+  how functional programming, and specifically the λ-calculus, can be used as a
+  powerful tool in the semantic analysis of natural language, as well as the
+  computational modeling of linguistic behavior.
+
+  The general trajectory of the course will be as follows. In the first part,
+  we'll cover the untyped λ-calculus and type theory. This will take a little
+  bit of time because we'll be building everything from the ground up, covering
+  the syntax of each, as well as their operational semantics and the so-called
+  ``Curry-Howard correspondence''.
+
+  In the second part, we'll use the tools developed in the first part in order
+  to study the compositional semantics of natural language (English) by building
+  fragments. We'll enrich our semantic fragments with theories of computational
+  effects; and finally, things will culminate in an approach to theorizing about
+  human linguistic  behavior (in an experimental setting) in terms of Bayesian
+  computational models. As we'll see, the theories of computational effects
+  we'll have investigated will be important here.
+ 
+  Throughout this course, we'll make heavy use of the [[https://www.haskell.org/][Haskell]] programming
+  language, as we rely on it as a metalanguage to state our theories.
+
+  We'll rely on the following schedule, which I will tweak throughout the
+  semester (though not in any way that affects the basic structure of the
+  course). My general expectation is that everything will take longer than I
+  think it will now.
+
+* Schedule
+  | Date          | Topic                                                                    | Notes (with exercises) | Resources |
+  | -             | -                                                                        | -                      | -         |
+  | August 30     | Formal preliminaries                                                     |                        |           |
+  | September 6   | Haskell: types, type classes, data structures, and variables             |                        |           |
+  | September 11  | Haskell: patterns, recursion, and higher-order polymorphism              |                        |           |
+  | September 13  | Untyped λ-calculus: what is it?                                          |                        |           |
+  | Septemeber 18 | Untyped λ-calculus: Church encodings                                     |                        |           |
+  | September 20  | Untyped λ-calculus: natural number arithmetic                            |                        |           |
+  | Septemeber 25 | Untyped λ-calculus: fixed points and recursive functions                 |                        |           |
+  | September 27  | Propositional logic: natural deduction                                   |                        |           |
+  | October 2     | Propositional logic: minimal logic, proofs, and reductions               |                        |           |
+  | Octobre 4     | Propositional logic: structural rules                                    |                        |           |
+  | October 9     | Applicative categorial grammar                                           |                        |           |
+  | October 11    | Term-theoretic fragments                                                 |                        |           |
+  | October 18    | Model-theoretic fragments                                                |                        |           |
+  | October 23    | The $[[\cdot]]$ pipeline                                                     |                        |           |
+  | October 25    | Logical detour: proving in classical FOL                                 |                        |           |
+  | October 30    | Proof-theoretic fragments                                                |                        |           |
+  | November 1    | Interpretation with a knowledge base                                     |                        |           |
+  | November 6    | Abstract interfaces: functors (can't do much)                            |                        |           |
+  | November 8    | Abstract interfaces: applicative functors and composition                |                        |           |
+  | November 13   | Abstract interfaces: monads, scopal composition, and *in situ* composition |                        |           |
+  | November 15   | Abstract interfaces: monads and *in situ* composition                      |                        |           |
+  | November 20   | Probabilistic programming with finite distributions                      |                        |           |
+  | November 27   | Probabilistic semantics via `Reader`                                     |                        |           |
+  | November 29   | Hybrid probabilistic/FOL systems                                         |                        |           |
+  | December 4    | Expanding the probabilistic interface                                    |                        |           |
+  | December 6    | Two levels of probabilistic involvement                                  |                        |           |
+  | December 11   | Probabilistic programs as Bayesian models: part 1                        |                        |           |
+  | December 13   | Probabilistic programs as Bayesian models: part 2                        |                        |           |
+
+* Installing Haskell
+  This course will be [[https://www.haskell.org/][Haskell]]-based, so if you don't have a Haskell development
+  environment installed on your machine, you'll need to install one.
+
+  You have a number of options here. One common way to do install Haskell is
+  using a tool called [[https://docs.haskellstack.org/en/stable/README/][~stack~]], which provides the following functionality:
+  - It supplies ghc, the standard Haskell compiler, along with ghci, its
+    associated interactive environment (i.e., a repl).
+  - It supplies ~base~, the package containing the standard Haskell libraries
+    that go into the default prelude.
+  - It interacts with the [[https://www.stackage.org/][Stackage repository]], which provides many libraries
+    that you can use in Haskell projects.
+  - It can be used as a build tool, i.e., to compile binaries, open a repl,
+    provide code documentation (via [[https://hackage.haskell.org/package/haddock][Haddock]]) in HTML format from annotated
+    Haskell code.
+
+** Using Windows or Linux
+   If you are on a Linux distribution or Windows, you should try installing
+   stack manually using [[https://docs.haskellstack.org/en/stable/README/#how-to-install][these instructions]]. If you are on Linux and want to
+   install it from a repository provided by your distribution, this is possible,
+   but it can sometimes be difficult to configure properly. 
+
+** Using MacOS
+  If you are on macOS, you can install stack [[https://brew.sh/][~homebrew~]]. You should first
+  install the xcode developer utilities:
+  #+begin_src bash
+$ xcode-select --install
+  #+end_src
+  To install homebrew, follow the instructions [[https://brew.sh/][here]]. You can then install stack
+  by running:
+  #+begin_src bash
+$ brew install haskell-stack
+  #+end_src
+  After doing this, you may need to update gcc, which you can do using homebrew.
+
+  Another option for macOS users is to install [[https://www.haskell.org/ghcup/][~GHCP~]] by following the
+  instructions provided [[https://www.haskell.org/downloads/][here]].
+
+** Using Nix shells
+   I tend to run Haskell only inside of [[https://nixos.org/][~nix~]] shells. During development, these
+   are automatically invoked by [[https://www.gnu.org/software/emacs/][Emacs]] using the amazing [[https://github.com/jyp/dante][~dante~]] package.
+
+   The following shell installs ~base~ without any special packages:
+   #+begin_src nix
+let nixpkgs_source = (fetchTarball https://github.com/NixOS/nixpkgs/archive/nixos-23.05.tar.gz);
+in
+{ pkgs ? import nixpkgs_source {
+    inherit system;
+  }
+, system ? builtins.currentSystem
+}:
+let
+  ghc = pkgs.haskellPackages.ghcWithPackages (ps: with ps; ([
+    cabal-install
+  ]));
+in
+pkgs.stdenv.mkDerivation {
+  name = "my-env-0";
+  buildInputs = [
+    ghc
+  ];
+  shellHook = ''
+    export LANG=C.UTF-8
+    export LC_ALL=C.UTF-8
+    eval $(egrep ^export ${ghc}/bin/ghc)
+  '';
+}
+   #+end_src
+
+* Your development environment
+  You can develop Haskell code using whatever text editor you want! But for
+  Haskell, I would very highly recommend [[https://www.gnu.org/software/emacs/][Emacs]]. I use [[https://github.com/haskell/haskell-mode][~haskell-mode~]] along with
+  [[https://github.com/jyp/dante][~dante~]] and [[https://github.com/jyp/attrap/tree/master][~attrap~]], with the following configuration in my init file:
+  #+begin_src lisp
+;; haskell
+(require 'haskell-mode)
+(custom-set-variables '(haskell-process-type 'cabal-repl))
+(require 'haskell-interactive-mode)
+(require 'haskell-process)
+(custom-set-variables
+ '(haskell-process-suggest-remove-import-lines t)
+ '(haskell-process-auto-import-loaded-modules t)
+ '(haskell-process-log t))
+(add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+
+(defun insert-pragma ()
+  (interactive)
+  (insert "{-# LANGUAGE  #-}\n")
+  (backward-char 5))
+(defun add-haskell-pragma-binding ()
+   (local-set-key (kbd "C-x p") #'insert-pragma))
+(add-hook 'haskell-mode-hook #'add-haskell-pragma-binding)
+
+(defun insert-brackets ()
+  (interactive)
+  (insert "{-#  #-}")
+  (backward-char 4))
+(defun add-haskell-brackets-binding ()
+   (local-set-key (kbd "C-x r") #'insert-brackets))
+(add-hook 'haskell-mode-hook #'add-haskell-brackets-binding)
+
+(defun insert-repl ()
+  (interactive)
+  (insert "-- >>> \n")
+  (backward-char 1))
+(defun add-haskell-repl-binding ()
+   (local-set-key (kbd "C-x i") #'insert-repl))
+
+(use-package dante
+  :after haskell-mode
+  :commands 'dante-mode
+  :init
+  (add-hook 'haskell-mode-hook 'flycheck-mode)
+  (add-hook 'haskell-mode-hook 'dante-mode)
+  (add-hook 'haskell-mode-hook #'add-haskell-repl-binding))
+(setq dante-debug '(inputs outputs responses))
+(setq dante-repl-command-line '("nix-shell" "--run" "cabal repl"))
+(use-package attrap
+  :ensure t
+  :bind (("C-x /" . attrap-attrap))) ;; use any binding of your choice
+  #+end_src
+
+* Logistics
