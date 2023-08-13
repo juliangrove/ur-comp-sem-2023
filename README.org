@@ -108,7 +108,7 @@ $ brew install haskell-stack
   #+end_src
   After doing this, you may need to update gcc, which you can do using homebrew.
 
-  Another option for macOS users is to install [[https://www.haskell.org/ghcup/][~GHCP~]] by following the
+  Another option for macOS users is to install [[https://www.haskell.org/ghcup/][~GHCup~]] by following the
   instructions provided [[https://www.haskell.org/downloads/][here]].
 
 ** Using Nix shells
