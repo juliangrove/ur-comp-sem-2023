@@ -1,0 +1,278 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../readtheorg.css"/>
+
+#+html_head: <script src="../jquery.min.js"></script>
+#+html_head: <script src="../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../readtheorg.js"></script>
+
+#+html_head: $$\def\IF#1{[\hspace{-0.8mm}[#1]\hspace{-0.8mm}]}$$
+
+#+Author: Julian Grove
+#+Title: Formal preliminaries
+
+* Overview
+  We introduce here the basic concepts of /set/, /product/, /relation/, /function/, and
+  then, finally, /language/.
+
+** Sets
+   A set is, intuitively speaking, a collection of objects, which we call the
+   /elements/ or /members/ of the set. Any talk about sets is understood in the
+   context of some universe of discourse. All sets inhabit this universe, as do
+   any of the objects which we may consider to be members of a set. We may, for
+   example, want to have things like words or natural numbers inhabit this
+   universe. When analyzing the semantics of English, we may include other
+   things too, like entities or individuals (e.g., corresponding to people and
+   trees and stuff).
+
+   For any set $A$ and any object $a$ in the universe, either one of the
+   following two things is true.
+   $$\begin{align*}
+   a ∈ A \tag{$a$ is a member of $A$}\\
+   a ∉ A \tag{$a$ is not a member of $A$}
+   \end{align*}$$
+   Moreover, sets are defined by their members. That means that, for every $a$
+   in the universe, if $a ∈ A$ if and only if $a ∈ B$, then $A$ and $B$ are the
+   same set. This is the principle of /extensionality/ for sets.
+   
+   We will generally help ourselves to two kinds of notation for specifying
+   sets: list notation and predicate (or set-comprehension) notation. In list
+   notation, we define a set by enumerating its elements between curly braces.
+   For example,
+   $$\{1, 2, 3\}$$
+   is just the set $A$ such that $1 ∈ A$, $2 ∈ A$, $3 ∈ A$, and nothing else is
+   $∈ A$. Because of extensionality, $\{1, 2, 3\}$ is the same set as $\{1, 1,
+   2, 3\}$ is the same set as $\{3, 2, 2, 1\}$, etc. Using predicate notation,
+   we can specify the very same set as
+   $$\{x \divd x = 1 \text{ or } x = 2 \text{ or } x = 3\}$$
+   In general, in writing `$\{a$ $|$ $φ\}$', $a$ will be an expression with some
+   number of variables occurring in it, and $φ$ will be  sentence expressing a
+   condition on the values of these variables --- any number of the variables in
+   $a$, and just these, can occur in $φ$. In the example above, $a$ just was the
+   variable $x$, and the condition expressed was that the value of $x$ be either
+   1, 2, or 3. But we could also use predicate notation as in
+   $$\{x + 1 \divd x = 1 \text{ or } x = 2 \text{ or } x = 3\}$$
+   where $a$ is the complex expression `$x + 1$', to specify the set $\{2, 3,
+   4\}$.
+
+   Crucially, there's an empty set, which we'll write `$∅$'. It has no members,
+   i.e., $a ∉ ∅$ for any $a$ in the universe. It can also be written in list
+   notation as `$\{\}$'.
+
+   Given any two sets $A$ and $B$, we'll have the following set-forming
+   operations.
+   $$\begin{align*}
+   &a ∈ A \cup B &\textit{if $a ∈ A$ or $a ∈ B$}\tag{union}\\
+   &a ∈ A \cap B &\textit{if $a ∈ A$ and $a ∈ B$}\tag{intersection}\\
+   &a ∈ A - B &\textit{if $a ∈ A$ and $a ∉ B$}\tag{set difference}
+   \end{align*}$$
+   In addition, we say one set $A$ is a /subset/ of another set $B$
+   $$A ⊆ B$$
+   just in case every $a ∈ A$ is also $∈ B$. If, in addition, there is some $b ∈
+   B$ such that $b ∉ A$, we may write
+   $$A ⊂ B$$
+   ($A$ is a /proper subset/ of $B$) to indicate this. Because
+   of extensionality, $A = B$ just in case both $A ⊆ B$ and $B ⊆ A$.
+
+   We may sometimes refer to sets using notation for generalized intersection
+   and union. If $S$ is a set all of whose members are also sets, we write
+   $$⋃ S$$
+   to mean $\{x$ $|$ $x ∈ A$ for some $A ∈ S\}$; that is, we squash $S$ into the
+   union of all of its members. Likewise, we write
+   $$⋂ S$$
+   to mean $\{x$ $|$ $x ∈ A$ for every $A ∈ S\}$; that is, we squash $S$ into
+   the intersection of all of its members. As a further convention, we may write
+   $$⋂_φ A$$
+   to mean
+   $$⋂\text{$\{A$ $|$ $φ\}$}$$
+   and, likewise,
+   $$⋃_φ A$$
+   to mean
+   $$⋃\text{$\{A$ $|$ $φ\}$}$$
+   For example, the set of odd numbers $\{1, 3, 5, ...\}$ could be expressed as
+   $$⋃\{\{x + 1\} \divd x \text{ is even}\}$$
+   but also as
+   $$⋃_{x \text{ is even}}\{x + 1\}$$
+   Similarly, the set $\{2\}$ could be expressed as
+   $$⋂\{\{x + 1, 2\} \divd x \text{ is even}\}$$
+   or as
+   $$⋂_{x \text{ is even}}\{x + 1, 2\}$$
+
+** Products
+   Given two sets $A$ and $B$, we take their binary Cartesian product
+   $$(A × B)$$
+   to be the set of pairs of elements $⟨a, b⟩$, where $a ∈ A$ and $b ∈
+   B$.[fn::We call $a$ the first /component/ of such a pair and $b$ the second
+   component. Given a pair $p$, we will sometimes write `$π₁ p$' to refer to its
+   first component and `$π₂ p$' to refer to its second component. In particular:
+   $$π₁ ⟨x, y⟩ = x$$
+   $$π₂ ⟨x, y⟩ = y$$
+   $$⟨π₁ x, π₂ x⟩ = x$$]
+
+   We can generalize binary products to \(n\)-ary products by considering the
+   former to correspond to the special case where $n = 2$ and the general case
+   $$A₁ × ... × A_{n-1} × Aₙ$$
+   to be
+   $$(...(A₁ × ... × A_{n-1}) × Aₙ)$$
+   For example, $A × B × C$ is just $((A × B) × C)$; as such, its members are
+   pairs $⟨⟨a, b⟩, c⟩$, which is just how we can encode 3-tuples $⟨a, b, c⟩$.
+
+** Relations
+   An \(n\)-ary /relation/ on the sets $A₁, ..., Aₙ$ is a set $R$ such that $R ⊆
+   A₁ × ... × Aₙ$. In the special case of a binary relation on two sets $A$ and
+   $B$, $R$ is a set of pairs $⟨a, b⟩$, such that $a ∈ A$ and $b ∈ B$. That is,
+   $R ⊆ A × B$. For \(n\)-ary relations $R$, if the $n$-tuple $⟨a₁, ..., aₙ⟩$ is
+   a member of $R$, we can indicate this by writing
+   $$R(a₁, ..., aₙ)$$
+   In the special case where $n = 2$, we may also sometimes use infix notation,
+   writing `$a_1 R a_2$'.
+
+   Some properties of relations are useful to be able to describe. A relation
+   $R ⊆ A × A$ (that, is a relation $R$ on $A$) is said to be /reflexive/ if $⟨x,
+   x⟩ ∈ R$ for every $x ∈ A$. That is, $R$ relates everything in $A$ to
+   itself. A relation $R$ on $A$ is said to be /symmetric/ if $⟨y, x⟩ ∈ R$
+   whenever $⟨x, y⟩ ∈ R$. It is said to be /antisymmetric/ if the only case in
+   which both $⟨x, y⟩ ∈ R$ and $⟨y, x⟩ ∈ R$ is when $x = y$. $R$ is said to be
+   /transitive/ if whenever $⟨x, y⟩, ⟨y, z⟩ ∈ R$, then $⟨x, z⟩ ∈ R$. A relation
+   $R$ on $A$ which is reflexive, transitive, and antisymmetric is said to be an
+   /equivalence relation/.
+
+   An important operation on relations is /relation composition/. Given a relation
+   $R₁ ⊂ A × B$ and a relation $R₂ ⊆ B × C$, their composition $R₂ ∘ R₁ ⊆ A × C$
+   is defined as
+   $$R₂ ∘ R₁ = \{⟨x, y⟩ \divd \text{there is some $z$ such that } ⟨x, z⟩ ∈ R₁
+   \text{ and } ⟨z, y⟩ ∈ R₂\}$$
+   That is, $R₂ ∘ R₁$ is gotten by relating an element of $A$ to an element of
+   $C$ just in case there is some element of $B$ related to the first element by
+   $R₁$ and to the second element by $R₂$.
+
+   If $R$ is a relation on $A$, then we will write $Rⁿ$ to refer to the result
+   of composing $R$ with itself $n$ times. Thus by convention:
+   $$\begin{align*}
+   R⁰ &= \{⟨x, x⟩ \divd x ∈ A\}\\
+   R¹ &= R\\
+   Rⁿ &= R^{n - 1} ∘ R
+   \end{align*}$$
+   If $R ⊆ A × B$, we may define its /inverse/ as the relation $R^{-1} ⊆ B × A$
+   such that $⟨y, x⟩ ∈ R^{-1}$ just in case $⟨x, y⟩ ∈ R$. That is, $R^{-1}$ is
+   just like $R$, but ``flipped around''.
+
+** Powerset
+   Given a set $A$, we may take its /powerset/, $2^A$, defined as
+   $$2^A = \{B \divd B ⊆ A\}$$
+   That is, it is the set of subsets of $A$.
+   
+** Functions
+   A function from a set $A$ to a set $B$ is a map from elements of $A$ to
+   elements of $B$ which pairs each element of $A$ with exactly one element of
+   $B$. If $f$ is such a function, we write
+   $$f : A → B$$
+   to indicate this, and we call $A$ the /domain/ of the function and $B$ the
+   /codomain/ of the function. If $a ∈ A$, then we write
+   $$f(a)$$
+   to pick out the unique $b ∈ B$ that $f$ pairs $a$ with. In case $f(a) = b$,
+   we call $a$ the /argument/ of the function $f$, and we call $b$ the /value/ of
+   the function $f$ at $a$.
+
+   The definition of unary functions can be generalized to that for \(n\)-ary
+   functions by considering the latter to be a map from the product of $n$ sets
+   $A₁, ..., Aₙ$ to a set $B$. If $f$ is such an \(n\)-ary function, we write
+   $$f : A_1 × ... × A_n → B$$
+   to indicate this. Given $n$ arguments $a₁ ∈ A₁, ..., aₙ ∈ Aₙ$, we write
+   $$f(a_1, ..., a_n)$$
+   to pick out out the $b ∈ B$ that $f$ maps $a₁, ..., aₙ$ to.
+
+   Two properties of functions are sometimes important for certain purposes: if
+   a function $f$ from $A$ (or $A₁, ..., Aₙ$) to $B$ pairs each element $a ∈ A$
+   (or \(n\)-tuple $a₁ ∈ A₁, ..., aₙ ∈ Aₙ$) with a different element $b ∈ B$, we
+   call $f$ an /injection/ (or a /one-to-one/ function). If for each $b ∈ B$, $f$
+   pairs some or other $a ∈ A$ (or \(n\)-tuple $a₁, ..., aₙ$) with it, we call
+   $f$ a /surjection/ (or an /onto/ function). If $f$ is both an injection and a
+   surjection, we call it a /bijection/ from $A$ (or $A₁, ..., Aₙ$) to $B$.[fn::A
+   function $f : A → B$ can be considered to be a relation on $A$ and $B$ where,
+   for each $a ∈ A$, there is exactly one $b ∈ B$ such that $⟨a, b⟩ ∈ f$. More
+   generally, an \(n\)-ary function can be considered an \((n+1)\)-ary relation.
+   This is just a particular way of encoding functions as relations --- it isn't
+   the /definition/ of a function, i.e., a map between sets, as above.]
+
+   Note that there is a corresponding notion of /function composition/ gotten by
+   considering functions as relations. Given functions $f : A → B$ and $g : B →
+   C$, their composition $g ∘ f : A → C$ is such that $(g ∘ f)(x) = g(f(x))$,
+   for any $x ∈ A$. In the same vein, if $f : A → A$, then we may write `$fⁿ$'
+   to denote the function which ``applies $f$ to an element of $A$ $n$ times''. 
+
+** Languages
+   We write `$A^n$' to refer to the result of taking the product of the set $A$
+   with itself $n$ times. As a matter of convention, we will adopt the following
+   equivalences.
+   $$\begin{align*}
+   A^0 &=_{def} \{∅\}\\
+   A^1 &=_{def} A\\
+   A^n &=_{def} A^{n-1} × A
+   \end{align*}$$
+   To define a language, we first define a set $Σ$, which we call the /alphabet/,
+   /words/, or /lexicon/ of the language. These can be anything, in principle
+   (phonetic forms, features of some kind, etc.). Then, a /language/ over $Σ$ is
+   some set $L$ such that
+   $$L ⊆ ⋃_{i ∈ ℕ}Σⁱ$$
+   where $ℕ$ is the set of natural numbers $\{0, 1, 2, ...\}$. Thus $L$ is a set
+   of \(n\)-tuples of words from $Σ$ of any length $n$. When we talk about
+   languages, we will refer to tuples as /strings/ and adopt the convention of
+   writing, e.g., the string ⟨ /the/, /dog/, /is/, /friendly/ ⟩ simply as /the dog is
+   friendly/. Note that $L$ may include $∅$, which we will regard as the empty
+   string (the string of length 0).
+
+* Examples
+** First
+   Prove that $A ⊆ A ∪ B$.
+
+   By definition, this holds if everything in $A$ is also in $A ∪ B$. Recall
+   that any $x ∈ A ∪ B$ if $x ∈ A$ or $x ∈ B$. Thus any $x ∈ A$ is such that $x
+   ∈ A ∪ B$, as needed.
+
+** Second
+   Let $A, B ⊆ C$, and write $¬X$ for $C - X$. Prove that $¬(A ∪ B) ⊆ ¬A ∩ ¬B$.
+
+   Assume $x ∈ ¬(A ∪ B)$; then, by definition, $x ∈ C$, but $x ∉ A ∪ B$. Hence,
+   $x ∉ A$ (or else, we would have that $x ∈ A ∪ B$). But because $x ∈ C$, $x ∈
+   ¬A$. A similar argument applies to $¬B$; thus $x ∈ ¬A ∩ ¬B$. As $x$ is
+   arbitrary, the argument extends to any element of $¬(A ∪ B)$, as needed. 
+   
+* Exercises
+** Part 1
+   Prove that $A ∩ B ⊆ A$.
+
+** Part 2
+   Prove that $A ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C)$ (intersection distributes over
+   union).
+
+** Part 3
+   Prove that if $A ⊆ B$ and $B ⊆ C$, then $A ⊆ C$ (transitivity of $⊆$).
+
+** Part 4
+   Prove that if $A ⊆ B$, then $A = A ∩ B$.
+
+** Part 5
+   Let $R$ be a relation on $A$ (that is, let $R ⊆ A²$). Define $R^*$ as
+   $$R^* = ⋃_{i ∈ ℕ}Rⁱ$$
+   That is, $R^*$ is the relation gotten by composing $R$ with itself any number
+   of times (including 0 times). Prove that $R^*$ is the /least/ transitive
+   reflexive relation containing $R$. In other words, show that, for any
+   relation $S$ on $A$ which is reflexive and transitive and such that $R ⊆ S$,
+   $R^* ⊆ S$.
+
+** Part 6
+   Let $A = \{a, b, c, d\}$ and $R = \{⟨a, a⟩, ⟨a, b⟩, ⟨b, c⟩, ⟨c, c⟩\}$. What
+   are the following?
+   - $R^{-1}$
+   - $R²$
+   - $R³$
+   - $R^*$
+   - the least equivalence relation containing $R$
+
+** Part 7
+   Let $R ⊆ A × B$. Define $f_R ⊆ A × 2^B$ such that $⟨a, X⟩ ∈ f_R$ iff (read
+   ``if and only if'') $X = \{b ∈ B \divd ⟨a, b⟩ ∈ R\}$. Show that $f_R$ is a
+   function from $A$ to $2^B$.
+
+# bibliography:../ur-comp-sem-2023.bib
+

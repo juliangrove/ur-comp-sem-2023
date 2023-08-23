@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-08-13 Sun 19:04 -->
+<!-- 2023-08-22 Tue 21:26 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Computational Semantics, Fall 2023</title>
@@ -239,23 +239,23 @@ $$\def\IF#1{[\hspace{-0.8mm}[#1]\hspace{-0.8mm}]}$$
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org890d411">1. Overview</a></li>
-<li><a href="#org965777d">2. Schedule</a></li>
-<li><a href="#org2ae60cf">3. Installing Haskell</a>
+<li><a href="#org12b9949">1. Overview</a></li>
+<li><a href="#org25c3706">2. Schedule</a></li>
+<li><a href="#orge0ec8b8">3. Installing Haskell</a>
 <ul>
-<li><a href="#org46133ca">3.1. Using Windows or Linux</a></li>
-<li><a href="#orgd10aff1">3.2. Using MacOS</a></li>
-<li><a href="#orge8edfca">3.3. Using Nix shells</a></li>
+<li><a href="#org21b50d7">3.1. Using Windows or Linux</a></li>
+<li><a href="#org62ff0d6">3.2. Using MacOS</a></li>
+<li><a href="#orga48c6da">3.3. Using Nix shells</a></li>
 </ul>
 </li>
-<li><a href="#org8fe9bb0">4. Your development environment</a></li>
-<li><a href="#org9ed9872">5. Logistics</a></li>
+<li><a href="#orgb886605">4. Your development environment</a></li>
+<li><a href="#orgcb1f42f">5. Logistics</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org890d411" class="outline-2">
-<h2 id="org890d411"><span class="section-number-2">1.</span> Overview</h2>
+<div id="outline-container-org12b9949" class="outline-2">
+<h2 id="org12b9949"><span class="section-number-2">1.</span> Overview</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Welcome to Computational Semantics!
@@ -267,6 +267,17 @@ I'm teaching Computational Semantics this semester in order for us to explore
 how functional programming, and specifically the λ-calculus, can be used as a
 powerful tool in the semantic analysis of natural language, as well as the
 computational modeling of linguistic behavior.
+</p>
+
+<p>
+Throughout this course, we'll make heavy use of the <a href="https://www.haskell.org/">Haskell</a> programming
+language, as we rely on it as a metalanguage to state our theories. Relatedly,
+the course is aimed primarily at graduate students in Linguistics, as well as
+graduate students in Computer Science who are interested in natural language
+semantics. It'll be easier to approach the course if you already have some
+programming background, though functional programming, per se, isn't
+necessary. That said, we'll spend the first few classes going over Haskell
+basics; but we'll launch into the main topics pretty quickly.
 </p>
 
 <p>
@@ -288,11 +299,6 @@ we'll have investigated will be important here.
 </p>
 
 <p>
-Throughout this course, we'll make heavy use of the <a href="https://www.haskell.org/">Haskell</a> programming
-language, as we rely on it as a metalanguage to state our theories.
-</p>
-
-<p>
 We'll rely on the following schedule, which I will tweak throughout the
 semester (though not in any way that affects the basic structure of the
 course). My general expectation is that everything will take longer than I
@@ -301,8 +307,8 @@ think it will now.
 </div>
 </div>
 
-<div id="outline-container-org965777d" class="outline-2">
-<h2 id="org965777d"><span class="section-number-2">2.</span> Schedule</h2>
+<div id="outline-container-org25c3706" class="outline-2">
+<h2 id="org25c3706"><span class="section-number-2">2.</span> Schedule</h2>
 <div class="outline-text-2" id="text-2">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -525,8 +531,8 @@ think it will now.
 </div>
 </div>
 
-<div id="outline-container-org2ae60cf" class="outline-2">
-<h2 id="org2ae60cf"><span class="section-number-2">3.</span> Installing Haskell</h2>
+<div id="outline-container-orge0ec8b8" class="outline-2">
+<h2 id="orge0ec8b8"><span class="section-number-2">3.</span> Installing Haskell</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 This course will be <a href="https://www.haskell.org/">Haskell</a>-based, so if you don't have a Haskell development
@@ -550,8 +556,8 @@ Haskell code.</li>
 </ul>
 </div>
 
-<div id="outline-container-org46133ca" class="outline-3">
-<h3 id="org46133ca"><span class="section-number-3">3.1.</span> Using Windows or Linux</h3>
+<div id="outline-container-org21b50d7" class="outline-3">
+<h3 id="org21b50d7"><span class="section-number-3">3.1.</span> Using Windows or Linux</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 If you are on a Linux distribution or Windows, you should try installing
@@ -562,8 +568,8 @@ but it can sometimes be difficult to configure properly.
 </div>
 </div>
 
-<div id="outline-container-orgd10aff1" class="outline-3">
-<h3 id="orgd10aff1"><span class="section-number-3">3.2.</span> Using MacOS</h3>
+<div id="outline-container-org62ff0d6" class="outline-3">
+<h3 id="org62ff0d6"><span class="section-number-3">3.2.</span> Using MacOS</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 If you are on macOS, you can install stack <a href="https://brew.sh/"><code>homebrew</code></a>. You should first
@@ -592,8 +598,8 @@ instructions provided <a href="https://www.haskell.org/downloads/">here</a>.
 </div>
 </div>
 
-<div id="outline-container-orge8edfca" class="outline-3">
-<h3 id="orge8edfca"><span class="section-number-3">3.3.</span> Using Nix shells</h3>
+<div id="outline-container-orga48c6da" class="outline-3">
+<h3 id="orga48c6da"><span class="section-number-3">3.3.</span> Using Nix shells</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 I tend to run Haskell only inside of <a href="https://nixos.org/"><code>nix</code></a> shells. During development, these
@@ -633,8 +639,8 @@ pkgs.stdenv.mkDerivation {
 </div>
 </div>
 
-<div id="outline-container-org8fe9bb0" class="outline-2">
-<h2 id="org8fe9bb0"><span class="section-number-2">4.</span> Your development environment</h2>
+<div id="outline-container-orgb886605" class="outline-2">
+<h2 id="orgb886605"><span class="section-number-2">4.</span> Your development environment</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 You can develop Haskell code using whatever text editor you want! But for
@@ -693,15 +699,15 @@ Haskell, I would very highly recommend <a href="https://www.gnu.org/software/ema
 </div>
 </div>
 
-<div id="outline-container-org9ed9872" class="outline-2">
-<h2 id="org9ed9872"><span class="section-number-2">5.</span> Logistics</h2>
+<div id="outline-container-orgcb1f42f" class="outline-2">
+<h2 id="orgcb1f42f"><span class="section-number-2">5.</span> Logistics</h2>
 <div class="outline-text-2" id="text-5">
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-08-13 Sun 19:04</p>
+<p class="date">Created: 2023-08-22 Tue 21:26</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

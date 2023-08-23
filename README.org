@@ -19,6 +19,15 @@
   powerful tool in the semantic analysis of natural language, as well as the
   computational modeling of linguistic behavior.
 
+  Throughout this course, we'll make heavy use of the [[https://www.haskell.org/][Haskell]] programming
+  language, as we rely on it as a metalanguage to state our theories. Relatedly,
+  the course is aimed primarily at graduate students in Linguistics, as well as
+  graduate students in Computer Science who are interested in natural language
+  semantics. It'll be easier to approach the course if you already have some
+  programming background, though functional programming, per se, isn't
+  necessary. That said, we'll spend the first few classes going over Haskell
+  basics; but we'll launch into the main topics pretty quickly.
+
   The general trajectory of the course will be as follows. In the first part,
   we'll cover the untyped λ-calculus and type theory. This will take a little
   bit of time because we'll be building everything from the ground up, covering
@@ -33,9 +42,6 @@
   computational models. As we'll see, the theories of computational effects
   we'll have investigated will be important here.
  
-  Throughout this course, we'll make heavy use of the [[https://www.haskell.org/][Haskell]] programming
-  language, as we rely on it as a metalanguage to state our theories.
-
   We'll rely on the following schedule, which I will tweak throughout the
   semester (though not in any way that affects the basic structure of the
   course). My general expectation is that everything will take longer than I
