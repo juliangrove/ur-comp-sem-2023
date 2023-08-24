@@ -202,5 +202,17 @@ pkgs.stdenv.mkDerivation {
   #+end_src
 
 * Logistics
+** Office hours
+   I'll hold office hours every week, time TBA. My office is 507 Lattimore Hall.
 
-#+bibliography: computational_semantics.bib
+** Assignments
+   This course will have weekly assignments (given at the end of the weekly
+   notes), which will be graded Pass/Fail, as well a slightly longer final
+   assignment, which will be given an actual letter grade. Final grades will be
+   calculated taking both into account.
+
+** Zulip
+   There is a Zulip for this course. I'll use it to post updates. You should use
+   it to post questions/discussion.
+   
+#+bibliography: ur-comp-sem-2023.bib
