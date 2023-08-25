@@ -9,6 +9,7 @@
 
 #+Author: Julian Grove
 #+Title: Computational Semantics, Fall 2023
+#+bibliography: ur-comp-sem-2023.bib
 
 * Overview
   Welcome to Computational Semantics!
@@ -226,5 +227,12 @@ pkgs.stdenv.mkDerivation {
 ** Zulip
    There is a Zulip for this course. I'll use it to post updates. You should use
    it to post questions/discussion.
-   
-#+bibliography: ur-comp-sem-2023.bib
+
+* Useful resources
+  [[http://learnyouahaskell.com/chapters][Learn You a Haskell]]
+  [cite/n:@barendregt_lambda_2012]
+  [cite/n:@blackburn_representation_2005]
+  [cite/n:@jansson_domain-specific_2022]
+  [cite/n:@thompson_type_1999]
+  [cite/n:@van_eijck_computational_2010]
+  #+print_bibliography:
