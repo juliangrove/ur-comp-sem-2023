@@ -19,14 +19,26 @@
   powerful tool in the semantic analysis of natural language, as well as the
   computational modeling of linguistic behavior.
 
-  Throughout this course, we'll make heavy use of the [[https://www.haskell.org/][Haskell]] programming
-  language, as we rely on it as a metalanguage to state our theories. Relatedly,
-  the course is aimed primarily at graduate students in Linguistics, as well as
-  graduate students in Computer Science who are interested in natural language
-  semantics. It'll be easier to approach the course if you already have some
-  programming background, though functional programming, per se, isn't
-  necessary. That said, we'll spend the first few classes going over Haskell
-  basics; but we'll launch into the main topics pretty quickly.
+  We'll make heavy use of the [[https://www.haskell.org/][Haskell]] programming language throughout, as we
+  rely on it as a metalanguage to state our theories. Thus the course is aimed
+  primarily at graduate students in Linguistics or Computer Science; but more
+  broadly, it could be interesting to anyone who meets one of the following
+  descriptions:
+  - has a background in linguistic semantics and hopes to learn (i) how semantic
+    theory can benefit from the incorporation of functional programming
+    techniques; and (ii) how semanticists can benefit from implementing their
+    theories as runnable code
+  - has a functional programming background and hopes to find out how functional
+    programming techniques have been useful in the analysis of natural language
+    meaning and inference
+  - has an experimental linguistics background and wants to learn how semantic
+    theory and functional programming can join forces to help vet linguistic
+    theories against experimental data
+  - wants to learn Haskell  
+  It'll be easier to approach the course if you already have some programming
+  background, though functional programming, per se, isn't necessary. That said,
+  we'll spend the first few classes going over Haskell basics; but we'll launch
+  into the main topics pretty quickly.
 
   The general trajectory of the course will be as follows. In the first part,
   we'll cover the untyped λ-calculus and type theory. This will take a little
