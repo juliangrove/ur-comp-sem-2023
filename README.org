@@ -115,7 +115,7 @@
    but it can sometimes be difficult to configure properly. 
 
 ** Using MacOS
-  If you are on macOS, you can install stack [[https://brew.sh/][~homebrew~]]. You should first
+  If you are on macOS, you can install stack using [[https://brew.sh/][~homebrew~]]. You should first
   install the xcode developer utilities:
   #+begin_src bash
 $ xcode-select --install
