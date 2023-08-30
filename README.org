@@ -61,36 +61,36 @@
   think it will now.
 
 * Schedule
-  | Date          | Topic                                                                    | Notes (with exercises) | Resources |
-  |---------------+--------------------------------------------------------------------------+------------------------+-----------|
-  | August 30     | Formal preliminaries                                                     |                        |           |
-  | September 6   | Haskell: types, type classes, data structures, and variables             |                        |           |
-  | September 11  | Haskell: patterns, recursion, and higher-order polymorphism              |                        |           |
-  | September 13  | Untyped λ-calculus: what is it?                                          |                        |           |
-  | Septemeber 18 | Untyped λ-calculus: Church encodings                                     |                        |           |
-  | September 20  | Untyped λ-calculus: natural number arithmetic                            |                        |           |
-  | Septemeber 25 | Untyped λ-calculus: fixed points and recursive functions                 |                        |           |
-  | September 27  | Propositional logic: natural deduction                                   |                        |           |
-  | October 2     | Propositional logic: minimal logic, proofs, and reductions               |                        |           |
-  | October 4     | Propositional logic: structural rules                                    |                        |           |
-  | October 9     | Applicative categorial grammar                                           |                        |           |
-  | October 11    | Term-theoretic fragments                                                 |                        |           |
-  | October 18    | Model-theoretic fragments                                                |                        |           |
-  | October 23    | The $\IF{\cdot}$ pipeline                                                |                        |           |
-  | October 25    | Logical detour: proving in classical FOL                                 |                        |           |
-  | October 30    | Proof-theoretic fragments                                                |                        |           |
-  | November 1    | Interpretation with a knowledge base                                     |                        |           |
-  | November 6    | Abstract interfaces: functors (can't do much)                            |                        |           |
-  | November 8    | Abstract interfaces: applicative functors and composition                |                        |           |
-  | November 13   | Abstract interfaces: monads, scopal composition, and /in situ/ composition |                        |           |
-  | November 15   | Probabilistic programming with finite distributions                      |                        |           |
-  | November 20   | Probabilistic semantics via ~Reader~                                       |                        |           |
-  | November 27   | Hybrid probabilistic/FOL systems                                         |                        |           |
-  | November 29   | Expanding the probabilistic interface                                    |                        |           |
-  | December 4    | Two levels of probabilistic involvement                                  |                        |           |
-  | December 6    | Probabilistic programs as Bayesian models: part 1                        |                        |           |
-  | December 11   | Probabilistic programs as Bayesian models: part 2                        |                        |           |
-  | December 13   |                                                                          |                        |           |
+  | Date          | Topic                                                                    | Notes (with exercises) | Resources                          |
+  |---------------+--------------------------------------------------------------------------+------------------------+------------------------------------|
+  | August 30     | Formal preliminaries                                                     | [[./notes/formal_preliminaries.html][Practice with sets]]     | [cite/t:@partee_mathematical_1990] |
+  | September 6   | Haskell: types, type classes, data structures, and variables             |                        |                                    |
+  | September 11  | Haskell: patterns, recursion, and higher-order polymorphism              |                        |                                    |
+  | September 13  | Untyped λ-calculus: what is it?                                          |                        |                                    |
+  | Septemeber 18 | Untyped λ-calculus: Church encodings                                     |                        |                                    |
+  | September 20  | Untyped λ-calculus: natural number arithmetic                            |                        |                                    |
+  | Septemeber 25 | Untyped λ-calculus: fixed points and recursive functions                 |                        |                                    |
+  | September 27  | Propositional logic: natural deduction                                   |                        |                                    |
+  | October 2     | Propositional logic: minimal logic, proofs, and reductions               |                        |                                    |
+  | October 4     | Propositional logic: structural rules                                    |                        |                                    |
+  | October 9     | Applicative categorial grammar                                           |                        |                                    |
+  | October 11    | Term-theoretic fragments                                                 |                        |                                    |
+  | October 18    | Model-theoretic fragments                                                |                        |                                    |
+  | October 23    | The $\IF{\cdot}$ pipeline                                                |                        |                                    |
+  | October 25    | Logical detour: proving in classical FOL                                 |                        |                                    |
+  | October 30    | Proof-theoretic fragments                                                |                        |                                    |
+  | November 1    | Interpretation with a knowledge base                                     |                        |                                    |
+  | November 6    | Abstract interfaces: functors (can't do much)                            |                        |                                    |
+  | November 8    | Abstract interfaces: applicative functors and composition                |                        |                                    |
+  | November 13   | Abstract interfaces: monads, scopal composition, and /in situ/ composition |                        |                                    |
+  | November 15   | Probabilistic programming with finite distributions                      |                        |                                    |
+  | November 20   | Probabilistic semantics via ~Reader~                                       |                        |                                    |
+  | November 27   | Hybrid probabilistic/FOL systems                                         |                        |                                    |
+  | November 29   | Expanding the probabilistic interface                                    |                        |                                    |
+  | December 4    | Two levels of probabilistic involvement                                  |                        |                                    |
+  | December 6    | Probabilistic programs as Bayesian models: part 1                        |                        |                                    |
+  | December 11   | Probabilistic programs as Bayesian models: part 2                        |                        |                                    |
+  | December 13   |                                                                          |                        |                                    |
 
 * Installing Haskell
   This course will be [[https://www.haskell.org/][Haskell]]-based, so if you don't have a Haskell development
@@ -233,6 +233,7 @@ pkgs.stdenv.mkDerivation {
   [cite/n:@barendregt_lambda_2012]
   [cite/n:@blackburn_representation_2005]
   [cite/n:@jansson_domain-specific_2022]
+  [cite/n:@partee_mathematical_1990]
   [cite/n:@thompson_type_1999]
   [cite/n:@van_eijck_computational_2010]
   #+print_bibliography:

@@ -6,9 +6,11 @@
 #+html_head: <script type="text/javascript" src="../readtheorg.js"></script>
 
 #+html_head: $$\def\IF#1{[\hspace{-0.8mm}[#1]\hspace{-0.8mm}]}$$
+#+html_head: $$\def\divd{\ |\ }$$
 
 #+Author: Julian Grove
 #+Title: Formal preliminaries
+#+bibliography: ../ur-comp-sem-2023.bib
 
 * Overview
   We introduce here the basic concepts of /set/, /product/, /relation/, /function/, and
@@ -21,8 +23,7 @@
    any of the objects which we may consider to be members of a set. We may, for
    example, want to have things like words or natural numbers inhabit this
    universe. When analyzing the semantics of English, we may include other
-   things too, like entities or individuals (e.g., corresponding to people and
-   trees and stuff).
+   things too, like entities or individuals.
 
    For any set $A$ and any object $a$ in the universe, either one of the
    following two things is true.
@@ -49,14 +50,15 @@
    condition on the values of these variables --- any number of the variables in
    $a$, and just these, can occur in $φ$. In the example above, $a$ just was the
    variable $x$, and the condition expressed was that the value of $x$ be either
-   1, 2, or 3. But we could also use predicate notation as in
-   $$\{x + 1 \divd x = 1 \text{ or } x = 2 \text{ or } x = 3\}$$
-   where $a$ is the complex expression `$x + 1$', to specify the set $\{2, 3,
-   4\}$.
+   1, 2, or 3.
 
-   Crucially, there's an empty set, which we'll write `$∅$'. It has no members,
-   i.e., $a ∉ ∅$ for any $a$ in the universe. It can also be written in list
-   notation as `$\{\}$'.
+   But we could also use predicate notation, as in $$\{x + 1 \divd x = 1 \text{
+   or } x = 2 \text{ or } x = 3\}$$ where $a$ is the complex expression `$x +
+   1$', to specify the set $\{2, 3, 4\}$.
+
+   Importantly, there is an empty set, which we'll write `$∅$'. It has no
+   members, i.e., $a ∉ ∅$ for any $a$ in the universe. It can also be written in
+   list notation as `$\{\}$'.
 
    Given any two sets $A$ and $B$, we'll have the following set-forming
    operations.
@@ -120,8 +122,8 @@
    An \(n\)-ary /relation/ on the sets $A₁, ..., Aₙ$ is a set $R$ such that $R ⊆
    A₁ × ... × Aₙ$. In the special case of a binary relation on two sets $A$ and
    $B$, $R$ is a set of pairs $⟨a, b⟩$, such that $a ∈ A$ and $b ∈ B$. That is,
-   $R ⊆ A × B$. For \(n\)-ary relations $R$, if the $n$-tuple $⟨a₁, ..., aₙ⟩$ is
-   a member of $R$, we can indicate this by writing
+   $R ⊆ A × B$. For \(n\)-ary relations $R$, if the \(n\)-tuple $⟨a₁, ..., aₙ⟩$
+   is a member of $R$, we can indicate this by writing
    $$R(a₁, ..., aₙ)$$
    In the special case where $n = 2$, we may also sometimes use infix notation,
    writing `$a_1 R a_2$'.
@@ -274,5 +276,6 @@
    ``if and only if'') $X = \{b ∈ B \divd ⟨a, b⟩ ∈ R\}$. Show that $f_R$ is a
    function from $A$ to $2^B$.
 
-# bibliography:../ur-comp-sem-2023.bib
-
+* Useful resources
+  [cite/n:@partee_mathematical_1990]
+  #+print_bibliography:
