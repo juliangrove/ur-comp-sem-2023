@@ -135,7 +135,7 @@
    whenever $⟨x, y⟩ ∈ R$. It is said to be /antisymmetric/ if the only case in
    which both $⟨x, y⟩ ∈ R$ and $⟨y, x⟩ ∈ R$ is when $x = y$. $R$ is said to be
    /transitive/ if whenever $⟨x, y⟩, ⟨y, z⟩ ∈ R$, then $⟨x, z⟩ ∈ R$. A relation
-   $R$ on $A$ which is reflexive, transitive, and antisymmetric is said to be an
+   $R$ on $A$ which is reflexive, transitive, and symmetric is said to be an
    /equivalence relation/.
 
    An important operation on relations is /relation composition/. Given a relation
