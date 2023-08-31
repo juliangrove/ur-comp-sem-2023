@@ -227,8 +227,8 @@ pkgs.stdenv.mkDerivation {
    Each assignment will be due a week after it is assigned---so an assignment
    posted on Monday will be due the following Monday, and an assignment posted
    on Wednesday will be due the following Wednesday. Assignments can be
-   submitted in class or as a PDF, which you can either email to me or messag to
-   me on Zulip.
+   submitted in class or as a PDF, which you can either email to me or message
+   to me on Zulip.
 
 ** Zulip
    There is a Zulip for this course. I'll use it to post updates. You should use
