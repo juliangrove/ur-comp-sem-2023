@@ -216,7 +216,8 @@ pkgs.stdenv.mkDerivation {
 
 * Logistics
 ** Office hours
-   I'll hold office hours every week, time TBA. My office is 507 Lattimore Hall.
+   I'll hold office hours every Monday and Tuesday from 12-1pm. My office is 507
+   Lattimore Hall.
 
 ** Assignments
    This course will have weekly pair of assignments (each given at the end of
