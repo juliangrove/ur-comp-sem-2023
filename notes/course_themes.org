@@ -1,0 +1,53 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../readtheorg.css"/>
+
+#+html_head: <script src="../jquery.min.js"></script>
+#+html_head: <script src="../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: Major themes of the course
+#+bibliography: ../ur-comp-sem-2023.bib
+
+* Themes
+  In class, we talked about some major themes, and how they will become manifest
+  in the different parts of the course, in the way we approach the topics we
+  study. These themes were the following:
+  - [[https://plato.stanford.edu/entries/compositionality/][Compositionality]]
+    - A principle of interpretation often attributed to Gottlob Frege. ``The
+      meaning of an expression should be a function of the meanings of its parts
+      and the way in which they are combined.''
+    - Richard Montague (at least implicitly) viewed compositionality as arising
+      from a property of the semantic interpretation function, viz., that it is
+      a homomorphism from an algebra of syntactic expressions to an algebra of
+      semantic formulae (or model-theoretic objects). (See, e.g.,
+      [cite/t:@montague_universal_1970].)
+  - Modularity
+    - In a way, this is like compositionality, but at the level of entire /models/
+      or /theories/ of the semantic phenomena we study. We should be able to state
+      accounts of different phenomena separately from each other, and to have a
+      systematic recipe for combining the accounts in a way that preserves
+      certain important aspects of their structure. (In practice, we we will
+      sometimes do this by looking the at homomorphisms between /monads/ which
+      arise when using monad transformers [cite:@liang_monad_1995]. 
+  - Abstraction
+    - We should be able to zero in on the properties of meanings (and also, the
+      properties of theories of meaning) that we care about, and not worry about
+      the sometimes irrelevant details of how they are implemented. IMO, finding
+      the right level of abstraction at which to study some linguistic
+      phenomenon makes it easier to connect different theories together, since
+      it can facilitate finding a common interface. This idea will show up
+      repeatedly in this course. 
+
+* Organization of the course
+  I tried to organize the course into three parts (indicated below). The themes
+  above show up in each part in the following... guises?
+
+  |                                     | Compositionality/Modularity                                          | Abstraction             | Topics                                                    |
+  |-------------------------------------+----------------------------------------------------------------------+-------------------------+-----------------------------------------------------------|
+  | Part 1: truth-conditional semantics | Frege's principle (e.g., functional application)                     | λ-calculus              | verbs, arguments, etc.                                    |
+  | Part 2: dynamic semantics           | Modularity and composition of entire theories (as well as the above) | λ-calculus and functors | indefiniteness, anaphora resolution, quantification, etc. |
+  | Part 3: Bayesian modeling           | All of the above                                                     | λ-calculus and functors | The semantic theory module, the response behavior module  |
+
+* References
+  #+print_bibliography:
