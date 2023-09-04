@@ -1,0 +1,115 @@
+#+latex_class: slides
+#+setupfile: setup.org
+#+options: H:2 toc:nil
+#+beamer_frame_LEVEL: 1
+#+beamer_theme: metropolis
+
+#+Author: Julian Grove
+#+beamer_header: \institute[University of Rochester]{University of Rochester}
+#+Title: Introduction to Haskell
+#+Date: Computational semantics, August 30, 2023
+
+* Haskell basics
+** Static typing
+   Haskell is statically typed. This means:
+   #+beamer:\pause
+   #+attr_beamer: :overlay <+->
+   - Every expression in the language is assigned a type.
+   - If an expression is not well-typed (i.e., cannot be be assigned a type),
+     the compiler will throw an error.
+
+** Type annotations
+   Expressions can be annotated with their types:
+   #+beamer:\pause
+   #+attr_beamer: :overlay <+->
+   - Put the type signature on one line, and the definition of the value after
+     it.
+   - The identifier for the value goes to the left of the `$∷$', and the type of
+     the value bound to the identifier goes to the right of the `$∷$'.
+   - We can think of $\mathtt{String}$ as a simple type. @@beamer:\pause@@ But
+     we can also have more complicated types, e.g., those for functions.
+     #+beamer: \pause
+     - In `$α → β$', $α$ is the input type and $β$ is the output type.
+   - For a function with more than one input, the thing to the right of the
+     final `$→$' is the output, and everything to the left of that type is an
+     input type.
+
+** Function application
+   #+beamer:\pause
+   #+attr_beamer: :overlay <+->
+   - To call a function in languages like, e.g., Python, you use this syntax:
+   $$\mathtt{addThenDouble}(2, 3)$$
+   - In Haskell, a function with multiple arguments is applied to them in
+     order\ldots
+   - So, if we want to define another function in terms of
+     $\mathtt{addThenDouble}$, that's the syntax we'd use for its
+     definition\ldots
+
+** Fixity
+   #+beamer:\pause
+   #+attr_beamer: :overlay <+->
+   - You can make an infix function a prefix function by wrapping it in
+     parentheses\ldots
+   - And you can make any prefix function an infix function by wrapping it in
+     backticks\ldots
+
+** Lambdas
+   #+beamer:\pause
+   #+attr_beamer: :overlay <+->  
+   - The function definitions we have been writing so far are actually a
+     convenient shorthand.
+   - Another way to write them\ldots
+   - Haskell provides this syntax for anonymous functions so that we may
+     exploit the fact that functions are treated as /first-class citizens/ of
+     the language. @@beamer:\pause@@ That means you can\ldots
+     #+beamer:\pause
+     #+attr_beamer: :overlay <+->
+     - write a function that takes another function as its input
+     - write a function that returns another function as its output
+
+** Type inference
+   As we said, the usual syntax for type annotations is:
+   $$\mathtt{nameOfThing} ∷ \mathtt{typeOfThing}$$
+   #+beamer:\pause
+   #+attr_beamer: :overlay <+->
+   - However, Haskell doesn't usually require that you give type annotations.
+   - Why? The compiler can usually infer what type everything is supposed to be
+     from your code.
+   - But the usual practice is to always include explicit type annotations in
+     your code.
+     
+* Basic types
+** Booleans
+   Booleans are truth values, and there are two of them: $\mathtt{True}$ and
+   $\mathtt{False}$.
+
+** Integers
+   The $\mathtt{Integer}$ type allows you to express any integer.
+   #+beamer:\pause
+   #+attr_beamer: :overlay <+->
+   - Note that if you ask for the type of something that looks like an integer,
+     weird stuff happens\ldots
+   - You can fix this with type annotations.
+
+** Chars
+   A $\mathtt{Char}$ is a character of text. In Haskell, this can be any Unicode
+   character.
+
+** Strings
+   In Haskell, strings are lists of characters.
+   #+beamer:\pause
+   #+attr_beamer: :overlay <+->
+   - This means that any function you're used to using on lists, you can use on
+     strings\ldots
+
+** Tuples
+   A tuple stores a number of different values, bundled up into a single value.
+   #+beamer:\pause
+   #+attr_beamer: :overlay <+->
+   - Tuples are very different from lists (which we'll get to later).
+     
+# ** References
+   # :PROPERTIES:
+   # :beamer_opt: allowframebreaks
+   # :END:
+   # bibliography:../ur-comp-sem-2023.bib

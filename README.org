@@ -63,7 +63,7 @@
 * Schedule
   | Date          | Topic                                                                    | Notes (with exercises)            | Resources                          |
   |---------------+--------------------------------------------------------------------------+-----------------------------------+------------------------------------|
-  | August 30     | Formal preliminaries                                                     | [[./notes/formal_preliminaries.html][Practice with sets]]; [[./notes/course_themes.html][Course themes]] | [cite/t:@partee_mathematical_1990] |
+  | August 30     | Formal preliminaries                                                     | [[./notes/aug30/formal_preliminaries.html][Practice with sets]]; [[./notes/aug30/course_themes.html][Course themes]] | [cite/t:@partee_mathematical_1990] |
   | September 6   | Haskell: types, type classes, data structures, and variables             |                                   |                                    |
   | September 11  | Haskell: patterns, recursion, and higher-order polymorphism              |                                   |                                    |
   | September 13  | Untyped λ-calculus: what is it?                                          |                                   |                                    |

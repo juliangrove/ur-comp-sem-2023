@@ -1,9 +1,9 @@
-#+html_head: <link rel="stylesheet" type="text/css" href="../htmlize.css"/>
-#+html_head: <link rel="stylesheet" type="text/css" href="../readtheorg.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
 
-#+html_head: <script src="../jquery.min.js"></script>
-#+html_head: <script src="../bootstrap.min.js"></script>
-#+html_head: <script type="text/javascript" src="../readtheorg.js"></script>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
 
 #+html_head: $$\def\IF#1{[\hspace{-0.8mm}[#1]\hspace{-0.8mm}]}$$
 #+html_head: $$\def\divd{\ |\ }$$

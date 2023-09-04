@@ -1,0 +1,404 @@
+% Created 2023-09-04 Mon 13:06
+% Intended LaTeX compiler: pdflatex
+\documentclass[presentation]{beamer}
+   \usepackage[T1]{fontenc}
+   \setbeamerfont{frametitle}{size=\large}
+   \setbeamertemplate{footline}{
+   \begin{flushright}
+   \insertframenumber/\inserttotalframenumber\hspace{2mm}\mbox{}
+   \end{flushright}}
+   \usepackage{libertine}
+   \usepackage[varqu]{zi4}
+   \usepackage[libertine]{newtxmath}
+   %%\usepackage[small]{eulervm}
+   %%\usepackage[{libertinust1math}
+   \usepackage[T1]{fontenc}
+   \renewcommand*\familydefault{\sfdefault}
+   \usepackage{tipa}
+   \usepackage{adjustbox}
+   \usepackage{multirow}
+   \usepackage{multicol}
+   \usepackage[backend=bibtex,uniquename=false,dashed=false,date=year,url=false,isbn=false]{biblatex}
+   \usepackage{expex}
+   \usepackage{stmaryrd}
+   \usepackage{stackrel}
+   \usepackage{stackengine}
+   \usepackage{relsize}
+   \usepackage{amsmath}
+   \usepackage{mathtools}
+   \usepackage{dsfont}
+   \usepackage{fixltx2e}
+   \usepackage{graphicx}
+   \usepackage{xcolor}
+   \usepackage[normalem]{ulem}
+\usetheme{metropolis}
+\author{Julian Grove}
+\date{Computational semantics, August 30, 2023}
+\title{Introduction to Haskell}
+\usepackage{tikz}
+\usetikzlibrary{arrows,arrows.meta,automata}
+\definecolor{highlight}{RGB}{7,102,120}
+\definecolor{dim}{RGB}{235,219,178}
+\definecolor{dimmer}{RGB}{150,130,50}
+\newcommand{\ct}[1]{\textsf{#1}}
+\newcommand{\eval}[1]{#1^\lightning}
+\newcommand\observe{\mathit{observe}}
+\newcommand\reset{\mathit{reset}}
+\newcommand\factor{\mathit{factor}}
+\def\divd{\ |\ }
+\newcommand{\maptyp}[1]{\overline{#1}}
+\usepackage[verbose]{newunicodechar}
+\newunicodechar{¬}{\ensuremath{\neg}} %
+\newunicodechar{¹}{^1}
+\newunicodechar{²}{^2}
+\newunicodechar{³}{^3}
+\newunicodechar{·}{\ensuremath{\cdot}}
+\newunicodechar{×}{\ensuremath{\times}} %
+\newunicodechar{÷}{\ensuremath{\div}} %
+\newunicodechar{ᵅ}{^α}
+\newunicodechar{ᵝ}{^β}
+\newunicodechar{ˠ}{^γ}
+\newunicodechar{ᵃ}{^a}
+\newunicodechar{ᵇ}{^b}
+\newunicodechar{ᶜ}{^c}
+\newunicodechar{ᵈ}{^d}
+\newunicodechar{ᵉ}{^e}
+\newunicodechar{ᶠ}{^f}
+\newunicodechar{ᵍ}{^g}
+\newunicodechar{ʰ}{^h}
+\newunicodechar{ⁱ}{^a}
+\newunicodechar{ʲ}{^j}
+\newunicodechar{ᵏ}{^K}
+\newunicodechar{ˡ}{^l}
+\newunicodechar{ᵐ}{^m}
+\newunicodechar{ⁿ}{^n}
+\newunicodechar{ᵒ}{^o}
+\newunicodechar{ᵖ}{^p}
+\newunicodechar{ʳ}{^r}
+\newunicodechar{₁}{_1}
+\newunicodechar{₂}{_2}
+\newunicodechar{₃}{_3}
+\newunicodechar{₄}{_4}
+\newunicodechar{ₐ}{_a}
+\newunicodechar{ₑ}{_e}
+\newunicodechar{ₕ}{_h}
+\newunicodechar{ᵢ}{_i}
+\newunicodechar{ₙ}{_n}
+\newunicodechar{ᵣ}{_r}
+\newunicodechar{ₛ}{_s}
+\newunicodechar{̷}{\not} %
+\newunicodechar{Γ}{\ensuremath{\Gamma}}   %
+\newunicodechar{Δ}{\ensuremath{\Delta}} %
+\newunicodechar{Η}{\ensuremath{\textrm{H}}} %
+\newunicodechar{Θ}{\ensuremath{\Theta}} %
+\newunicodechar{Λ}{\ensuremath{\Lambda}} %
+\newunicodechar{Ξ}{\ensuremath{\Xi}} %
+\newunicodechar{Π}{\ensuremath{\Pi}}   %
+\newunicodechar{Σ}{\ensuremath{\Sigma}} %
+\newunicodechar{Φ}{\ensuremath{\Phi}} %
+\newunicodechar{Ψ}{\ensuremath{\Psi}} %
+\newunicodechar{Ω}{\ensuremath{\Omega}} %
+\newunicodechar{α}{\ensuremath{\mathnormal{\alpha}}}
+\newunicodechar{β}{\ensuremath{\beta}} %
+\newunicodechar{γ}{\ensuremath{\mathnormal{\gamma}}} %
+\newunicodechar{δ}{\ensuremath{\mathnormal{\delta}}} %
+\newunicodechar{ε}{\ensuremath{\mathnormal{\varepsilon}}} %
+\newunicodechar{ζ}{\ensuremath{\mathnormal{\zeta}}} %
+\newunicodechar{η}{\ensuremath{\mathnormal{\eta}}} %
+\newunicodechar{θ}{\ensuremath{\mathnormal{\theta}}} %
+\newunicodechar{ι}{\ensuremath{\mathnormal{\iota}}} %
+\newunicodechar{κ}{\ensuremath{\mathnormal{\kappa}}} %
+\newunicodechar{λ}{\ensuremath{\mathnormal{\lambda}}} %
+\newunicodechar{μ}{\ensuremath{\mathnormal{\mu}}} %
+\newunicodechar{ν}{\ensuremath{\mathnormal{\mu}}} %
+\newunicodechar{ξ}{\ensuremath{\mathnormal{\xi}}} %
+\newunicodechar{π}{\ensuremath{\mathnormal{\pi}}}
+\newunicodechar{π}{\ensuremath{\mathnormal{\pi}}} %
+\newunicodechar{ρ}{\ensuremath{\mathnormal{\rho}}} %
+\newunicodechar{σ}{\ensuremath{\mathnormal{\sigma}}} %
+\newunicodechar{τ}{\ensuremath{\mathnormal{\tau}}} %
+\newunicodechar{φ}{\ensuremath{\mathnormal{\phi}}} %
+\newunicodechar{χ}{\ensuremath{\mathnormal{\chi}}} %
+\newunicodechar{ψ}{\ensuremath{\mathnormal{\psi}}} %
+\newunicodechar{ω}{\ensuremath{\mathnormal{\omega}}} %
+\newunicodechar{ϕ}{\ensuremath{\mathnormal{\phi}}} %
+\newunicodechar{ϕ}{\ensuremath{\mathnormal{\varphi}}} %
+\newunicodechar{ϵ}{\ensuremath{\mathnormal{\epsilon}}} %
+\newunicodechar{ᵏ}{^k}
+\newunicodechar{ᵢ}{\ensuremath{_i}} %
+\newunicodechar{ }{\quad}
+\newunicodechar{†}{\dagger}
+\newunicodechar{ }{\,}
+\newunicodechar{′}{\ensuremath{^\prime}}  %
+\newunicodechar{″}{\ensuremath{^\second}} %
+\newunicodechar{‴}{\ensuremath{^\third}}  %
+\newunicodechar{ⁱ}{^i}
+\newunicodechar{⁵}{\ensuremath{^5}}
+\newunicodechar{⁺}{\ensuremath{^+}} %% #+beamer_header: \newunicodechar{⁺}{^+}
+\newunicodechar{⁻}{\ensuremath{^-}} %%
+\newunicodechar{ⁿ}{^n}
+\newunicodechar{₀}{\ensuremath{_0}} %
+\newunicodechar{₁}{\ensuremath{_1}} % #+beamer_header: \newunicodechar{₁}{_1}
+\newunicodechar{₂}{\ensuremath{_2}} % #+beamer_header: \newunicodechar{₂}{_2}
+\newunicodechar{₃}{\ensuremath{_3}}
+\newunicodechar{₊}{\ensuremath{_+}} %%
+\newunicodechar{₋}{\ensuremath{_-}} %%
+\newunicodechar{ₙ}{_n} %
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}} %
+\newunicodechar{ℒ}{\ensuremath{\mathscr{L}}}
+\newunicodechar{ℕ}{\mathbb{N}} %
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}} %
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}} %
+\newunicodechar{ℳ}{\mathscr{M}}
+\newunicodechar{⅋}{\ensuremath{\parr}} %
+\newunicodechar{←}{\ensuremath{\leftarrow}} %
+\newunicodechar{↑}{\ensuremath{\uparrow}} %
+\newunicodechar{→}{\ensuremath{\rightarrow}} %
+\newunicodechar{↔}{\ensuremath{\leftrightarrow}} %
+\newunicodechar{↖}{\nwarrow} %
+\newunicodechar{↗}{\nearrow} %
+\newunicodechar{↝}{\ensuremath{\leadsto}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{⇆}{\ensuremath{\leftrightarrows}} %
+\newunicodechar{⇐}{\ensuremath{\Leftarrow}} %
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}} %
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}} %
+\newunicodechar{∀}{\ensuremath{\forall}}   %
+\newunicodechar{∂}{\ensuremath{\partial}}
+\newunicodechar{∃}{\ensuremath{\exists}} %
+\newunicodechar{∅}{\ensuremath{\varnothing}} %
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\not\in}} %
+\newunicodechar{∋}{\ensuremath{\ni}}  %
+\newunicodechar{∎}{\ensuremath{\qed}}%#+beamer_header: \newunicodechar{∎}{\ensuremath{\blacksquare}} % end of proof
+\newunicodechar{∏}{\prod}
+\newunicodechar{∑}{\sum}
+\newunicodechar{∗}{\ensuremath{\ast}} %
+\newunicodechar{∘}{\ensuremath{\circ}} %
+\newunicodechar{∙}{\ensuremath{\bullet}} % #+beamer_header: \newunicodechar{∙}{\ensuremath{\cdot}}
+\newunicodechar{⊙}{\ensuremath{\odot}}
+\newunicodechar{∞}{\ensuremath{\infty}} %
+\newunicodechar{∣}{\ensuremath{\mid}} %
+\newunicodechar{∧}{\wedge}%
+\newunicodechar{∨}{\vee}%
+\newunicodechar{∩}{\ensuremath{\cap}} %
+\newunicodechar{∪}{\ensuremath{\cup}} %
+\newunicodechar{∫}{\int}
+\newunicodechar{∷}{::} %
+\newunicodechar{∼}{\ensuremath{\sim}} %
+\newunicodechar{≃}{\ensuremath{\simeq}} %
+\newunicodechar{≔}{\ensuremath{\coloneqq}} %
+\newunicodechar{≅}{\ensuremath{\cong}} %
+\newunicodechar{≈}{\ensuremath{\approx}} %
+\newunicodechar{≜}{\ensuremath{\stackrel{\scriptscriptstyle {\triangle}}{=}}} % #+beamer_header: \newunicodechar{≜}{\triangleq}
+\newunicodechar{≝}{\ensuremath{\stackrel{\scriptscriptstyle {\text{def}}}{=}}}
+\newunicodechar{≟}{\ensuremath{\stackrel {_\text{\textbf{?}}}{\text{\textbf{=}}\negthickspace\negthickspace\text{\textbf{=}}}}} % or {\ensuremath{\stackrel{\scriptscriptstyle ?}{=}}}
+\newunicodechar{≠}{\ensuremath{\neq}}%
+\newunicodechar{≡}{\ensuremath{\equiv}}%
+\newunicodechar{≤}{\ensuremath{\le}} %
+\newunicodechar{≥}{\ensuremath{\ge}} %
+\newunicodechar{⊂}{\ensuremath{\subset}} %
+\newunicodechar{⊃}{\ensuremath{\supset}} %
+\newunicodechar{⊆}{\ensuremath{\subseteq}} %
+\newunicodechar{⊇}{\ensuremath{\supseteq}} %
+\newunicodechar{⊎}{\ensuremath{\uplus}} %
+\newunicodechar{⊑}{\ensuremath{\sqsubseteq}} %
+\newunicodechar{⊒}{\ensuremath{\sqsupseteq}} %
+\newunicodechar{⊓}{\ensuremath{\sqcap}} %
+\newunicodechar{⊔}{\ensuremath{\sqcup}} %
+\newunicodechar{⊕}{\ensuremath{\oplus}} %
+\newunicodechar{⊗}{\ensuremath{\otimes}} %
+\newunicodechar{⊛}{\ensuremath{\circledast}}
+\newunicodechar{⊢}{\ensuremath{\vdash}} %
+\newunicodechar{⊤}{\ensuremath{\top}}
+\newunicodechar{⊥}{\ensuremath{\bot}} % bottom
+\newunicodechar{⊧}{\models} %
+\newunicodechar{⊨}{\models} %
+\newunicodechar{⊩}{\Vdash}
+\newunicodechar{⊸}{\ensuremath{\multimap}} %
+\newunicodechar{⋁}{\ensuremath{\bigvee}}
+\newunicodechar{⋃}{\ensuremath{\bigcup}} %
+\newunicodechar{⋄}{\ensuremath{\diamond}} %
+\newunicodechar{⋅}{\ensuremath{\cdot}}
+\newunicodechar{⋆}{\ensuremath{\star}} %
+\newunicodechar{⋮}{\ensuremath{\vdots}} %
+\newunicodechar{⋯}{\ensuremath{\cdots}} %
+\newunicodechar{─}{---}
+\newunicodechar{■}{\ensuremath{\blacksquare}} % black square
+\newunicodechar{□}{\ensuremath{\square}} %
+\newunicodechar{▴}{\ensuremath{\blacktriangledown}}
+\newunicodechar{▵}{\ensuremath{\triangle}}
+\newunicodechar{▹}{\ensuremath{\triangleright}} %
+\newunicodechar{▾}{\ensuremath{\blacktriangle}}
+\newunicodechar{▿}{\ensuremath{\triangledown}}
+\newunicodechar{◃}{\triangleleft{}}
+\newunicodechar{◅}{\ensuremath{\triangleleft{}}}
+\newunicodechar{◇}{\ensuremath{\diamond}} %
+\newunicodechar{◽}{\ensuremath{\square}}
+\newunicodechar{★}{\ensuremath{\star}}   %
+\newunicodechar{♭}{\ensuremath{\flat}} %
+\newunicodechar{♯}{\ensuremath{\sharp}} %
+\newunicodechar{✓}{\ensuremath{\checkmark}} %
+\newunicodechar{⟂}{\ensuremath{^\bot}} % PERPENDICULAR
+\newunicodechar{⟦}{\ensuremath{\llbracket}}
+\newunicodechar{⟧}{\ensuremath{\rrbracket}}
+\newunicodechar{⦇}{\ensuremath{\llparenthesis}}
+\newunicodechar{⦈}{\ensuremath{\rrparenthesis}}
+\newunicodechar{⟨}{\ensuremath{\langle}} %
+\newunicodechar{⟩}{\ensuremath{\rangle}} %
+\newunicodechar{⌜}{\ensuremath{\ulcorner}} %
+\newunicodechar{⌝}{\ensuremath{\urcorner}} %
+\newunicodechar{⟶}{{\longrightarrow}}
+\newunicodechar{⟷} {\ensuremath{\leftrightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}} %
+\newunicodechar{ⱼ}{_j} %
+\newunicodechar{𝒟}{\ensuremath{\mathcal{D}}} %
+\newunicodechar{𝒢}{\ensuremath{\mathcal{G}}}
+\newunicodechar{𝒦}{\ensuremath{\mathcal{K}}} %
+\newunicodechar{𝒫}{\ensuremath{\mathcal{P}}}
+\newunicodechar{𝔸}{\ensuremath{\mathds{A}}} %
+\newunicodechar{𝔹}{\ensuremath{\mathds{B}}} %
+\newunicodechar{𝟙}{\ensuremath{\mathds{1}}} %
+\newunicodechar{𝔼}{\mathds{E}}
+\newunicodechar{⊬}{\not \vdash}
+\newunicodechar{∝}{\propto}
+\newunicodechar{ᶿ}{^\theta}
+\institute[University of Rochester]{University of Rochester}
+\hypersetup{
+ pdfauthor={Julian Grove},
+ pdftitle={Introduction to Haskell},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 28.2 (Org mode 9.6.6)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+
+\section{Haskell basics}
+\label{sec:orgd2abb1a}
+\begin{frame}[label={sec:org7fe2071}]{Static typing}
+Haskell is statically typed. This means:
+\pause
+\begin{itemize}[<+->]
+\item Every expression in the language is assigned a type.
+\item If an expression is not well-typed (i.e., cannot be be assigned a type),
+the compiler will throw an error.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:org4bf2ba3}]{Type annotations}
+Expressions can be annotated with their types:
+\pause
+\begin{itemize}[<+->]
+\item Put the type signature on one line, and the definition of the value after
+it.
+\item The identifier for the value goes to the left of the `\(∷\)', and the type of
+the value bound to the identifier goes to the right of the `\(∷\)'.
+\item We can think of \(\mathtt{String}\) as a simple type. \pause But
+we can also have more complicated types, e.g., those for functions.
+\pause
+\begin{itemize}
+\item In `\(α → β\)', \(α\) is the input type and \(β\) is the output type.
+\end{itemize}
+\item For a function with more than one input, the thing to the right of the
+final `\(→\)' is the output, and everything to the left of that type is an
+input type.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:org8de05e7}]{Function application}
+\pause
+\begin{itemize}[<+->]
+\item To call a function in languages like, e.g., Python, you use this syntax:
+\end{itemize}
+$$\mathtt{addThenDouble}(2, 3)$$
+\begin{itemize}
+\item In Haskell, a function with multiple arguments is applied to them in
+order\ldots
+\item So, if we want to define another function in terms of
+\(\mathtt{addThenDouble}\), that's the syntax we'd use for its
+definition\ldots
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:org8a7eab7}]{Fixity}
+\pause
+\begin{itemize}[<+->]
+\item You can make an infix function a prefix function by wrapping it in
+parentheses\ldots
+\item And you can make any prefix function an infix function by wrapping it in
+backticks\ldots
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:org86e0428}]{Lambdas}
+\pause
+\begin{itemize}[<+->]
+\item The function definitions we have been writing so far are actually a
+convenient shorthand.
+\item Another way to write them\ldots
+\item Haskell provides this syntax for anonymous functions so that we may
+exploit the fact that functions are treated as \emph{first-class citizens} of
+the language. \pause That means you can\ldots
+\pause
+\begin{itemize}[<+->]
+\item write a function that takes another function as its input
+\item write a function that returns another function as its output
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:org4dcbb3a}]{Type inference}
+As we said, the usual syntax for type annotations is:
+$$\mathtt{nameOfThing} ∷ \mathtt{typeOfThing}$$
+\pause
+\begin{itemize}[<+->]
+\item However, Haskell doesn't usually require that you give type annotations.
+\item Why? The compiler can usually infer what type everything is supposed to be
+from your code.
+\item But the usual practice is to always include explicit type annotations in
+your code.
+\end{itemize}
+\end{frame}
+
+\section{Basic types}
+\label{sec:org7825c97}
+\begin{frame}[label={sec:org9ceb32c}]{Booleans}
+Booleans are truth values, and there are two of them: \(\mathtt{True}\) and
+\(\mathtt{False}\).
+\end{frame}
+
+\begin{frame}[label={sec:org6e15a64}]{Integers}
+The \(\mathtt{Integer}\) type allows you to express any integer.
+\pause
+\begin{itemize}[<+->]
+\item Note that if you ask for the type of something that looks like an integer,
+weird stuff happens\ldots
+\item You can fix this with type annotations.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:org1b3c6ee}]{Chars}
+A \(\mathtt{Char}\) is a character of text. In Haskell, this can be any Unicode
+character.
+\end{frame}
+
+\begin{frame}[label={sec:orgb1e760c}]{Strings}
+In Haskell, strings are lists of characters.
+\pause
+\begin{itemize}[<+->]
+\item This means that any function you're used to using on lists, you can use on
+strings\ldots
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgfa4dc7c}]{Tuples}
+A tuple stores a number of different values, bundled up into a single value.
+\pause
+\begin{itemize}[<+->]
+\item Tuples are very different from lists (which we'll get to later).
+\end{itemize}
+\end{frame}
+\end{document}

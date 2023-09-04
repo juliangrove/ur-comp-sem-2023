@@ -1,13 +1,13 @@
-#+html_head: <link rel="stylesheet" type="text/css" href="../htmlize.css"/>
-#+html_head: <link rel="stylesheet" type="text/css" href="../readtheorg.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
 
-#+html_head: <script src="../jquery.min.js"></script>
-#+html_head: <script src="../bootstrap.min.js"></script>
-#+html_head: <script type="text/javascript" src="../readtheorg.js"></script>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
 
 #+Author: Julian Grove
 #+Title: Major themes of the course
-#+bibliography: ../ur-comp-sem-2023.bib
+#+bibliography: ../../ur-comp-sem-2023.bib
 
 * Themes
   In class, we talked about some major themes, and how they will become manifest

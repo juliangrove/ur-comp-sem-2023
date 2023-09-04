@@ -1,0 +1,254 @@
+# #+beamer_header: \makeatletter
+# #+beamer_header: \def\act@on@bibmacro#1#2{%
+# #+beamer_header:   \expandafter#1\csname abx@macro@\detokenize{#2}\endcsname
+# #+beamer_header: }
+# #+beamer_header: \def\patchbibmacro{\act@on@bibmacro\patchcmd}
+# #+beamer_header: \def\pretobibmacro{\act@on@bibmacro\pretocmd}
+# #+beamer_header: \def\apptobibmacro{\act@on@bibmacro\apptocmd}
+# #+beamer_header: \def\showbibmacro{\act@on@bibmacro\show}
+# #+beamer_header: \makeatother
+# #+beamer_header: \patchbibmacro{date+extradate}{%
+# #+beamer_header: \printtext[parens]%
+# #+beamer_header: }{%
+# #+beamer_header: \setunit{\addperiod\space}%
+# #+beamer_header: \printtext%
+# #+beamer_header: }{}{}
+# #+beamer_header: \DeclareFieldFormat[article,inbook,incollection,inproceedings,thesis,unpublished]{title}{#1}
+# #+beamer_header: \AtEveryBibitem{\clearlist{language}\clearfield{note}}
+# #+beamer_header: \renewcommand*{\intitlepunct}{\space}
+# #+beamer_header: \renewbibmacro{in:}{%
+# #+beamer_header:  \ifboolexpr{%
+# #+beamer_header:     test {\ifentrytype{article}}%
+# #+beamer_header:     or
+# #+beamer_header:     test {\ifentrytype{inproceedings}}%
+# #+beamer_header:  }{}{\printtext{\bibstring{in}\intitlepunct}}} 
+# #+beamer_header: \setlength\bibitemsep{1.5\itemsep}
+#+beamer_header: \usepackage{tikz}
+#+beamer_header: \usetikzlibrary{arrows,arrows.meta,automata}
+#+beamer_header: \definecolor{highlight}{RGB}{7,102,120}
+#+beamer_header: \definecolor{dim}{RGB}{235,219,178}
+#+beamer_header: \definecolor{dimmer}{RGB}{150,130,50}
+#+beamer_header: \newcommand{\ct}[1]{\textsf{#1}}
+#+beamer_header: \newcommand{\eval}[1]{#1^\lightning}
+#+beamer_header: \newcommand\observe{\mathit{observe}}
+#+beamer_header: \newcommand\reset{\mathit{reset}}
+#+beamer_header: \newcommand\factor{\mathit{factor}}
+#+beamer_header: \def\divd{\ |\ }
+#+beamer_header: \newcommand{\maptyp}[1]{\overline{#1}}
+#+beamer_header: \usepackage[verbose]{newunicodechar}
+#+beamer_header: \newunicodechar{¬}{\ensuremath{\neg}} % 
+#+beamer_header: \newunicodechar{¹}{^1}
+#+beamer_header: \newunicodechar{²}{^2}
+#+beamer_header: \newunicodechar{³}{^3}
+#+beamer_header: \newunicodechar{·}{\ensuremath{\cdot}}
+#+beamer_header: \newunicodechar{×}{\ensuremath{\times}} % 
+#+beamer_header: \newunicodechar{÷}{\ensuremath{\div}} %
+#+beamer_header: \newunicodechar{ᵅ}{^α}
+#+beamer_header: \newunicodechar{ᵝ}{^β}
+#+beamer_header: \newunicodechar{ˠ}{^γ}
+#+beamer_header: \newunicodechar{ᵃ}{^a}
+#+beamer_header: \newunicodechar{ᵇ}{^b}
+#+beamer_header: \newunicodechar{ᶜ}{^c}
+#+beamer_header: \newunicodechar{ᵈ}{^d}
+#+beamer_header: \newunicodechar{ᵉ}{^e}
+#+beamer_header: \newunicodechar{ᶠ}{^f}
+#+beamer_header: \newunicodechar{ᵍ}{^g}
+#+beamer_header: \newunicodechar{ʰ}{^h}
+#+beamer_header: \newunicodechar{ⁱ}{^a}
+#+beamer_header: \newunicodechar{ʲ}{^j}
+#+beamer_header: \newunicodechar{ᵏ}{^K}
+#+beamer_header: \newunicodechar{ˡ}{^l}
+#+beamer_header: \newunicodechar{ᵐ}{^m}
+#+beamer_header: \newunicodechar{ⁿ}{^n}
+#+beamer_header: \newunicodechar{ᵒ}{^o}
+#+beamer_header: \newunicodechar{ᵖ}{^p}
+#+beamer_header: \newunicodechar{ʳ}{^r}
+#+beamer_header: \newunicodechar{₁}{_1}
+#+beamer_header: \newunicodechar{₂}{_2}
+#+beamer_header: \newunicodechar{₃}{_3}
+#+beamer_header: \newunicodechar{₄}{_4}
+#+beamer_header: \newunicodechar{ₐ}{_a}
+#+beamer_header: \newunicodechar{ₑ}{_e}
+#+beamer_header: \newunicodechar{ₕ}{_h}
+#+beamer_header: \newunicodechar{ᵢ}{_i}
+#+beamer_header: \newunicodechar{ₙ}{_n}
+#+beamer_header: \newunicodechar{ᵣ}{_r}
+#+beamer_header: \newunicodechar{ₛ}{_s}
+#+beamer_header: \newunicodechar{̷}{\not} % 
+#+beamer_header: \newunicodechar{Γ}{\ensuremath{\Gamma}}   %
+#+beamer_header: \newunicodechar{Δ}{\ensuremath{\Delta}} % 
+#+beamer_header: \newunicodechar{Η}{\ensuremath{\textrm{H}}} % 
+#+beamer_header: \newunicodechar{Θ}{\ensuremath{\Theta}} % 
+#+beamer_header: \newunicodechar{Λ}{\ensuremath{\Lambda}} % 
+#+beamer_header: \newunicodechar{Ξ}{\ensuremath{\Xi}} % 
+#+beamer_header: \newunicodechar{Π}{\ensuremath{\Pi}}   %
+#+beamer_header: \newunicodechar{Σ}{\ensuremath{\Sigma}} % 
+#+beamer_header: \newunicodechar{Φ}{\ensuremath{\Phi}} % 
+#+beamer_header: \newunicodechar{Ψ}{\ensuremath{\Psi}} % 
+#+beamer_header: \newunicodechar{Ω}{\ensuremath{\Omega}} % 
+#+beamer_header: \newunicodechar{α}{\ensuremath{\mathnormal{\alpha}}}
+#+beamer_header: \newunicodechar{β}{\ensuremath{\beta}} % 
+#+beamer_header: \newunicodechar{γ}{\ensuremath{\mathnormal{\gamma}}} % 
+#+beamer_header: \newunicodechar{δ}{\ensuremath{\mathnormal{\delta}}} % 
+#+beamer_header: \newunicodechar{ε}{\ensuremath{\mathnormal{\varepsilon}}} % 
+#+beamer_header: \newunicodechar{ζ}{\ensuremath{\mathnormal{\zeta}}} % 
+#+beamer_header: \newunicodechar{η}{\ensuremath{\mathnormal{\eta}}} % 
+#+beamer_header: \newunicodechar{θ}{\ensuremath{\mathnormal{\theta}}} % 
+#+beamer_header: \newunicodechar{ι}{\ensuremath{\mathnormal{\iota}}} % 
+#+beamer_header: \newunicodechar{κ}{\ensuremath{\mathnormal{\kappa}}} % 
+#+beamer_header: \newunicodechar{λ}{\ensuremath{\mathnormal{\lambda}}} % 
+#+beamer_header: \newunicodechar{μ}{\ensuremath{\mathnormal{\mu}}} % 
+#+beamer_header: \newunicodechar{ν}{\ensuremath{\mathnormal{\mu}}} % 
+#+beamer_header: \newunicodechar{ξ}{\ensuremath{\mathnormal{\xi}}} % 
+#+beamer_header: \newunicodechar{π}{\ensuremath{\mathnormal{\pi}}}
+#+beamer_header: \newunicodechar{π}{\ensuremath{\mathnormal{\pi}}} % 
+#+beamer_header: \newunicodechar{ρ}{\ensuremath{\mathnormal{\rho}}} % 
+#+beamer_header: \newunicodechar{σ}{\ensuremath{\mathnormal{\sigma}}} % 
+#+beamer_header: \newunicodechar{τ}{\ensuremath{\mathnormal{\tau}}} % 
+#+beamer_header: \newunicodechar{φ}{\ensuremath{\mathnormal{\phi}}} % 
+#+beamer_header: \newunicodechar{χ}{\ensuremath{\mathnormal{\chi}}} % 
+#+beamer_header: \newunicodechar{ψ}{\ensuremath{\mathnormal{\psi}}} % 
+#+beamer_header: \newunicodechar{ω}{\ensuremath{\mathnormal{\omega}}} %  
+#+beamer_header: \newunicodechar{ϕ}{\ensuremath{\mathnormal{\phi}}} % 
+#+beamer_header: \newunicodechar{ϕ}{\ensuremath{\mathnormal{\varphi}}} % 
+#+beamer_header: \newunicodechar{ϵ}{\ensuremath{\mathnormal{\epsilon}}} % 
+#+beamer_header: \newunicodechar{ᵏ}{^k}
+#+beamer_header: \newunicodechar{ᵢ}{\ensuremath{_i}} % 
+#+beamer_header: \newunicodechar{ }{\quad}
+#+beamer_header: \newunicodechar{†}{\dagger}
+#+beamer_header: \newunicodechar{ }{\,}
+#+beamer_header: \newunicodechar{′}{\ensuremath{^\prime}}  % 
+#+beamer_header: \newunicodechar{″}{\ensuremath{^\second}} % 
+#+beamer_header: \newunicodechar{‴}{\ensuremath{^\third}}  % 
+#+beamer_header: \newunicodechar{ⁱ}{^i}
+#+beamer_header: \newunicodechar{⁵}{\ensuremath{^5}}
+#+beamer_header: \newunicodechar{⁺}{\ensuremath{^+}} %% #+beamer_header: \newunicodechar{⁺}{^+}
+#+beamer_header: \newunicodechar{⁻}{\ensuremath{^-}} %% 
+#+beamer_header: \newunicodechar{ⁿ}{^n}
+#+beamer_header: \newunicodechar{₀}{\ensuremath{_0}} % 
+#+beamer_header: \newunicodechar{₁}{\ensuremath{_1}} % #+beamer_header: \newunicodechar{₁}{_1}
+#+beamer_header: \newunicodechar{₂}{\ensuremath{_2}} % #+beamer_header: \newunicodechar{₂}{_2}
+#+beamer_header: \newunicodechar{₃}{\ensuremath{_3}}
+#+beamer_header: \newunicodechar{₊}{\ensuremath{_+}} %% 
+#+beamer_header: \newunicodechar{₋}{\ensuremath{_-}} %% 
+#+beamer_header: \newunicodechar{ₙ}{_n} % 
+#+beamer_header: \newunicodechar{ℂ}{\ensuremath{\mathbb{C}}} % 
+#+beamer_header: \newunicodechar{ℒ}{\ensuremath{\mathscr{L}}}
+#+beamer_header: \newunicodechar{ℕ}{\mathbb{N}} % 
+#+beamer_header: \newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+#+beamer_header: \newunicodechar{ℝ}{\ensuremath{\mathbb{R}}} % 
+#+beamer_header: \newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}} % 
+#+beamer_header: \newunicodechar{ℳ}{\mathscr{M}}
+#+beamer_header: \newunicodechar{⅋}{\ensuremath{\parr}} % 
+#+beamer_header: \newunicodechar{←}{\ensuremath{\leftarrow}} % 
+#+beamer_header: \newunicodechar{↑}{\ensuremath{\uparrow}} % 
+#+beamer_header: \newunicodechar{→}{\ensuremath{\rightarrow}} %
+#+beamer_header: \newunicodechar{↔}{\ensuremath{\leftrightarrow}} % 
+#+beamer_header: \newunicodechar{↖}{\nwarrow} %
+#+beamer_header: \newunicodechar{↗}{\nearrow} %
+#+beamer_header: \newunicodechar{↝}{\ensuremath{\leadsto}}
+#+beamer_header: \newunicodechar{↦}{\ensuremath{\mapsto}}
+#+beamer_header: \newunicodechar{⇆}{\ensuremath{\leftrightarrows}} % 
+#+beamer_header: \newunicodechar{⇐}{\ensuremath{\Leftarrow}} % 
+#+beamer_header: \newunicodechar{⇒}{\ensuremath{\Rightarrow}} % 
+#+beamer_header: \newunicodechar{⇔}{\ensuremath{\Leftrightarrow}} % 
+#+beamer_header: \newunicodechar{∀}{\ensuremath{\forall}}   %
+#+beamer_header: \newunicodechar{∂}{\ensuremath{\partial}}
+#+beamer_header: \newunicodechar{∃}{\ensuremath{\exists}} % 
+#+beamer_header: \newunicodechar{∅}{\ensuremath{\varnothing}} % 
+#+beamer_header: \newunicodechar{∈}{\ensuremath{\in}}
+#+beamer_header: \newunicodechar{∉}{\ensuremath{\not\in}} % 
+#+beamer_header: \newunicodechar{∋}{\ensuremath{\ni}}  % 
+#+beamer_header: \newunicodechar{∎}{\ensuremath{\qed}}%#+beamer_header: \newunicodechar{∎}{\ensuremath{\blacksquare}} % end of proof
+#+beamer_header: \newunicodechar{∏}{\prod}
+#+beamer_header: \newunicodechar{∑}{\sum}
+#+beamer_header: \newunicodechar{∗}{\ensuremath{\ast}} % 
+#+beamer_header: \newunicodechar{∘}{\ensuremath{\circ}} % 
+#+beamer_header: \newunicodechar{∙}{\ensuremath{\bullet}} % #+beamer_header: \newunicodechar{∙}{\ensuremath{\cdot}}
+#+beamer_header: \newunicodechar{⊙}{\ensuremath{\odot}}
+#+beamer_header: \newunicodechar{∞}{\ensuremath{\infty}} % 
+#+beamer_header: \newunicodechar{∣}{\ensuremath{\mid}} % 
+#+beamer_header: \newunicodechar{∧}{\wedge}% 
+#+beamer_header: \newunicodechar{∨}{\vee}% 
+#+beamer_header: \newunicodechar{∩}{\ensuremath{\cap}} % 
+#+beamer_header: \newunicodechar{∪}{\ensuremath{\cup}} % 
+#+beamer_header: \newunicodechar{∫}{\int}
+#+beamer_header: \newunicodechar{∷}{::} % 
+#+beamer_header: \newunicodechar{∼}{\ensuremath{\sim}} % 
+#+beamer_header: \newunicodechar{≃}{\ensuremath{\simeq}} %
+#+beamer_header: \newunicodechar{≔}{\ensuremath{\coloneqq}} % 
+#+beamer_header: \newunicodechar{≅}{\ensuremath{\cong}} % 
+#+beamer_header: \newunicodechar{≈}{\ensuremath{\approx}} % 
+#+beamer_header: \newunicodechar{≜}{\ensuremath{\stackrel{\scriptscriptstyle {\triangle}}{=}}} % #+beamer_header: \newunicodechar{≜}{\triangleq}
+#+beamer_header: \newunicodechar{≝}{\ensuremath{\stackrel{\scriptscriptstyle {\text{def}}}{=}}}
+#+beamer_header: \newunicodechar{≟}{\ensuremath{\stackrel {_\text{\textbf{?}}}{\text{\textbf{=}}\negthickspace\negthickspace\text{\textbf{=}}}}} % or {\ensuremath{\stackrel{\scriptscriptstyle ?}{=}}}
+#+beamer_header: \newunicodechar{≠}{\ensuremath{\neq}}% 
+#+beamer_header: \newunicodechar{≡}{\ensuremath{\equiv}}% 
+#+beamer_header: \newunicodechar{≤}{\ensuremath{\le}} % 
+#+beamer_header: \newunicodechar{≥}{\ensuremath{\ge}} % 
+#+beamer_header: \newunicodechar{⊂}{\ensuremath{\subset}} % 
+#+beamer_header: \newunicodechar{⊃}{\ensuremath{\supset}} %  
+#+beamer_header: \newunicodechar{⊆}{\ensuremath{\subseteq}} %  
+#+beamer_header: \newunicodechar{⊇}{\ensuremath{\supseteq}} % 
+#+beamer_header: \newunicodechar{⊎}{\ensuremath{\uplus}} %
+#+beamer_header: \newunicodechar{⊑}{\ensuremath{\sqsubseteq}} % 
+#+beamer_header: \newunicodechar{⊒}{\ensuremath{\sqsupseteq}} % 
+#+beamer_header: \newunicodechar{⊓}{\ensuremath{\sqcap}} % 
+#+beamer_header: \newunicodechar{⊔}{\ensuremath{\sqcup}} % 
+#+beamer_header: \newunicodechar{⊕}{\ensuremath{\oplus}} % 
+#+beamer_header: \newunicodechar{⊗}{\ensuremath{\otimes}} % 
+#+beamer_header: \newunicodechar{⊛}{\ensuremath{\circledast}}
+#+beamer_header: \newunicodechar{⊢}{\ensuremath{\vdash}} % 
+#+beamer_header: \newunicodechar{⊤}{\ensuremath{\top}}
+#+beamer_header: \newunicodechar{⊥}{\ensuremath{\bot}} % bottom
+#+beamer_header: \newunicodechar{⊧}{\models} % 
+#+beamer_header: \newunicodechar{⊨}{\models} % 
+#+beamer_header: \newunicodechar{⊩}{\Vdash}
+#+beamer_header: \newunicodechar{⊸}{\ensuremath{\multimap}} % 
+#+beamer_header: \newunicodechar{⋁}{\ensuremath{\bigvee}}
+#+beamer_header: \newunicodechar{⋃}{\ensuremath{\bigcup}} % 
+#+beamer_header: \newunicodechar{⋄}{\ensuremath{\diamond}} % 
+#+beamer_header: \newunicodechar{⋅}{\ensuremath{\cdot}}
+#+beamer_header: \newunicodechar{⋆}{\ensuremath{\star}} % 
+#+beamer_header: \newunicodechar{⋮}{\ensuremath{\vdots}} % 
+#+beamer_header: \newunicodechar{⋯}{\ensuremath{\cdots}} % 
+#+beamer_header: \newunicodechar{─}{---}
+#+beamer_header: \newunicodechar{■}{\ensuremath{\blacksquare}} % black square
+#+beamer_header: \newunicodechar{□}{\ensuremath{\square}} % 
+#+beamer_header: \newunicodechar{▴}{\ensuremath{\blacktriangledown}}
+#+beamer_header: \newunicodechar{▵}{\ensuremath{\triangle}}
+#+beamer_header: \newunicodechar{▹}{\ensuremath{\triangleright}} % 
+#+beamer_header: \newunicodechar{▾}{\ensuremath{\blacktriangle}}
+#+beamer_header: \newunicodechar{▿}{\ensuremath{\triangledown}}
+#+beamer_header: \newunicodechar{◃}{\triangleleft{}}
+#+beamer_header: \newunicodechar{◅}{\ensuremath{\triangleleft{}}}
+#+beamer_header: \newunicodechar{◇}{\ensuremath{\diamond}} % 
+#+beamer_header: \newunicodechar{◽}{\ensuremath{\square}}
+#+beamer_header: \newunicodechar{★}{\ensuremath{\star}}   %
+#+beamer_header: \newunicodechar{♭}{\ensuremath{\flat}} % 
+#+beamer_header: \newunicodechar{♯}{\ensuremath{\sharp}} % 
+#+beamer_header: \newunicodechar{✓}{\ensuremath{\checkmark}} % 
+#+beamer_header: \newunicodechar{⟂}{\ensuremath{^\bot}} % PERPENDICULAR 
+#+beamer_header: \newunicodechar{⟦}{\ensuremath{\llbracket}}
+#+beamer_header: \newunicodechar{⟧}{\ensuremath{\rrbracket}}
+#+beamer_header: \newunicodechar{⦇}{\ensuremath{\llparenthesis}}
+#+beamer_header: \newunicodechar{⦈}{\ensuremath{\rrparenthesis}}
+#+beamer_header: \newunicodechar{⟨}{\ensuremath{\langle}} % 
+#+beamer_header: \newunicodechar{⟩}{\ensuremath{\rangle}} %
+#+beamer_header: \newunicodechar{⌜}{\ensuremath{\ulcorner}} %
+#+beamer_header: \newunicodechar{⌝}{\ensuremath{\urcorner}} %
+#+beamer_header: \newunicodechar{⟶}{{\longrightarrow}}
+#+beamer_header: \newunicodechar{⟷} {\ensuremath{\leftrightarrow}}
+#+beamer_header: \newunicodechar{⟹}{\ensuremath{\Longrightarrow}} % 
+#+beamer_header: \newunicodechar{ⱼ}{_j} % 
+#+beamer_header: \newunicodechar{𝒟}{\ensuremath{\mathcal{D}}} % 
+#+beamer_header: \newunicodechar{𝒢}{\ensuremath{\mathcal{G}}}
+#+beamer_header: \newunicodechar{𝒦}{\ensuremath{\mathcal{K}}} % 
+#+beamer_header: \newunicodechar{𝒫}{\ensuremath{\mathcal{P}}}
+#+beamer_header: \newunicodechar{𝔸}{\ensuremath{\mathds{A}}} % 
+#+beamer_header: \newunicodechar{𝔹}{\ensuremath{\mathds{B}}} % 
+#+beamer_header: \newunicodechar{𝟙}{\ensuremath{\mathds{1}}} % 
+#+beamer_header: \newunicodechar{𝔼}{\mathds{E}}
+#+beamer_header: \newunicodechar{⊬}{\not \vdash}
+#+beamer_header: \newunicodechar{∝}{\propto}
+#+beamer_header: \newunicodechar{ᶿ}{^\theta}
