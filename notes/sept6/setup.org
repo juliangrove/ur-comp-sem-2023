@@ -25,6 +25,8 @@
 # #+beamer_header: \setlength\bibitemsep{1.5\itemsep}
 #+beamer_header: \usepackage{tikz}
 #+beamer_header: \usetikzlibrary{arrows,arrows.meta,automata}
+#+beamer_header: \usepackage[linguistics]{forest}
+#+beamer_header: \forestset{ downroof/.style={ for children={ if n=1{ edge path'={ (.parent first) -- (!u.parent anchor) -- (!ul.parent last) -- cycle }}{no edge} } } }
 #+beamer_header: \definecolor{highlight}{RGB}{7,102,120}
 #+beamer_header: \definecolor{dim}{RGB}{235,219,178}
 #+beamer_header: \definecolor{dimmer}{RGB}{150,130,50}
