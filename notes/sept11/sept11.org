@@ -293,8 +293,8 @@
    #+begin_src haskell
      depth :: Tree a -> Integer
    #+end_src
-   which, given a ~Tree a~, returns the longest path from its root to one of its
-   leaves. For example, ~depth~ should behave as follows:
+   which, given a ~Tree a~, returns the length of the longest path from its root
+   to one of its leaves. For example, ~depth~ should behave as follows:
    #+begin_src haskell
      ghci> depth exampleTree
      3
