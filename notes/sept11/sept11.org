@@ -1,0 +1,319 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: Haskell: type classes and higher-order polymorphism
+#+bibliography: ../../ur-comp-sem-2023.bib
+
+* Review
+** ~Maybe~
+   A commonly used data type in Haskell is ~Maybe a~:
+   #+begin_src haskell
+     data Maybe a = Just a | Nothing deriving (Show, Eq)
+   #+end_src
+   ~Maybe a~ is like the data type ~a~ on its own, but with extra information about
+   whether the a computational succeeded for failed.
+
+** Key-value pairs
+   As an example, say we have the following type representing a table of
+   key-value pairs, with ~String~ being the type of the key and ~Integer~ being the
+   type of the value:
+   #+begin_src haskell
+     type Table = [(String, Integer)]
+   #+end_src
+   Then, we can define a function for looking up the value associated with any
+   given key, as follows:
+   #+begin_src haskell
+     lookUp :: String -> Table -> Maybe Integer
+     lookUp s [] = Nothing
+     lookUp s ((s', i) : t) = if s' == s then Just i  else lookUp s t
+   #+end_src
+   For instance, given the following table
+   #+begin_src haskell
+     yearFounded :: Table
+     yearFounded =
+       [ ("The Smiths", 1982)
+       , ("Joy Division", 1976)
+       , ("New Order", 1980) ]
+   #+end_src
+   one could do
+   #+begin_src haskell
+     ghci> lookUp "The Smiths" yearFounded
+     Just 1982
+     ghci> lookUp "The Stone Roses" yearFounded
+     Nothing
+   #+end_src
+   Importantly, no actual exception was thrown when I tried to look up ~"TheStone
+   Roses"~. Instead, ~lookUp~ returned a value, ~Nothing~, inhabitting the data type
+   ~Maybe Integer~.
+
+   One way to think of the ~Maybe a~ data type is that it represents an action
+   your computer can perform---throwing an error---as data. This illustrates
+   what in Haskell is a pretty commonly used technique of bluring the lines
+   between /effects/ and data.
+
+** ~div~
+   Let's look at the function
+   #+begin_src haskell
+   div :: Integer -> Integer -> Integer
+   #+end_src
+   which behaves as follows:
+   #+begin_src haskell
+     ghci> div 4 2
+     2
+     ghci> div 4 0
+     *** Exception: divide by zero
+   #+end_src
+   ~div~ is a partial function; it is only defined when its second argument is not
+   ~0~.
+
+   A total version of ~div~ would be the following function ~safeDiv~ which uses
+   maybe types:
+   #+begin_src haskell
+     safeDiv :: Integer -> Integer -> Maybe Integer
+     safeDiv m n = if n == 0 then Nothing else Just (div m n)
+   #+end_src
+
+** ~Either~
+   A generalization of ~Maybe a~ is the data type ~Either a b~:
+   #+begin_src haskell
+     data Either a b = Left a | Right b deriving (Show, Eq)
+   #+end_src
+   Here, ~Left~ means failure, and ~Right~ means success. ~Either~ types are a
+   generalization of ~Maybe~ types, in the sense that we could encode ~Maybe~ as:
+   #+begin_src haskell
+     type Maybe' a = Either () a
+     nothing' :: Maybe' a
+     nothing' = Left ()
+     just' :: Maybe a
+     just' = Right
+   #+end_src
+
+** Type classes
+   Type classes are one of the most famous distinguishing features of
+   Haskell. A type class allows you to provide multiple implementations of what
+   looks like the same function on different types. These implementations are
+   called /instances/. Here are some examples:
+
+** ~Show~
+   We have already seen type classes when we've used ~deriving Show~ in data type
+   declarations. But we can actually implement ~Show~ instances ourselves. Imagine
+   that we defined a new data type ~Table~ (instead of merely using ~Table~ as a
+   type alias):
+   #+begin_src haskell
+     data Table = Table [(String, Integer)] deriving (Show, Eq)
+   #+end_src
+   Given the following declaration of the type class ~Show~:
+   #+begin_src haskell
+     class Show a where
+       show :: a -> String
+   #+end_src
+   we may define the ~Table~ instance of ~Show~ as follows:
+   #+begin_src haskell
+     instance Show Table where
+       show (Table []) = "Empty Table"
+       show (Table [(b, y)]) = b ++ " : " ++ show y
+       show (Table ((b, y) : t)) = b ++ " : " ++ show y ++ " | " ++ show (Table t)
+   #+end_src
+   This will give us the following behavior, for example:
+   #+begin_src haskell
+     ghci> Table [("The Smiths", 1982), ("Joy Division", 1976)]
+     The Smiths : 1982 | Joy Division : 1976
+   #+end_src
+   
+** ~Eq~
+   Another useful type class is ~Eq~:
+   #+begin_src haskell
+     class Eq a where
+       (==) :: a -> a -> Bool
+       (/=) :: a -> a -> Bool
+       a /= b = not (a == b)
+   #+end_src
+   Like ~Show~ instances, ~Eq~ instances can be derived. But we can also define our
+   own ~Eq~ instances, e.g., for the ~Table~ data type:
+   #+begin_src haskell
+     instance Eq Table where
+       Table a == Table b = a == b
+   #+end_src
+
+** Declaring type classes
+   We can also declare our own type classes. To give an example of this, let's
+   first define the following data types encoding some models of different
+   personal computer brands from the 80s:
+   #+begin_src haskell
+     data Apple
+       = IIc | IIe | GS 
+       deriving (Show, Eq) 
+
+     data IBM
+       = PC | PCJr | XT | AT 
+       deriving (Show, Eq) 
+
+     data Commodore
+       = C64 | C128 
+       deriving (Show, Eq)
+   #+end_src
+   Let's say we want to define a type class which, given a brand, provides a
+   function that determines which reboot keys are available for each of its
+   models. Given the following data type ~Key~
+   #+begin_src haskell
+     data Key  
+       = Ctrl 
+       | Alt 
+       | Del 
+       | Option 
+       | Apple 
+       | Reset 
+       | PowerButton 
+       deriving (Show, Eq)
+   #+end_src
+   we can declare a type class ~Rebootable~:
+   #+begin_src haskell
+     class Rebootable a where
+       rebootKeys :: a -> [Key]
+   #+end_src
+   And then we can declare the following instances:
+   #+begin_src haskell
+     instance Rebootable IBM where 
+       rebootKeys _ = [Ctrl, Alt, Del]
+  
+     instance Rebootable Apple where 
+       rebootKeys _ = [Ctrl, Option, Reset] 
+
+     instance Rebootable Commodore where 
+       rebootKeys C64 = [PowerButton] 
+       rebootKeys C128 = [Reset]
+   #+end_src
+   Each of these instances of ~Rebootable~ determines how to map any model onto a
+   list of keys for some brand.
+   
+** Kinds of polymorphism
+   Each of the type classes we've looked at provide what is known as /ad hoc
+   polymorphism/. This polymorphism is /ad hoc/ because only some data types need
+   provide instances for the relevant type variable (e.g., the ~a~ in ~Show a~). In
+   addition, different instances can have fundamentally /different/ definitions
+   from each other.
+
+   Ad hoc polymorphism is therefore contrasted with /parametric polymorphism/,
+   which has the following features:
+   - We can't constrain the instantiating data type ahead of time.
+   - Parametric polymorphic functions come in families all of whose members act
+     fundamentally /the same way/.
+
+  Examples of parametric polymorphism are the functions on lists ~map~, ~filter~,
+  ~foldl~, and ~foldr~. In general, it doesn't matter /what type of data/ any given
+  list holds; these functions will behave the same on that list, regardless.
+
+  Now, for a couple more important type classes...
+     
+** ~Foldable~
+   ~foldr~ and ~foldl~ are actually methods of a type class ~Foldable~:
+   #+begin_src haskell
+     class Foldable t where
+       foldl :: (b -> a -> b) -> b -> t a -> b
+       foldr :: (a -> b -> b) -> b -> t a -> b
+   #+end_src
+   Thus lists aren't the only things which are foldable; for example, ~Maybe~ is,
+   as well:
+   #+begin_src haskell
+     instance Foldable Maybe where
+       foldl f b Nothing = b
+       foldl f b (Just a) = f b a
+       foldr f b Nothing = b
+       foldr f b (Just a) = f a b
+   #+end_src
+
+** ~Functor~
+   Functors provide another class, with a single method ~fmap~:
+   #+begin_src haskell
+     class Functor f where
+       fmap :: (a -> b) -> f a -> f b
+   #+end_src
+   Importantly, ~fmap~ is expected to satisfy certain laws (the ~Functor~ laws):
+   #+begin_src haskell
+     -- fmap id = id -- Identity
+     -- fmap (f . g) = fmap f . fmap g -- Composition
+   #+end_src
+   Here, ~(.)~ is /function composition/, i.e.:
+   #+begin_src haskell
+     (f . g) x = f (g x)
+   #+end_src
+   What these laws effectively say, therefore, is that turning a function ~g :: a
+   -> b~ into a function ~fmap g :: f a -> f b~ on data which has been /lifted/ into
+   the functor via ~f~ doesn't fiddle with the identity function and isn't
+   sensitive to whether you have composed two functions /before/ or /after/ doing
+   the lifting.
+
+   For some examples, we have the following instances of the class ~Functor~:
+   #+begin_src haskell
+     instance Functor [] where
+       fmap = map
+
+     instance Functor Maybe where
+       fmap f (Just a) = Just (f a)
+       fmap f Nothing = Nothing
+
+     instance Functor (Either a) where
+       fmap f (Left a) = Left a
+       fmap f (Right b) = Right (f b)
+   #+end_src
+
+* Exercises
+** Part 1
+   Let's define the new data type ~Tree a~, which packages inhabitants of any type
+   ~a~ up into a tree-like data structure:
+   #+begin_src haskell
+     data Tree a = Empty | Leaf a | Node a (Tree a) (Tree a) deriving (Eq, Show)
+   #+end_src
+   In words, a ~Tree a~ can be either ~Empty~ (it can store nothing), a ~Leaf a~ (it
+   can store exactly one thing of type ~a~, or a ~Node a (Tree a) (Tree a)~ (it can
+   store one thing of type ~a~, and may also branch into two more trees
+   constituting its left and right daughters).
+
+   For example, let's say we wanted to represent a tree that holds data of type
+   ~Integer~. We could define the following tree
+   #+begin_src haskell
+     exampleTree :: Tree Integer
+     exampleTree = Node 1 (Leaf 2) (Node 3 (Leaf 4) Empty)
+   #+end_src
+   which represents the following tree:
+   #+begin_example
+          1
+	 _|_
+	|   |
+	2   3
+	   _|_
+	  |   |
+	  4
+   #+end_example
+   Write a function
+   #+begin_src haskell
+     depth :: Tree a -> Integer
+   #+end_src
+   which, given a ~Tree a~, returns the longest path from its root to one of its
+   leaves. For example, ~depth~ should behave as follows:
+   #+begin_src haskell
+     ghci> depth exampleTree
+     3
+     ghci> depth Empty
+     0
+     ghci> depth (Leaf 7)
+     1
+   #+end_src
+
+
+** Part 2
+   Make ~Tree~ an instance of the class ~Functor~. Does the instance you provide
+   satisfy the ~Functor~ laws?
+
+** Part 3
+   Make ~Tree~ an instance of the class ~Foldable~. You have different options here,
+   in principle. I really just want you to make sure that the answer you provide
+   is well typed! 
+
+** Part 4
+   Write a definition of ~depth~ that invokes ~foldl~ or ~foldr~ (and possibly ~fmap~,
+   if you like)!

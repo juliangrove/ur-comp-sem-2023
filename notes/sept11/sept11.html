@@ -1,0 +1,744 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2023-09-11 Mon 17:19 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Haskell: type classes and higher-order polymorphism</title>
+<meta name="author" content="Julian Grove" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+<script src="../../jquery.min.js"></script>
+<script src="../../bootstrap.min.js"></script>
+<script type="text/javascript" src="../../readtheorg.js"></script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Haskell: type classes and higher-order polymorphism</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgb7d5a18">1. Review</a>
+<ul>
+<li><a href="#org99397a5">1.1. <code>Maybe</code></a></li>
+<li><a href="#org90b3cf3">1.2. Key-value pairs</a></li>
+<li><a href="#org859cdac">1.3. <code>div</code></a></li>
+<li><a href="#org4e5defc">1.4. <code>Either</code></a></li>
+<li><a href="#org7b850fd">1.5. Type classes</a></li>
+<li><a href="#org9f74da1">1.6. <code>Show</code></a></li>
+<li><a href="#org461ca6c">1.7. <code>Eq</code></a></li>
+<li><a href="#org17ca05e">1.8. Declaring type classes</a></li>
+<li><a href="#org62bba64">1.9. Kinds of polymorphism</a></li>
+<li><a href="#org4e0e5ff">1.10. <code>Foldable</code></a></li>
+<li><a href="#org53b63e8">1.11. <code>Functor</code></a></li>
+</ul>
+</li>
+<li><a href="#orgda256ee">2. Exercises</a>
+<ul>
+<li><a href="#orgacde44b">2.1. Part 1</a></li>
+<li><a href="#org3dcc6c1">2.2. Part 2</a></li>
+<li><a href="#org9746648">2.3. Part 3</a></li>
+<li><a href="#orgbe3bf21">2.4. Part 4</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb7d5a18" class="outline-2">
+<h2 id="orgb7d5a18"><span class="section-number-2">1.</span> Review</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org99397a5" class="outline-3">
+<h3 id="org99397a5"><span class="section-number-3">1.1.</span> <code>Maybe</code></h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+A commonly used data type in Haskell is <code>Maybe a</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Maybe</span> a <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Just</span> a <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Nothing</span> <span style="color: #fb4933;">deriving</span> (<span style="color: #d3869b;">Show</span>, <span style="color: #d3869b;">Eq</span>)
+</pre>
+</div>
+<p>
+<code>Maybe a</code> is like the data type <code>a</code> on its own, but with extra information about
+whether the a computational succeeded for failed.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org90b3cf3" class="outline-3">
+<h3 id="org90b3cf3"><span class="section-number-3">1.2.</span> Key-value pairs</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+As an example, say we have the following type representing a table of
+key-value pairs, with <code>String</code> being the type of the key and <code>Integer</code> being the
+type of the value:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">type</span> <span style="color: #d3869b;">Table</span> <span style="color: #83a598;">=</span> [(<span style="color: #d3869b;">String</span>, <span style="color: #d3869b;">Integer</span>)]
+</pre>
+</div>
+<p>
+Then, we can define a function for looking up the value associated with any
+given key, as follows:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">lookUp</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">String</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Table</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Maybe</span> <span style="color: #d3869b;">Integer</span>
+<span style="color: #fabd2f;">lookUp</span> s <span style="color: #d3869b;">[]</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Nothing</span>
+<span style="color: #fabd2f;">lookUp</span> s ((s', i) <span style="color: #d3869b;">:</span> t) <span style="color: #83a598;">=</span> <span style="color: #fb4933;">if</span> s' <span style="color: #83a598;">==</span> s <span style="color: #fb4933;">then</span> <span style="color: #d3869b;">Just</span> i  <span style="color: #fb4933;">else</span> lookUp s t
+</pre>
+</div>
+<p>
+For instance, given the following table
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">yearFounded</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Table</span>
+<span style="color: #fabd2f;">yearFounded</span> <span style="color: #83a598;">=</span>
+  [ (<span style="color: #b8bb26;">"The Smiths"</span>, 1982)
+  , (<span style="color: #b8bb26;">"Joy Division"</span>, 1976)
+  , (<span style="color: #b8bb26;">"New Order"</span>, 1980) ]
+</pre>
+</div>
+<p>
+one could do
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell">ghci<span style="color: #fabd2f;">&gt;</span> lookUp <span style="color: #b8bb26;">"The Smiths"</span> yearFounded
+<span style="color: #d3869b;">Just</span> 1982
+ghci<span style="color: #fabd2f;">&gt;</span> lookUp <span style="color: #b8bb26;">"The Stone Roses"</span> yearFounded
+<span style="color: #d3869b;">Nothing</span>
+</pre>
+</div>
+<p>
+Importantly, no actual exception was thrown when I tried to look up <code>"TheStone
+   Roses"</code>. Instead, <code>lookUp</code> returned a value, <code>Nothing</code>, inhabitting the data type
+<code>Maybe Integer</code>.
+</p>
+
+<p>
+One way to think of the <code>Maybe a</code> data type is that it represents an action
+your computer can perform&#x2014;throwing an error&#x2014;as data. This illustrates
+what in Haskell is a pretty commonly used technique of bluring the lines
+between <i>effects</i> and data.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org859cdac" class="outline-3">
+<h3 id="org859cdac"><span class="section-number-3">1.3.</span> <code>div</code></h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+Let's look at the function
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">div</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Integer</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Integer</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Integer</span>
+</pre>
+</div>
+<p>
+which behaves as follows:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell">ghci<span style="color: #fabd2f;">&gt;</span> div 4 2
+2
+ghci<span style="color: #fabd2f;">&gt;</span> div 4 0
+<span style="color: #83a598;">***</span> <span style="color: #d3869b;">Exception:</span> divide by zero
+</pre>
+</div>
+<p>
+<code>div</code> is a partial function; it is only defined when its second argument is not
+<code>0</code>.
+</p>
+
+<p>
+A total version of <code>div</code> would be the following function <code>safeDiv</code> which uses
+maybe types:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">safeDiv</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Integer</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Integer</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Maybe</span> <span style="color: #d3869b;">Integer</span>
+<span style="color: #fabd2f;">safeDiv</span> m n <span style="color: #83a598;">=</span> <span style="color: #fb4933;">if</span> n <span style="color: #83a598;">==</span> 0 <span style="color: #fb4933;">then</span> <span style="color: #d3869b;">Nothing</span> <span style="color: #fb4933;">else</span> <span style="color: #d3869b;">Just</span> (div m n)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4e5defc" class="outline-3">
+<h3 id="org4e5defc"><span class="section-number-3">1.4.</span> <code>Either</code></h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+A generalization of <code>Maybe a</code> is the data type <code>Either a b</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Either</span> a b <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Left</span> a <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Right</span> b <span style="color: #fb4933;">deriving</span> (<span style="color: #d3869b;">Show</span>, <span style="color: #d3869b;">Eq</span>)
+</pre>
+</div>
+<p>
+Here, <code>Left</code> means failure, and <code>Right</code> means success. <code>Either</code> types are a
+generalization of <code>Maybe</code> types, in the sense that we could encode <code>Maybe</code> as:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">type</span> <span style="color: #d3869b;">Maybe'</span> a <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Either</span> <span style="color: #d3869b;">()</span> a
+<span style="color: #fabd2f;">nothing'</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Maybe'</span> a
+<span style="color: #fabd2f;">nothing'</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Left</span> <span style="color: #d3869b;">()</span>
+<span style="color: #fabd2f;">just'</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Maybe</span> a
+<span style="color: #fabd2f;">just'</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Right</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7b850fd" class="outline-3">
+<h3 id="org7b850fd"><span class="section-number-3">1.5.</span> Type classes</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+Type classes are one of the most famous distinguishing features of
+Haskell. A type class allows you to provide multiple implementations of what
+looks like the same function on different types. These implementations are
+called <i>instances</i>. Here are some examples:
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9f74da1" class="outline-3">
+<h3 id="org9f74da1"><span class="section-number-3">1.6.</span> <code>Show</code></h3>
+<div class="outline-text-3" id="text-1-6">
+<p>
+We have already seen type classes when we've used <code>deriving Show</code> in data type
+declarations. But we can actually implement <code>Show</code> instances ourselves. Imagine
+that we defined a new data type <code>Table</code> (instead of merely using <code>Table</code> as a
+type alias):
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Table</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Table</span> [(<span style="color: #d3869b;">String</span>, <span style="color: #d3869b;">Integer</span>)] <span style="color: #fb4933;">deriving</span> (<span style="color: #d3869b;">Show</span>, <span style="color: #d3869b;">Eq</span>)
+</pre>
+</div>
+<p>
+Given the following declaration of the type class <code>Show</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">class</span> <span style="color: #d3869b;">Show</span> a <span style="color: #fb4933;">where</span>
+  show <span style="color: #83a598;">::</span> a <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">String</span>
+</pre>
+</div>
+<p>
+we may define the <code>Table</code> instance of <code>Show</code> as follows:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">instance</span> <span style="color: #d3869b;">Show</span> <span style="color: #d3869b;">Table</span> <span style="color: #fb4933;">where</span>
+  show (<span style="color: #d3869b;">Table</span> <span style="color: #d3869b;">[]</span>) <span style="color: #83a598;">=</span> <span style="color: #b8bb26;">"Empty Table"</span>
+  show (<span style="color: #d3869b;">Table</span> [(b, y)]) <span style="color: #83a598;">=</span> b <span style="color: #83a598;">++</span> <span style="color: #b8bb26;">" : "</span> <span style="color: #83a598;">++</span> show y
+  show (<span style="color: #d3869b;">Table</span> ((b, y) <span style="color: #d3869b;">:</span> t)) <span style="color: #83a598;">=</span> b <span style="color: #83a598;">++</span> <span style="color: #b8bb26;">" : "</span> <span style="color: #83a598;">++</span> show y <span style="color: #83a598;">++</span> <span style="color: #b8bb26;">" | "</span> <span style="color: #83a598;">++</span> show (<span style="color: #d3869b;">Table</span> t)
+</pre>
+</div>
+<p>
+This will give us the following behavior, for example:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell">ghci<span style="color: #fabd2f;">&gt;</span> <span style="color: #d3869b;">Table</span> [(<span style="color: #b8bb26;">"The Smiths"</span>, 1982), (<span style="color: #b8bb26;">"Joy Division"</span>, 1976)]
+<span style="color: #d3869b;">The</span> <span style="color: #d3869b;">Smiths</span> <span style="color: #d3869b;">:</span> 1982 <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Joy</span> <span style="color: #d3869b;">Division</span> <span style="color: #d3869b;">:</span> 1976
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org461ca6c" class="outline-3">
+<h3 id="org461ca6c"><span class="section-number-3">1.7.</span> <code>Eq</code></h3>
+<div class="outline-text-3" id="text-1-7">
+<p>
+Another useful type class is <code>Eq</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">class</span> <span style="color: #d3869b;">Eq</span> a <span style="color: #fb4933;">where</span>
+  (<span style="color: #83a598;">==</span>) <span style="color: #83a598;">::</span> a <span style="color: #83a598;">-&gt;</span> a <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Bool</span>
+  (<span style="color: #83a598;">/=</span>) <span style="color: #83a598;">::</span> a <span style="color: #83a598;">-&gt;</span> a <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Bool</span>
+  a <span style="color: #83a598;">/=</span> b <span style="color: #83a598;">=</span> not (a <span style="color: #83a598;">==</span> b)
+</pre>
+</div>
+<p>
+Like <code>Show</code> instances, <code>Eq</code> instances can be derived. But we can also define our
+own <code>Eq</code> instances, e.g., for the <code>Table</code> data type:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">instance</span> <span style="color: #d3869b;">Eq</span> <span style="color: #d3869b;">Table</span> <span style="color: #fb4933;">where</span>
+  <span style="color: #d3869b;">Table</span> a <span style="color: #83a598;">==</span> <span style="color: #d3869b;">Table</span> b <span style="color: #83a598;">=</span> a <span style="color: #83a598;">==</span> b
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org17ca05e" class="outline-3">
+<h3 id="org17ca05e"><span class="section-number-3">1.8.</span> Declaring type classes</h3>
+<div class="outline-text-3" id="text-1-8">
+<p>
+We can also declare our own type classes. To give an example of this, let's
+first define the following data types encoding some models of different
+personal computer brands from the 80s:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Apple</span>
+  <span style="color: #83a598;">=</span> <span style="color: #d3869b;">IIc</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">IIe</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">GS</span> 
+  <span style="color: #fb4933;">deriving</span> (<span style="color: #d3869b;">Show</span>, <span style="color: #d3869b;">Eq</span>) 
+
+<span style="color: #fb4933;">data</span> <span style="color: #d3869b;">IBM</span>
+  <span style="color: #83a598;">=</span> <span style="color: #d3869b;">PC</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">PCJr</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">XT</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">AT</span> 
+  <span style="color: #fb4933;">deriving</span> (<span style="color: #d3869b;">Show</span>, <span style="color: #d3869b;">Eq</span>) 
+
+<span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Commodore</span>
+  <span style="color: #83a598;">=</span> <span style="color: #d3869b;">C64</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">C128</span> 
+  <span style="color: #fb4933;">deriving</span> (<span style="color: #d3869b;">Show</span>, <span style="color: #d3869b;">Eq</span>)
+</pre>
+</div>
+<p>
+Let's say we want to define a type class which, given a brand, provides a
+function that determines which reboot keys are available for each of its
+models. Given the following data type <code>Key</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Key</span>  
+  <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Ctrl</span> 
+  <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Alt</span> 
+  <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Del</span> 
+  <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Option</span> 
+  <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Apple</span> 
+  <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Reset</span> 
+  <span style="color: #83a598;">|</span> <span style="color: #d3869b;">PowerButton</span> 
+  <span style="color: #fb4933;">deriving</span> (<span style="color: #d3869b;">Show</span>, <span style="color: #d3869b;">Eq</span>)
+</pre>
+</div>
+<p>
+we can declare a type class <code>Rebootable</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">class</span> <span style="color: #d3869b;">Rebootable</span> a <span style="color: #fb4933;">where</span>
+  rebootKeys <span style="color: #83a598;">::</span> a <span style="color: #83a598;">-&gt;</span> [<span style="color: #d3869b;">Key</span>]
+</pre>
+</div>
+<p>
+And then we can declare the following instances:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">instance</span> <span style="color: #d3869b;">Rebootable</span> <span style="color: #d3869b;">IBM</span> <span style="color: #fb4933;">where</span> 
+  rebootKeys <span style="color: #fb4933;">_</span> <span style="color: #83a598;">=</span> [<span style="color: #d3869b;">Ctrl</span>, <span style="color: #d3869b;">Alt</span>, <span style="color: #d3869b;">Del</span>]
+
+<span style="color: #fb4933;">instance</span> <span style="color: #d3869b;">Rebootable</span> <span style="color: #d3869b;">Apple</span> <span style="color: #fb4933;">where</span> 
+  rebootKeys <span style="color: #fb4933;">_</span> <span style="color: #83a598;">=</span> [<span style="color: #d3869b;">Ctrl</span>, <span style="color: #d3869b;">Option</span>, <span style="color: #d3869b;">Reset</span>] 
+
+<span style="color: #fb4933;">instance</span> <span style="color: #d3869b;">Rebootable</span> <span style="color: #d3869b;">Commodore</span> <span style="color: #fb4933;">where</span> 
+  rebootKeys <span style="color: #d3869b;">C64</span> <span style="color: #83a598;">=</span> [<span style="color: #d3869b;">PowerButton</span>] 
+  rebootKeys <span style="color: #d3869b;">C128</span> <span style="color: #83a598;">=</span> [<span style="color: #d3869b;">Reset</span>]
+</pre>
+</div>
+<p>
+Each of these instances of <code>Rebootable</code> determines how to map any model onto a
+list of keys for some brand.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org62bba64" class="outline-3">
+<h3 id="org62bba64"><span class="section-number-3">1.9.</span> Kinds of polymorphism</h3>
+<div class="outline-text-3" id="text-1-9">
+<p>
+Each of the type classes we've looked at provide what is known as <i>ad hoc
+polymorphism</i>. This polymorphism is <i>ad hoc</i> because only some data types need
+provide instances for the relevant type variable (e.g., the <code>a</code> in <code>Show a</code>). In
+addition, different instances can have fundamentally <i>different</i> definitions
+from each other.
+</p>
+
+<p>
+Ad hoc polymorphism is therefore contrasted with <i>parametric polymorphism</i>,
+which has the following features:
+</p>
+<ul class="org-ul">
+<li>We can't constrain the instantiating data type ahead of time.</li>
+<li>Parametric polymorphic functions come in families all of whose members act
+fundamentally <i>the same way</i>.</li>
+</ul>
+
+<p>
+Examples of parametric polymorphism are the functions on lists <code>map</code>, <code>filter</code>,
+<code>foldl</code>, and <code>foldr</code>. In general, it doesn't matter <i>what type of data</i> any given
+list holds; these functions will behave the same on that list, regardless.
+</p>
+
+<p>
+Now, for a couple more important type classes&#x2026;
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4e0e5ff" class="outline-3">
+<h3 id="org4e0e5ff"><span class="section-number-3">1.10.</span> <code>Foldable</code></h3>
+<div class="outline-text-3" id="text-1-10">
+<p>
+<code>foldr</code> and <code>foldl</code> are actually methods of a type class <code>Foldable</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">class</span> <span style="color: #d3869b;">Foldable</span> t <span style="color: #fb4933;">where</span>
+  foldl <span style="color: #83a598;">::</span> (b <span style="color: #83a598;">-&gt;</span> a <span style="color: #83a598;">-&gt;</span> b) <span style="color: #83a598;">-&gt;</span> b <span style="color: #83a598;">-&gt;</span> t a <span style="color: #83a598;">-&gt;</span> b
+  foldr <span style="color: #83a598;">::</span> (a <span style="color: #83a598;">-&gt;</span> b <span style="color: #83a598;">-&gt;</span> b) <span style="color: #83a598;">-&gt;</span> b <span style="color: #83a598;">-&gt;</span> t a <span style="color: #83a598;">-&gt;</span> b
+</pre>
+</div>
+<p>
+Thus lists aren't the only things which are foldable; for example, <code>Maybe</code> is,
+as well:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">instance</span> <span style="color: #d3869b;">Foldable</span> <span style="color: #d3869b;">Maybe</span> <span style="color: #fb4933;">where</span>
+  foldl f b <span style="color: #d3869b;">Nothing</span> <span style="color: #83a598;">=</span> b
+  foldl f b (<span style="color: #d3869b;">Just</span> a) <span style="color: #83a598;">=</span> f b a
+  foldr f b <span style="color: #d3869b;">Nothing</span> <span style="color: #83a598;">=</span> b
+  foldr f b (<span style="color: #d3869b;">Just</span> a) <span style="color: #83a598;">=</span> f a b
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org53b63e8" class="outline-3">
+<h3 id="org53b63e8"><span class="section-number-3">1.11.</span> <code>Functor</code></h3>
+<div class="outline-text-3" id="text-1-11">
+<p>
+Functors provide another class, with a single method <code>fmap</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">class</span> <span style="color: #d3869b;">Functor</span> f <span style="color: #fb4933;">where</span>
+  fmap <span style="color: #83a598;">::</span> (a <span style="color: #83a598;">-&gt;</span> b) <span style="color: #83a598;">-&gt;</span> f a <span style="color: #83a598;">-&gt;</span> f b
+</pre>
+</div>
+<p>
+Importantly, <code>fmap</code> is expected to satisfy certain laws (the <code>Functor</code> laws):
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #928374;">-- </span><span style="color: #928374;">fmap id = id -- Identity</span>
+<span style="color: #928374;">-- </span><span style="color: #928374;">fmap (f . g) = fmap f . fmap g -- Composition</span>
+</pre>
+</div>
+<p>
+Here, <code>(.)</code> is <i>function composition</i>, i.e.:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell">(f <span style="color: #83a598;">.</span> g) x <span style="color: #83a598;">=</span> f (g x)
+</pre>
+</div>
+<p>
+What these laws effectively say, therefore, is that turning a function <code>g :: a
+   -&gt; b</code> into a function <code>fmap g :: f a -&gt; f b</code> on data which has been <i>lifted</i> into
+the functor via <code>f</code> doesn't fiddle with the identity function and isn't
+sensitive to whether you have composed two functions <i>before</i> or <i>after</i> doing
+the lifting.
+</p>
+
+<p>
+For some examples, we have the following instances of the class <code>Functor</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">instance</span> <span style="color: #d3869b;">Functor</span> <span style="color: #d3869b;">[]</span> <span style="color: #fb4933;">where</span>
+  fmap <span style="color: #83a598;">=</span> map
+
+<span style="color: #fb4933;">instance</span> <span style="color: #d3869b;">Functor</span> <span style="color: #d3869b;">Maybe</span> <span style="color: #fb4933;">where</span>
+  fmap f (<span style="color: #d3869b;">Just</span> a) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Just</span> (f a)
+  fmap f <span style="color: #d3869b;">Nothing</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Nothing</span>
+
+<span style="color: #fb4933;">instance</span> <span style="color: #d3869b;">Functor</span> (<span style="color: #d3869b;">Either</span> a) <span style="color: #fb4933;">where</span>
+  fmap f (<span style="color: #d3869b;">Left</span> a) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Left</span> a
+  fmap f (<span style="color: #d3869b;">Right</span> b) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Right</span> (f b)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgda256ee" class="outline-2">
+<h2 id="orgda256ee"><span class="section-number-2">2.</span> Exercises</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgacde44b" class="outline-3">
+<h3 id="orgacde44b"><span class="section-number-3">2.1.</span> Part 1</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Let's define the new data type <code>Tree a</code>, which packages inhabitants of any type
+<code>a</code> up into a tree-like data structure:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Tree</span> a <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Empty</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Leaf</span> a <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Node</span> a (<span style="color: #d3869b;">Tree</span> a) (<span style="color: #d3869b;">Tree</span> a) <span style="color: #fb4933;">deriving</span> (<span style="color: #d3869b;">Eq</span>, <span style="color: #d3869b;">Show</span>)
+</pre>
+</div>
+<p>
+In words, a <code>Tree a</code> can be either <code>Empty</code> (it can store nothing), a <code>Leaf a</code> (it
+can store exactly one thing of type <code>a</code>, or a <code>Node a (Tree a) (Tree a)</code> (it can
+store one thing of type <code>a</code>, and may also branch into two more trees
+constituting its left and right daughters).
+</p>
+
+<p>
+For example, let's say we wanted to represent a tree that holds data of type
+<code>Integer</code>. We could define the following tree
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">exampleTree</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Tree</span> <span style="color: #d3869b;">Integer</span>
+<span style="color: #fabd2f;">exampleTree</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Node</span> 1 (<span style="color: #d3869b;">Leaf</span> 2) (<span style="color: #d3869b;">Node</span> 3 (<span style="color: #d3869b;">Leaf</span> 4) <span style="color: #d3869b;">Empty</span>)
+</pre>
+</div>
+<p>
+which represents the following tree:
+</p>
+<pre class="example" id="org983e686">
+  1
+ _|_
+|   |
+2   3
+   _|_
+  |   |
+  4
+</pre>
+<p>
+Write a function
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">depth</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Tree</span> a <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Integer</span>
+</pre>
+</div>
+<p>
+which, given a <code>Tree a</code>, returns the longest path from its root to one of its
+leaves. For example, <code>depth</code> should behave as follows:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell">ghci<span style="color: #fabd2f;">&gt;</span> depth exampleTree
+3
+ghci<span style="color: #fabd2f;">&gt;</span> depth <span style="color: #d3869b;">Empty</span>
+0
+ghci<span style="color: #fabd2f;">&gt;</span> depth (<span style="color: #d3869b;">Leaf</span> 7)
+1
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-org3dcc6c1" class="outline-3">
+<h3 id="org3dcc6c1"><span class="section-number-3">2.2.</span> Part 2</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Make <code>Tree</code> an instance of the class <code>Functor</code>. Does the instance you provide
+satisfy the <code>Functor</code> laws?
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9746648" class="outline-3">
+<h3 id="org9746648"><span class="section-number-3">2.3.</span> Part 3</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+Make <code>Tree</code> an instance of the class <code>Foldable</code>. You have different options here,
+in principle. I really just want you to make sure that the answer you provide
+is well typed! 
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbe3bf21" class="outline-3">
+<h3 id="orgbe3bf21"><span class="section-number-3">2.4.</span> Part 4</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+Write a definition of <code>depth</code> that invokes <code>foldl</code> or <code>foldr</code> (and possibly <code>fmap</code>,
+if you like)!
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Julian Grove</p>
+<p class="date">Created: 2023-09-11 Mon 17:19</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
