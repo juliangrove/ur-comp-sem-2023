@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-09-11 Mon 19:25 -->
+<!-- 2023-09-12 Tue 10:46 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Haskell: type classes and higher-order polymorphism</title>
@@ -206,39 +206,39 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org549c2aa">1. Review</a>
+<li><a href="#orgc238ed1">1. Review</a>
 <ul>
-<li><a href="#orgb66361f">1.1. <code>Maybe</code></a></li>
-<li><a href="#org2eab3ef">1.2. Key-value pairs</a></li>
-<li><a href="#org43db343">1.3. <code>div</code></a></li>
-<li><a href="#org3c34724">1.4. <code>Either</code></a></li>
-<li><a href="#orgccc5ed4">1.5. Type classes</a></li>
-<li><a href="#orgd021038">1.6. <code>Show</code></a></li>
-<li><a href="#org48aa3cd">1.7. <code>Eq</code></a></li>
-<li><a href="#org8693ce7">1.8. Declaring type classes</a></li>
-<li><a href="#org0da140c">1.9. Kinds of polymorphism</a></li>
-<li><a href="#org74856b8">1.10. <code>Foldable</code></a></li>
-<li><a href="#org2f43f17">1.11. <code>Functor</code></a></li>
+<li><a href="#org5c26198">1.1. <code>Maybe</code></a></li>
+<li><a href="#org8964812">1.2. Key-value pairs</a></li>
+<li><a href="#orgf71c9bf">1.3. <code>div</code></a></li>
+<li><a href="#org76074a7">1.4. <code>Either</code></a></li>
+<li><a href="#orge017064">1.5. Type classes</a></li>
+<li><a href="#orgd478b1d">1.6. <code>Show</code></a></li>
+<li><a href="#org82d1bca">1.7. <code>Eq</code></a></li>
+<li><a href="#org6746d52">1.8. Declaring type classes</a></li>
+<li><a href="#org60b6ea3">1.9. Kinds of polymorphism</a></li>
+<li><a href="#orgf507f6a">1.10. <code>Foldable</code></a></li>
+<li><a href="#orgdf58ae1">1.11. <code>Functor</code></a></li>
 </ul>
 </li>
-<li><a href="#orge153bb3">2. Exercises</a>
+<li><a href="#org24bfe44">2. Exercises</a>
 <ul>
-<li><a href="#org67454c9">2.1. Part 1</a></li>
-<li><a href="#orgb5ee9dd">2.2. Part 2</a></li>
-<li><a href="#org103065b">2.3. Part 3</a></li>
-<li><a href="#orgb4ea997">2.4. Part 4</a></li>
+<li><a href="#org54f0a6e">2.1. Part 1</a></li>
+<li><a href="#org37756ff">2.2. Part 2</a></li>
+<li><a href="#org68595c6">2.3. Part 3</a></li>
+<li><a href="#orgbdfc740">2.4. Part 4</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org549c2aa" class="outline-2">
-<h2 id="org549c2aa"><span class="section-number-2">1.</span> Review</h2>
+<div id="outline-container-orgc238ed1" class="outline-2">
+<h2 id="orgc238ed1"><span class="section-number-2">1.</span> Review</h2>
 <div class="outline-text-2" id="text-1">
 </div>
-<div id="outline-container-orgb66361f" class="outline-3">
-<h3 id="orgb66361f"><span class="section-number-3">1.1.</span> <code>Maybe</code></h3>
+<div id="outline-container-org5c26198" class="outline-3">
+<h3 id="org5c26198"><span class="section-number-3">1.1.</span> <code>Maybe</code></h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 A commonly used data type in Haskell is <code>Maybe a</code>:
@@ -254,8 +254,8 @@ whether the a computational succeeded for failed.
 </div>
 </div>
 
-<div id="outline-container-org2eab3ef" class="outline-3">
-<h3 id="org2eab3ef"><span class="section-number-3">1.2.</span> Key-value pairs</h3>
+<div id="outline-container-org8964812" class="outline-3">
+<h3 id="org8964812"><span class="section-number-3">1.2.</span> Key-value pairs</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 As an example, say we have the following type representing a table of
@@ -312,8 +312,8 @@ between <i>effects</i> and data.
 </div>
 </div>
 
-<div id="outline-container-org43db343" class="outline-3">
-<h3 id="org43db343"><span class="section-number-3">1.3.</span> <code>div</code></h3>
+<div id="outline-container-orgf71c9bf" class="outline-3">
+<h3 id="orgf71c9bf"><span class="section-number-3">1.3.</span> <code>div</code></h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 Let's look at the function
@@ -349,8 +349,8 @@ maybe types:
 </div>
 </div>
 
-<div id="outline-container-org3c34724" class="outline-3">
-<h3 id="org3c34724"><span class="section-number-3">1.4.</span> <code>Either</code></h3>
+<div id="outline-container-org76074a7" class="outline-3">
+<h3 id="org76074a7"><span class="section-number-3">1.4.</span> <code>Either</code></h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 A generalization of <code>Maybe a</code> is the data type <code>Either a b</code>:
@@ -374,8 +374,8 @@ generalization of <code>Maybe</code> types, in the sense that we could encode <c
 </div>
 </div>
 
-<div id="outline-container-orgccc5ed4" class="outline-3">
-<h3 id="orgccc5ed4"><span class="section-number-3">1.5.</span> Type classes</h3>
+<div id="outline-container-orge017064" class="outline-3">
+<h3 id="orge017064"><span class="section-number-3">1.5.</span> Type classes</h3>
 <div class="outline-text-3" id="text-1-5">
 <p>
 Type classes are one of the most famous distinguishing features of
@@ -386,8 +386,8 @@ called <i>instances</i>. Here are some examples:
 </div>
 </div>
 
-<div id="outline-container-orgd021038" class="outline-3">
-<h3 id="orgd021038"><span class="section-number-3">1.6.</span> <code>Show</code></h3>
+<div id="outline-container-orgd478b1d" class="outline-3">
+<h3 id="orgd478b1d"><span class="section-number-3">1.6.</span> <code>Show</code></h3>
 <div class="outline-text-3" id="text-1-6">
 <p>
 We have already seen type classes when we've used <code>deriving Show</code> in data type
@@ -428,8 +428,8 @@ This will give us the following behavior, for example:
 </div>
 </div>
 
-<div id="outline-container-org48aa3cd" class="outline-3">
-<h3 id="org48aa3cd"><span class="section-number-3">1.7.</span> <code>Eq</code></h3>
+<div id="outline-container-org82d1bca" class="outline-3">
+<h3 id="org82d1bca"><span class="section-number-3">1.7.</span> <code>Eq</code></h3>
 <div class="outline-text-3" id="text-1-7">
 <p>
 Another useful type class is <code>Eq</code>:
@@ -453,8 +453,8 @@ own <code>Eq</code> instances, e.g., for the <code>Table</code> data type:
 </div>
 </div>
 
-<div id="outline-container-org8693ce7" class="outline-3">
-<h3 id="org8693ce7"><span class="section-number-3">1.8.</span> Declaring type classes</h3>
+<div id="outline-container-org6746d52" class="outline-3">
+<h3 id="org6746d52"><span class="section-number-3">1.8.</span> Declaring type classes</h3>
 <div class="outline-text-3" id="text-1-8">
 <p>
 We can also declare our own type classes. To give an example of this, let's
@@ -522,8 +522,8 @@ list of keys for some brand.
 </div>
 </div>
 
-<div id="outline-container-org0da140c" class="outline-3">
-<h3 id="org0da140c"><span class="section-number-3">1.9.</span> Kinds of polymorphism</h3>
+<div id="outline-container-org60b6ea3" class="outline-3">
+<h3 id="org60b6ea3"><span class="section-number-3">1.9.</span> Kinds of polymorphism</h3>
 <div class="outline-text-3" id="text-1-9">
 <p>
 Each of the type classes we've looked at provide what is known as <i>ad hoc
@@ -555,8 +555,8 @@ Now, for a couple more important type classes&#x2026;
 </div>
 </div>
 
-<div id="outline-container-org74856b8" class="outline-3">
-<h3 id="org74856b8"><span class="section-number-3">1.10.</span> <code>Foldable</code></h3>
+<div id="outline-container-orgf507f6a" class="outline-3">
+<h3 id="orgf507f6a"><span class="section-number-3">1.10.</span> <code>Foldable</code></h3>
 <div class="outline-text-3" id="text-1-10">
 <p>
 <code>foldr</code> and <code>foldl</code> are actually methods of a type class <code>Foldable</code>:
@@ -582,8 +582,8 @@ as well:
 </div>
 </div>
 
-<div id="outline-container-org2f43f17" class="outline-3">
-<h3 id="org2f43f17"><span class="section-number-3">1.11.</span> <code>Functor</code></h3>
+<div id="outline-container-orgdf58ae1" class="outline-3">
+<h3 id="orgdf58ae1"><span class="section-number-3">1.11.</span> <code>Functor</code></h3>
 <div class="outline-text-3" id="text-1-11">
 <p>
 Functors provide another class, with a single method <code>fmap</code>:
@@ -636,12 +636,12 @@ For some examples, we have the following instances of the class <code>Functor</c
 </div>
 </div>
 
-<div id="outline-container-orge153bb3" class="outline-2">
-<h2 id="orge153bb3"><span class="section-number-2">2.</span> Exercises</h2>
+<div id="outline-container-org24bfe44" class="outline-2">
+<h2 id="org24bfe44"><span class="section-number-2">2.</span> Exercises</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org67454c9" class="outline-3">
-<h3 id="org67454c9"><span class="section-number-3">2.1.</span> Part 1</h3>
+<div id="outline-container-org54f0a6e" class="outline-3">
+<h3 id="org54f0a6e"><span class="section-number-3">2.1.</span> Part 1</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 Let's define the new data type <code>Tree a</code>, which packages inhabitants of any type
@@ -670,7 +670,7 @@ For example, let's say we wanted to represent a tree that holds data of type
 <p>
 which represents the following tree:
 </p>
-<pre class="example" id="orgd5fef7f">
+<pre class="example" id="orgc81b177">
   1
  _|_
 |   |
@@ -703,8 +703,8 @@ ghci<span style="color: #fabd2f;">&gt;</span> depth (<span style="color: #d3869b
 </div>
 
 
-<div id="outline-container-orgb5ee9dd" class="outline-3">
-<h3 id="orgb5ee9dd"><span class="section-number-3">2.2.</span> Part 2</h3>
+<div id="outline-container-org37756ff" class="outline-3">
+<h3 id="org37756ff"><span class="section-number-3">2.2.</span> Part 2</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 Make <code>Tree</code> an instance of the class <code>Functor</code>. Does the instance you provide
@@ -713,8 +713,8 @@ satisfy the <code>Functor</code> laws?
 </div>
 </div>
 
-<div id="outline-container-org103065b" class="outline-3">
-<h3 id="org103065b"><span class="section-number-3">2.3.</span> Part 3</h3>
+<div id="outline-container-org68595c6" class="outline-3">
+<h3 id="org68595c6"><span class="section-number-3">2.3.</span> Part 3</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 Make <code>Tree</code> an instance of the class <code>Foldable</code>. You have different options here,
@@ -724,12 +724,14 @@ is well typed!
 </div>
 </div>
 
-<div id="outline-container-orgb4ea997" class="outline-3">
-<h3 id="orgb4ea997"><span class="section-number-3">2.4.</span> Part 4</h3>
+<div id="outline-container-orgbdfc740" class="outline-3">
+<h3 id="orgbdfc740"><span class="section-number-3">2.4.</span> Part 4</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
-Write a definition of <code>depth</code> that invokes <code>foldl</code> or <code>foldr</code> (and possibly <code>fmap</code>,
-if you like)!
+Can you write a definition of <code>depth</code> that invokes <code>foldl</code>, <code>foldr</code>, and/or <code>fmap</code>?
+If this seems difficult, is there a way to modify the definitions of any of
+these functions in order to accomplish this? If you modify <code>fmap</code>, does it
+break any of the <code>Functor</code> laws?
 </p>
 </div>
 </div>
@@ -737,7 +739,7 @@ if you like)!
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-09-11 Mon 19:25</p>
+<p class="date">Created: 2023-09-12 Tue 10:46</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

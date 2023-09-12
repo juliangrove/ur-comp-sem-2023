@@ -315,5 +315,7 @@
    is well typed! 
 
 ** Part 4
-   Write a definition of ~depth~ that invokes ~foldl~ or ~foldr~ (and possibly ~fmap~,
-   if you like)!
+   Can you write a definition of ~depth~ that invokes ~foldl~, ~foldr~, and/or ~fmap~?
+   If this seems difficult, is there a way to modify the definitions of any of
+   these functions in order to accomplish this? If you modify ~fmap~, does it
+   break any of the ~Functor~ laws?
