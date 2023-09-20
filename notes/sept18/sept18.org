@@ -149,7 +149,7 @@
    the more tricky case: applications.
    #+begin_src haskell
      betaNormal (App t u) = case betaNormal t of
-			      Lam t' -> betaNormal (subst0 (betaNormal u) t)
+			      Lam t' -> betaNormal (subst0 (betaNormal u) t')
                               t' -> App t' (betaNormal u)
    #+end_src
    If taking the function ~t~ into β-normal form results in an abstraction, we
