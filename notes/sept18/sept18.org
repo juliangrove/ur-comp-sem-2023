@@ -1,0 +1,244 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: Untyped λ-calculus via de Bruijn indices
+
+* Review
+  We've begun to encode untyped λ-terms using de Bruijn indices, meaning that
+  rather than writing, e.g., the identity function as
+  $$λx.x$$
+  we write it instead as
+  $$λ0$$
+  Here, the variable $0$ is bound by the /first/ $λ$ prefixed to a λ-term in which
+  it occurs; i.e., $0$ itself. Likewise, if we want to encode the function that
+  takes two arguments and just gives back the first one, we would normally write
+  it as
+  $$λx, y.x$$
+  but using de Bruijn indices, we'd write it instead as
+  $$λλ1$$
+  Here, the $1$ is bound by the /second/ $λ$ prefixed to a λ-term in which it
+  occurs; i.e.; the $λ$ prefixed to $λ1$.
+
+** Syntax
+   Technically, we can specify the set of λ-terms in terms of de Bruijn notation
+   as
+   $$\def\Coloneqq{::=}\def\divd{\ |\ } M, N \Coloneqq n \divd (M N) \divd
+   (λM)$$
+   where $n ∈ \{0, 1, 2, ...\}$.
+
+   In Haskell, we can give this encoding of λ-terms in terms of an algebraic
+   data type. First, we should define a type for natural numbers:
+   #+begin_src haskell
+     data Nat = Zero | Succ Nat
+   #+end_src
+   λ-terms may then be encoded in a way that matches the definition given above:
+   #+begin_src haskell
+     data Lambda = Var Nat | App Lambda Lambda | Lam Lambda
+   #+end_src
+
+** Substitution
+   Now that we are using de Bruijn indices, substitution becomes a bit tricky.
+   But we can tame it by dividing the task up into parts that are manageable to
+   do on their own.
+
+   First, let's define a very general function for doing arbitrary substitutions
+   of variables by λ-terms. This function should have the following type:
+   #+begin_src haskell
+     subst :: (Nat -> Lambda) -> Lambda -> Lambda
+   #+end_src
+   It takes a function of type ~Nat -> Lambda~ determining how the relevant
+   substitution (whatever that is) should be performed, and it provides a
+   general protocol for managing this substitution for different kinds of
+   λ-terms. For example, on variables, ~subst~ just /performs the substution/:
+   #+begin_src haskell
+     subst f (Var i) = f i
+   #+end_src
+   On applications, it does the substitution to both the function and the
+   argument:
+   #+begin_src haskell
+     subst f (App t u) = App (subst f t) (subst f u)
+   #+end_src
+   Finally, on abstractions, something special has to be done. Because we don't
+   want to mess around with variables which are /bound/ by the abstraction, we
+   need to instead do substitution using another function ~g~ just like the
+   function ~f~, but which is different in two ways. The first way it is different
+   is that it maps ~Zero~ onto ~Var Zero~, ensuring that it remains bound by the
+   enclosing ~Lam~. The second way it is different is that it maps any ~Succ i~ onto
+   ~f i~, since the ~Succ~ was only there in order to ``look past'' the enclosing
+   ~Lam~ - it should really just be an ~i~ for the purpose of performing the
+   substitution - and it then /renames/ the result of performing the substitution
+   ~f i~ by incrementing all free variables inside ~f i~ with a ~Succ~, using a
+   function ~rename~. This last part helps to avoid the problem of variable
+   capture, i.e., by making sure any free ~j~ inside ~f i~ still looks like a ~j~
+   outside of the enclosing ~Lam~, which mean that it has to be a ~Succ j~ inside
+   the enclosing ~Lam~. 
+   #+begin_src haskell
+     subst f (Lam t) = Lam (subst g t)
+       where g :: Nat -> Lambda
+	     g Zero = Var Zero
+	     g (Succ i) = rename Succ (f i)
+   #+end_src
+   How exactly does ~rename~ work? It should take some function from ~Nat~ onto ~Nat~
+   and use this function to rename free variables inside a λ-term. Thus its type
+   is
+   #+begin_src haskell
+     rename :: (Nat -> Nat) -> Lambda -> Lambda
+   #+end_src
+   Given some function ~h~ of type ~Nat -> Nat~ (e.g., ~Succ~, as above), it renames
+   variables by adjusting the natural number they correspond to using ~h~:
+   #+begin_src haskell
+     rename h (Var i) = Var (h i)
+   #+end_src
+   On applications, as you might expect, it performs renaming on both the
+   function and the argument: 
+   #+begin_src haskell
+     rename h (App t u) = App (rename h t) (rename h u)
+   #+end_src
+   And on abstractions, it performs renaming on the body of the abstraction,
+   but (as above) keeping bound variables intact and taking into account any
+   extra ~Succ~ that might be lying around by using ~h'~ instead of ~h~:
+   #+begin_src haskell
+     rename h (Lam t) = Lam (rename h' t)
+       where h' :: Nat -> Nat
+	     h' Zero = Zero
+	     h' (Succ i) = Succ (h i)
+   #+end_src
+
+   That's it for the definition of ~subst~! We can now use it to define a more
+   immediately useful function
+   #+begin_src haskell
+     subst0 :: Lambda -> Lambda -> Lambda
+   #+end_src
+   which substitutes a λ-term ~t~ for ~Var Zero~ inside a λ-term ~u~ whose ~Lam~ has
+   /just been taken off/. That is, we want to do a substitution inside a ~u~ whose
+   free occurrences of ~Var Zero~ used to be bound by an enclosing ~Lam~ in the term
+   ~Lam u~. This yields the following definition:
+   #+begin_src haskell
+     subst0 t = subst f
+       where f :: Nat -> Lambda
+	     f Zero = t
+             f (Succ i) = Var i
+   #+end_src
+   
+** β-reduction
+   Now that we have a definition of substitution, we want to use it to define a
+   function which takes any given λ-term into its β-normal form, assuming it has
+   one. This function should just take a λ-term onto a λ-term, where the latter
+   is in normal form; thus it should have the following type:
+   #+begin_src haskell
+     betaNormal :: Lambda -> Lambda
+   #+end_src
+   Again, there are three kinds of λ-terms we need to consider as the argument
+   to this function. First, variables.
+   #+begin_src haskell
+     betaNormal v@(Var _) = v
+   #+end_src
+   Variables are already in β-normal form, so nothing needs to be done to them.
+   Next, let's consider abstractions.
+   #+begin_src haskell
+     betaNormal (Lam t) = Lam (betaNormal t) 
+   #+end_src
+   Here, we only need to look underneath the binder ~Lam~ and normalize the body
+   of the abstraction. The reasoning is as follows. Let's say ~u~ is in β-normal
+   form; does turning ~u~ into ~Lam u~ create a β-redex somewhere? No! So as long as
+   we have the body in normal form, adding a ~Lam~ won't make a difference. Next,
+   the more tricky case: applications.
+   #+begin_src haskell
+     betaNormal (App t u) = case betaNormal t of
+			      Lam t' -> betaNormal (subst0 (betaNormal u) t)
+                              t' -> App t' (betaNormal u)
+   #+end_src
+   If taking the function ~t~ into β-normal form results in an abstraction, we
+   need to perform a β-reduction step between the function and the argument
+   (which we normalize). The result may not be in normal form, so we have to
+   call ~betaNormal~ again at the end. If taking ~t~ into β-normal form does not
+   result in an abstraction, than we can just take ~u~ onto its normal form and
+   put the two back together into an application. The reasoning here is that
+   putting them back together can't possibly create any new β-redices.
+   
+* Exercises: pretty printing
+  We now have an encoding of the untyped λ-calculus using de Bruijn indices, as
+  well as an encoding of β-reduction that lets us take any λ-term into its
+  β-normal form, assuming it has one.
+
+  But de Bruijn indies are ugly to look at, so it would nice to have a way of
+  printing λ-terms out using the usual notation. These exercises aim to guide
+  you in writing a pretty printer for our de Bruijn notation above, which
+  renders it in terms of normal-looking λ-terms (yay!).
+
+  To be able to print out arbitrary large λ-terms, we'll need an infinite supply
+  of variable names. One neat thing you can do in Haskell is create infinite
+  lists (though don't try to print them out!). Indeed, the following list is
+  infinite and has some nice names for variables:
+  #+begin_src haskell
+    freshVars :: [String]
+    freshVars = concat (map (\s -> map (\c -> c:s) "xyzuvw") appendMe)
+      where appendMe :: [String]
+	    appendMe = "" : map show ints
+
+	    ints :: [Integer]
+            ints = 1 : map (\x -> x + 1) ints
+  #+end_src
+  If you took, e.g., the first 50 elements of ~freshVars~, you'd get the
+  following:
+  #+begin_src haskell
+    ghci> take 50 freshVars
+    ["x","y","z","u","v","w","x1","y1","z1","u1","v1","w1","x2","y2","z2","u2","v2","w2","x3","y3","z3","u3","v3","w3","x4","y4","z4","u4","v4","w4","x5","y5","z5","u5","v5","w5","x6","y6","z6","u6","v6","w6","x7","y7","z7","u7","v7","w7","x8","y8"]
+  #+end_src
+  Note where the infinite structure of ~freshVars~ comes from: the definition of
+  ~ints~, which is just an infinite list of positive integers, starting from ~1~.
+
+  The goal in writing a pretty printer for λ-terms is to have a function
+  #+begin_src haskell
+    printLambda :: Lambda -> String
+  #+end_src
+  which takes a lambda term encoded using the algebraic data type ~Lambda~ onto a
+  string representing that λ-term using the usual notation for λ-terms. This
+  function should have the following behavior, for example:
+  #+begin_src haskell
+    ghci> putStrLn (printLambda (Lam (Var Zero)))
+    (λx.x)
+    ghci> putStrLn (printLambda (App (Lam (Var Zero)) (Lam (Lam (Var (Succ Zero))))))
+    ((λx.x) (λx.(λy.x)))
+    ghci> putStrLn (printLambda (Lam (Lam (Lam (Var (Succ Zero))))))
+    (λx.(λy.(λz.y)))
+    #+end_src
+
+** Part 1
+   To define ~printLambda~, we'll start by defining a function
+   #+begin_src haskell
+     printLambda' :: [String] -> (Nat -> String) -> Lambda -> String
+   #+end_src
+   which takes a list of strings providing us with fresh variable names, along
+   with a function of type ~Nat -> String~ that should actually use this list of
+   names in some way. Given these two ingredients, it takes a ~Lambda~ onto a
+   ~String~.
+
+   We can define this function by first defining its behavior on variables:
+   #+begin_src haskell
+     printLambda' _ f (Var i) = f i
+   #+end_src
+   How should ~printLambda'~ be defined on applications? That is, fill out the
+   rest of the following branch by filling in the ~_~:
+   #+begin_src haskell
+     printLambda' freshVs f (App t u) = _
+   #+end_src
+
+** Part 2
+   The third branch, which involves abstractions, is the trickiest. Here, the
+   list of fresh variable names actually needs to be used. This branch would
+   look as follows:
+   #+begin_src haskell
+     printLambda' (fresh:vs) f (Lam t) =
+       "(λ" ++ fresh ++ "." ++ printLambda f' vs t ++ ")"
+       where f' :: Nat -> String
+   #+end_src
+  Fill out the rest of the definition of this branch by saying what ~f'~ does!
+
+** Part 3
+   Now that all three branches of ~printLambda'~ are defined, give a definition of
+   ~printLambda~ using ~printLambda'~ by feeding it the appropriate pieces.

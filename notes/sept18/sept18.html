@@ -1,0 +1,625 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2023-09-19 Tue 21:29 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Untyped λ-calculus via de Bruijn indices</title>
+<meta name="author" content="Julian Grove" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+<script src="../../jquery.min.js"></script>
+<script src="../../bootstrap.min.js"></script>
+<script type="text/javascript" src="../../readtheorg.js"></script>
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Untyped λ-calculus via de Bruijn indices</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgbe784b7">1. Review</a>
+<ul>
+<li><a href="#orgfb8f84d">1.1. Syntax</a></li>
+<li><a href="#org5762b35">1.2. Substitution</a></li>
+<li><a href="#org3fa8090">1.3. β-reduction</a></li>
+</ul>
+</li>
+<li><a href="#orgf679b22">2. Exercises: pretty printing</a>
+<ul>
+<li><a href="#orgae2e5c3">2.1. Part 1</a></li>
+<li><a href="#org1f83d41">2.2. Part 2</a></li>
+<li><a href="#org181281e">2.3. Part 3</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgbe784b7" class="outline-2">
+<h2 id="orgbe784b7"><span class="section-number-2">1.</span> Review</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+We've begun to encode untyped λ-terms using de Bruijn indices, meaning that
+rather than writing, e.g., the identity function as
+\[λx.x\]
+we write it instead as
+\[λ0\]
+Here, the variable \(0\) is bound by the <i>first</i> \(λ\) prefixed to a λ-term in which
+it occurs; i.e., \(0\) itself. Likewise, if we want to encode the function that
+takes two arguments and just gives back the first one, we would normally write
+it as
+\[λx, y.x\]
+but using de Bruijn indices, we'd write it instead as
+\[λλ1\]
+Here, the \(1\) is bound by the <i>second</i> \(λ\) prefixed to a λ-term in which it
+occurs; i.e.; the \(λ\) prefixed to \(λ1\).
+</p>
+</div>
+
+<div id="outline-container-orgfb8f84d" class="outline-3">
+<h3 id="orgfb8f84d"><span class="section-number-3">1.1.</span> Syntax</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+Technically, we can specify the set of λ-terms in terms of de Bruijn notation
+as
+\[\def\Coloneqq{::=}\def\divd{\ |\ } M, N \Coloneqq n \divd (M N) \divd
+   (λM)\]
+where \(n ∈ \{0, 1, 2, ...\}\).
+</p>
+
+<p>
+In Haskell, we can give this encoding of λ-terms in terms of an algebraic
+data type. First, we should define a type for natural numbers:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Nat</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Zero</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Succ</span> <span style="color: #d3869b;">Nat</span>
+</pre>
+</div>
+<p>
+λ-terms may then be encoded in a way that matches the definition given above:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Lambda</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Var</span> <span style="color: #d3869b;">Nat</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">App</span> <span style="color: #d3869b;">Lambda</span> <span style="color: #d3869b;">Lambda</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Lam</span> <span style="color: #d3869b;">Lambda</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5762b35" class="outline-3">
+<h3 id="org5762b35"><span class="section-number-3">1.2.</span> Substitution</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+Now that we are using de Bruijn indices, substitution becomes a bit tricky.
+But we can tame it by dividing the task up into parts that are manageable to
+do on their own.
+</p>
+
+<p>
+First, let's define a very general function for doing arbitrary substitutions
+of variables by λ-terms. This function should have the following type:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">subst</span> <span style="color: #83a598;">::</span> (<span style="color: #d3869b;">Nat</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Lambda</span>) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Lambda</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Lambda</span>
+</pre>
+</div>
+<p>
+It takes a function of type <code>Nat -&gt; Lambda</code> determining how the relevant
+substitution (whatever that is) should be performed, and it provides a
+general protocol for managing this substitution for different kinds of
+λ-terms. For example, on variables, <code>subst</code> just <i>performs the substution</i>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">subst</span> f (<span style="color: #d3869b;">Var</span> i) <span style="color: #83a598;">=</span> f i
+</pre>
+</div>
+<p>
+On applications, it does the substitution to both the function and the
+argument:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">subst</span> f (<span style="color: #d3869b;">App</span> t u) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">App</span> (subst f t) (subst f u)
+</pre>
+</div>
+<p>
+Finally, on abstractions, something special has to be done. Because we don't
+want to mess around with variables which are <i>bound</i> by the abstraction, we
+need to instead do substitution using another function <code>g</code> just like the
+function <code>f</code>, but which is different in two ways. The first way it is different
+is that it maps <code>Zero</code> onto <code>Var Zero</code>, ensuring that it remains bound by the
+enclosing <code>Lam</code>. The second way it is different is that it maps any <code>Succ i</code> onto
+<code>f i</code>, since the <code>Succ</code> was only there in order to ``look past'' the enclosing
+<code>Lam</code> - it should really just be an <code>i</code> for the purpose of performing the
+substitution - and it then <i>renames</i> the result of performing the substitution
+<code>f i</code> by incrementing all free variables inside <code>f i</code> with a <code>Succ</code>, using a
+function <code>rename</code>. This last part helps to avoid the problem of variable
+capture, i.e., by making sure any free <code>j</code> inside <code>f i</code> still looks like a <code>j</code>
+outside of the enclosing <code>Lam</code>, which mean that it has to be a <code>Succ j</code> inside
+the enclosing <code>Lam</code>. 
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">subst</span> f (<span style="color: #d3869b;">Lam</span> t) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Lam</span> (subst g t)
+  <span style="color: #fb4933;">where</span> g <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Nat</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Lambda</span>
+        g <span style="color: #d3869b;">Zero</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Var</span> <span style="color: #d3869b;">Zero</span>
+        g (<span style="color: #d3869b;">Succ</span> i) <span style="color: #83a598;">=</span> rename <span style="color: #d3869b;">Succ</span> (f i)
+</pre>
+</div>
+<p>
+How exactly does <code>rename</code> work? It should take some function from <code>Nat</code> onto <code>Nat</code>
+and use this function to rename free variables inside a λ-term. Thus its type
+is
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">rename</span> <span style="color: #83a598;">::</span> (<span style="color: #d3869b;">Nat</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Nat</span>) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Lambda</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Lambda</span>
+</pre>
+</div>
+<p>
+Given some function <code>h</code> of type <code>Nat -&gt; Nat</code> (e.g., <code>Succ</code>, as above), it renames
+variables by adjusting the natural number they correspond to using <code>h</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">rename</span> h (<span style="color: #d3869b;">Var</span> i) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Var</span> (h i)
+</pre>
+</div>
+<p>
+On applications, as you might expect, it performs renaming on both the
+function and the argument: 
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">rename</span> h (<span style="color: #d3869b;">App</span> t u) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">App</span> (rename h t) (rename h u)
+</pre>
+</div>
+<p>
+And on abstractions, it performs renaming on the body of the abstraction,
+but (as above) keeping bound variables intact and taking into account any
+extra <code>Succ</code> that might be lying around by using <code>h'</code> instead of <code>h</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">rename</span> h (<span style="color: #d3869b;">Lam</span> t) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Lam</span> (rename h' t)
+  <span style="color: #fb4933;">where</span> h' <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Nat</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Nat</span>
+        h' <span style="color: #d3869b;">Zero</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Zero</span>
+        h' (<span style="color: #d3869b;">Succ</span> i) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Succ</span> (h i)
+</pre>
+</div>
+
+<p>
+That's it for the definition of <code>subst</code>! We can now use it to define a more
+immediately useful function
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">subst0</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Lambda</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Lambda</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Lambda</span>
+</pre>
+</div>
+<p>
+which substitutes a λ-term <code>t</code> for <code>Var Zero</code> inside a λ-term <code>u</code> whose <code>Lam</code> has
+<i>just been taken off</i>. That is, we want to do a substitution inside a <code>u</code> whose
+free occurrences of <code>Var Zero</code> used to be bound by an enclosing <code>Lam</code> in the term
+<code>Lam u</code>. This yields the following definition:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">subst0</span> t <span style="color: #83a598;">=</span> subst f
+  <span style="color: #fb4933;">where</span> f <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Nat</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Lambda</span>
+        f <span style="color: #d3869b;">Zero</span> <span style="color: #83a598;">=</span> t
+        f (<span style="color: #d3869b;">Succ</span> i) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Var</span> i
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3fa8090" class="outline-3">
+<h3 id="org3fa8090"><span class="section-number-3">1.3.</span> β-reduction</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+Now that we have a definition of substitution, we want to use it to define a
+function which takes any given λ-term into its β-normal form, assuming it has
+one. This function should just take a λ-term onto a λ-term, where the latter
+is in normal form; thus it should have the following type:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">betaNormal</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Lambda</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Lambda</span>
+</pre>
+</div>
+<p>
+Again, there are three kinds of λ-terms we need to consider as the argument
+to this function. First, variables.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">betaNormal</span> v<span style="color: #83a598;">@</span>(<span style="color: #d3869b;">Var</span> <span style="color: #fb4933;">_</span>) <span style="color: #83a598;">=</span> v
+</pre>
+</div>
+<p>
+Variables are already in β-normal form, so nothing needs to be done to them.
+Next, let's consider abstractions.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">betaNormal</span> (<span style="color: #d3869b;">Lam</span> t) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Lam</span> (betaNormal t) 
+</pre>
+</div>
+<p>
+Here, we only need to look underneath the binder <code>Lam</code> and normalize the body
+of the abstraction. The reasoning is as follows. Let's say <code>u</code> is in β-normal
+form; does turning <code>u</code> into <code>Lam u</code> create a β-redex somewhere? No! So as long as
+we have the body in normal form, adding a <code>Lam</code> won't make a difference. Next,
+the more tricky case: applications.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">betaNormal</span> (<span style="color: #d3869b;">App</span> t u) <span style="color: #83a598;">=</span> <span style="color: #fb4933;">case</span> betaNormal t <span style="color: #fb4933;">of</span>
+                         <span style="color: #d3869b;">Lam</span> t' <span style="color: #83a598;">-&gt;</span> betaNormal (subst0 (betaNormal u) t)
+                         t' <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">App</span> t' (betaNormal u)
+</pre>
+</div>
+<p>
+If taking the function <code>t</code> into β-normal form results in an abstraction, we
+need to perform a β-reduction step between the function and the argument
+(which we normalize). The result may not be in normal form, so we have to
+call <code>betaNormal</code> again at the end. If taking <code>t</code> into β-normal form does not
+result in an abstraction, than we can just take <code>u</code> onto its normal form and
+put the two back together into an application. The reasoning here is that
+putting them back together can't possibly create any new β-redices.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf679b22" class="outline-2">
+<h2 id="orgf679b22"><span class="section-number-2">2.</span> Exercises: pretty printing</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+We now have an encoding of the untyped λ-calculus using de Bruijn indices, as
+well as an encoding of β-reduction that lets us take any λ-term into its
+β-normal form, assuming it has one.
+</p>
+
+<p>
+But de Bruijn indies are ugly to look at, so it would nice to have a way of
+printing λ-terms out using the usual notation. These exercises aim to guide
+you in writing a pretty printer for our de Bruijn notation above, which
+renders it in terms of normal-looking λ-terms (yay!).
+</p>
+
+<p>
+To be able to print out arbitrary large λ-terms, we'll need an infinite supply
+of variable names. One neat thing you can do in Haskell is create infinite
+lists (though don't try to print them out!). Indeed, the following list is
+infinite and has some nice names for variables:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">freshVars</span> <span style="color: #83a598;">::</span> [<span style="color: #d3869b;">String</span>]
+<span style="color: #fabd2f;">freshVars</span> <span style="color: #83a598;">=</span> concat (map (<span style="color: #83a598;">\</span>s <span style="color: #83a598;">-&gt;</span> map (<span style="color: #83a598;">\</span>c <span style="color: #83a598;">-&gt;</span> c<span style="color: #d3869b;">:</span>s) <span style="color: #b8bb26;">"xyzuvw"</span>) appendMe)
+  <span style="color: #fb4933;">where</span> appendMe <span style="color: #83a598;">::</span> [<span style="color: #d3869b;">String</span>]
+        appendMe <span style="color: #83a598;">=</span> <span style="color: #b8bb26;">""</span> <span style="color: #d3869b;">:</span> map show ints
+
+        ints <span style="color: #83a598;">::</span> [<span style="color: #d3869b;">Integer</span>]
+        ints <span style="color: #83a598;">=</span> 1 <span style="color: #d3869b;">:</span> map (<span style="color: #83a598;">\</span>x <span style="color: #83a598;">-&gt;</span> x <span style="color: #83a598;">+</span> 1) ints
+</pre>
+</div>
+<p>
+If you took, e.g., the first 50 elements of <code>freshVars</code>, you'd get the
+following:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell">ghci<span style="color: #fabd2f;">&gt;</span> take 50 freshVars
+[<span style="color: #b8bb26;">"x"</span>,<span style="color: #b8bb26;">"y"</span>,<span style="color: #b8bb26;">"z"</span>,<span style="color: #b8bb26;">"u"</span>,<span style="color: #b8bb26;">"v"</span>,<span style="color: #b8bb26;">"w"</span>,<span style="color: #b8bb26;">"x1"</span>,<span style="color: #b8bb26;">"y1"</span>,<span style="color: #b8bb26;">"z1"</span>,<span style="color: #b8bb26;">"u1"</span>,<span style="color: #b8bb26;">"v1"</span>,<span style="color: #b8bb26;">"w1"</span>,<span style="color: #b8bb26;">"x2"</span>,<span style="color: #b8bb26;">"y2"</span>,<span style="color: #b8bb26;">"z2"</span>,<span style="color: #b8bb26;">"u2"</span>,<span style="color: #b8bb26;">"v2"</span>,<span style="color: #b8bb26;">"w2"</span>,<span style="color: #b8bb26;">"x3"</span>,<span style="color: #b8bb26;">"y3"</span>,<span style="color: #b8bb26;">"z3"</span>,<span style="color: #b8bb26;">"u3"</span>,<span style="color: #b8bb26;">"v3"</span>,<span style="color: #b8bb26;">"w3"</span>,<span style="color: #b8bb26;">"x4"</span>,<span style="color: #b8bb26;">"y4"</span>,<span style="color: #b8bb26;">"z4"</span>,<span style="color: #b8bb26;">"u4"</span>,<span style="color: #b8bb26;">"v4"</span>,<span style="color: #b8bb26;">"w4"</span>,<span style="color: #b8bb26;">"x5"</span>,<span style="color: #b8bb26;">"y5"</span>,<span style="color: #b8bb26;">"z5"</span>,<span style="color: #b8bb26;">"u5"</span>,<span style="color: #b8bb26;">"v5"</span>,<span style="color: #b8bb26;">"w5"</span>,<span style="color: #b8bb26;">"x6"</span>,<span style="color: #b8bb26;">"y6"</span>,<span style="color: #b8bb26;">"z6"</span>,<span style="color: #b8bb26;">"u6"</span>,<span style="color: #b8bb26;">"v6"</span>,<span style="color: #b8bb26;">"w6"</span>,<span style="color: #b8bb26;">"x7"</span>,<span style="color: #b8bb26;">"y7"</span>,<span style="color: #b8bb26;">"z7"</span>,<span style="color: #b8bb26;">"u7"</span>,<span style="color: #b8bb26;">"v7"</span>,<span style="color: #b8bb26;">"w7"</span>,<span style="color: #b8bb26;">"x8"</span>,<span style="color: #b8bb26;">"y8"</span>]
+</pre>
+</div>
+<p>
+Note where the infinite structure of <code>freshVars</code> comes from: the definition of
+<code>ints</code>, which is just an infinite list of positive integers, starting from <code>1</code>.
+</p>
+
+<p>
+The goal in writing a pretty printer for λ-terms is to have a function
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">printLambda</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Lambda</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">String</span>
+</pre>
+</div>
+<p>
+which takes a lambda term encoded using the algebraic data type <code>Lambda</code> onto a
+string representing that λ-term using the usual notation for λ-terms. This
+function should have the following behavior, for example:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell">ghci<span style="color: #fabd2f;">&gt;</span> putStrLn (printLambda (<span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">Var</span> <span style="color: #d3869b;">Zero</span>)))
+(&#955;x<span style="color: #83a598;">.</span>x)
+ghci<span style="color: #fabd2f;">&gt;</span> putStrLn (printLambda (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">Var</span> <span style="color: #d3869b;">Zero</span>)) (<span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">Var</span> (<span style="color: #d3869b;">Succ</span> <span style="color: #d3869b;">Zero</span>))))))
+((&#955;x<span style="color: #83a598;">.</span>x) (&#955;x<span style="color: #83a598;">.</span>(&#955;y<span style="color: #83a598;">.</span>x)))
+ghci<span style="color: #fabd2f;">&gt;</span> putStrLn (printLambda (<span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">Var</span> (<span style="color: #d3869b;">Succ</span> <span style="color: #d3869b;">Zero</span>))))))
+(&#955;x<span style="color: #83a598;">.</span>(&#955;y<span style="color: #83a598;">.</span>(&#955;z<span style="color: #83a598;">.</span>y)))
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgae2e5c3" class="outline-3">
+<h3 id="orgae2e5c3"><span class="section-number-3">2.1.</span> Part 1</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+To define <code>printLambda</code>, we'll start by defining a function
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">printLambda'</span> <span style="color: #83a598;">::</span> [<span style="color: #d3869b;">String</span>] <span style="color: #83a598;">-&gt;</span> (<span style="color: #d3869b;">Nat</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">String</span>) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Lambda</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">String</span>
+</pre>
+</div>
+<p>
+which takes a list of strings providing us with fresh variable names, along
+with a function of type <code>Nat -&gt; String</code> that should actually use this list of
+names in some way. Given these two ingredients, it takes a <code>Lambda</code> onto a
+<code>String</code>.
+</p>
+
+<p>
+We can define this function by first defining its behavior on variables:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">printLambda'</span> <span style="color: #fb4933;">_</span> f (<span style="color: #d3869b;">Var</span> i) <span style="color: #83a598;">=</span> f i
+</pre>
+</div>
+<p>
+How should <code>printLambda'</code> be defined on applications? That is, fill out the
+rest of the following branch by filling in the <code>_</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">printLambda'</span> freshVs f (<span style="color: #d3869b;">App</span> t u) <span style="color: #83a598;">=</span> <span style="color: #fb4933;">_</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1f83d41" class="outline-3">
+<h3 id="org1f83d41"><span class="section-number-3">2.2.</span> Part 2</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+The third branch, which involves abstractions, is the trickiest. Here, the
+list of fresh variable names actually needs to be used. This branch would
+look as follows:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">printLambda'</span> (fresh<span style="color: #d3869b;">:</span>vs) f (<span style="color: #d3869b;">Lam</span> t) <span style="color: #83a598;">=</span>
+  <span style="color: #b8bb26;">"(&#955;"</span> <span style="color: #83a598;">++</span> fresh <span style="color: #83a598;">++</span> <span style="color: #b8bb26;">"."</span> <span style="color: #83a598;">++</span> printLambda f' vs t <span style="color: #83a598;">++</span> <span style="color: #b8bb26;">")"</span>
+  <span style="color: #fb4933;">where</span> f' <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Nat</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">String</span>
+</pre>
+</div>
+<p>
+Fill out the rest of the definition of this branch by saying what <code>f'</code> does!
+</p>
+</div>
+</div>
+
+<div id="outline-container-org181281e" class="outline-3">
+<h3 id="org181281e"><span class="section-number-3">2.3.</span> Part 3</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+Now that all three branches of <code>printLambda'</code> are defined, give a definition of
+<code>printLambda</code> using <code>printLambda'</code> by feeding it the appropriate pieces.
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Julian Grove</p>
+<p class="date">Created: 2023-09-19 Tue 21:29</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
