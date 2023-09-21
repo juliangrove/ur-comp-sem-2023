@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-09-21 Thu 15:11 -->
+<!-- 2023-09-21 Thu 16:51 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Church encodings</title>
@@ -238,32 +238,32 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org4fd64ac">1. Review</a>
+<li><a href="#org0232583">1. Review</a>
 <ul>
-<li><a href="#org57e641c">1.1. Booleans</a></li>
-<li><a href="#orgc084a83">1.2. Natural numbers</a></li>
-<li><a href="#orgcbe820a">1.3. Pairing</a></li>
-<li><a href="#orgc456c33">1.4. Lists</a></li>
+<li><a href="#orgb2d427f">1.1. Booleans</a></li>
+<li><a href="#orgac6f42e">1.2. Natural numbers</a></li>
+<li><a href="#org2a89a1c">1.3. Pairing</a></li>
+<li><a href="#org57eeff2">1.4. Lists</a></li>
 </ul>
 </li>
-<li><a href="#orgae7b825">2. Exercises</a>
+<li><a href="#orgd509831">2. Exercises</a>
 <ul>
-<li><a href="#orgff24bac">2.1. Part 1</a></li>
-<li><a href="#orgb4a5734">2.2. Part 2</a></li>
-<li><a href="#orgfd3af3f">2.3. Part 3</a></li>
-<li><a href="#org8912f69">2.4. Part 4</a></li>
-<li><a href="#org8f53694">2.5. Part 5</a></li>
-<li><a href="#org56dc788">2.6. Part 6</a></li>
-<li><a href="#org5cfaf66">2.7. Part 7</a></li>
-<li><a href="#org22a447a">2.8. Part 8</a></li>
+<li><a href="#org93e4e29">2.1. Part 1</a></li>
+<li><a href="#org024fffc">2.2. Part 2</a></li>
+<li><a href="#orgefd4ca1">2.3. Part 3</a></li>
+<li><a href="#org97f8a76">2.4. Part 4</a></li>
+<li><a href="#org6375121">2.5. Part 5</a></li>
+<li><a href="#orgebbf875">2.6. Part 6</a></li>
+<li><a href="#org71c815a">2.7. Part 7</a></li>
+<li><a href="#org0fc26b3">2.8. Part 8</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org4fd64ac" class="outline-2">
-<h2 id="org4fd64ac"><span class="section-number-2">1.</span> Review</h2>
+<div id="outline-container-org0232583" class="outline-2">
+<h2 id="org0232583"><span class="section-number-2">1.</span> Review</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 We looked at Church encodings of four different data types:
@@ -276,8 +276,8 @@ We looked at Church encodings of four different data types:
 </ul>
 </div>
 
-<div id="outline-container-org57e641c" class="outline-3">
-<h3 id="org57e641c"><span class="section-number-3">1.1.</span> Booleans</h3>
+<div id="outline-container-orgb2d427f" class="outline-3">
+<h3 id="orgb2d427f"><span class="section-number-3">1.1.</span> Booleans</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 Booleans can be one of two values, \(𝕋\) and \(𝔽\). In Haskell, they are
@@ -301,8 +301,8 @@ such as:
 </div>
 </div>
 
-<div id="outline-container-orgc084a83" class="outline-3">
-<h3 id="orgc084a83"><span class="section-number-3">1.2.</span> Natural numbers</h3>
+<div id="outline-container-orgac6f42e" class="outline-3">
+<h3 id="orgac6f42e"><span class="section-number-3">1.2.</span> Natural numbers</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 The natural numbers 0, 1, 2, etc., can be encoded in Haskell by the algebraic
@@ -337,8 +337,8 @@ which adds \(n\) to \(0\) \(m\) times.
 </div>
 </div>
 
-<div id="outline-container-orgcbe820a" class="outline-3">
-<h3 id="orgcbe820a"><span class="section-number-3">1.3.</span> Pairing</h3>
+<div id="outline-container-org2a89a1c" class="outline-3">
+<h3 id="org2a89a1c"><span class="section-number-3">1.3.</span> Pairing</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 Taking a pair of two values can be done as follows:
@@ -361,8 +361,8 @@ which give back the first and second projections of a pair, respectively.
 </div>
 </div>
 
-<div id="outline-container-orgc456c33" class="outline-3">
-<h3 id="orgc456c33"><span class="section-number-3">1.4.</span> Lists</h3>
+<div id="outline-container-org57eeff2" class="outline-3">
+<h3 id="org57eeff2"><span class="section-number-3">1.4.</span> Lists</h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 Finally, lists! In Haskell, these are encoded as an algebraic data type
@@ -393,12 +393,12 @@ Note that, if passed the empty list, \(\mathtt{head}\) just gives back \(𝔽\).
 </div>
 </div>
 
-<div id="outline-container-orgae7b825" class="outline-2">
-<h2 id="orgae7b825"><span class="section-number-2">2.</span> Exercises</h2>
+<div id="outline-container-orgd509831" class="outline-2">
+<h2 id="orgd509831"><span class="section-number-2">2.</span> Exercises</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-orgff24bac" class="outline-3">
-<h3 id="orgff24bac"><span class="section-number-3">2.1.</span> Part 1</h3>
+<div id="outline-container-org93e4e29" class="outline-3">
+<h3 id="org93e4e29"><span class="section-number-3">2.1.</span> Part 1</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 Compute \(\mathtt{plus}\,⌜2⌝\,⌜3⌝\).
@@ -406,20 +406,20 @@ Compute \(\mathtt{plus}\,⌜2⌝\,⌜3⌝\).
 </div>
 </div>
 
-<div id="outline-container-orgb4a5734" class="outline-3">
-<h3 id="orgb4a5734"><span class="section-number-3">2.2.</span> Part 2</h3>
+<div id="outline-container-org024fffc" class="outline-3">
+<h3 id="org024fffc"><span class="section-number-3">2.2.</span> Part 2</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 Define a function \(\mathtt{ifThen}\) which takes two truth values and gives
-back \(𝕋\) if the first truth value is \(𝕋\) or the second truth value is \(𝔽\) (or
-both). Do this without using either \(\mathtt{not}\) or \(\mathtt{or}\) in your
-definition!
+back \(𝕋\) if the first truth value is \(𝔽\) or the second truth value is \(𝕋\) (or
+if both the first is \(𝔽\) and the second is \(𝕋\)). Do this without using either
+\(\mathtt{not}\) or \(\mathtt{or}\) in your definition!
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgfd3af3f" class="outline-3">
-<h3 id="orgfd3af3f"><span class="section-number-3">2.3.</span> Part 3</h3>
+<div id="outline-container-orgefd4ca1" class="outline-3">
+<h3 id="orgefd4ca1"><span class="section-number-3">2.3.</span> Part 3</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 Define a function \(\mathtt{append}\) which takes two lists and appends
@@ -430,19 +430,19 @@ them. That is, \(\mathtt{append}\) should have the following behavior:
 </div>
 </div>
 
-<div id="outline-container-org8912f69" class="outline-3">
-<h3 id="org8912f69"><span class="section-number-3">2.4.</span> Part 4</h3>
+<div id="outline-container-org97f8a76" class="outline-3">
+<h3 id="org97f8a76"><span class="section-number-3">2.4.</span> Part 4</h3>
 <div class="outline-text-3" id="text-2-4">
 <p>
 Define a function \(\mathtt{all}\) which, given a list of Booleans (i.e.,
-either \(𝕋\) or \(𝔽\)), returns \(𝕋\) if any of them is \(𝕋\) and returns \(𝔽\)
+either \(𝕋\) or \(𝔽\)), returns \(𝕋\) if all of them are \(𝕋\) and returns \(𝔽\)
 otherwise.
 </p>
 </div>
 </div>
 
-<div id="outline-container-org8f53694" class="outline-3">
-<h3 id="org8f53694"><span class="section-number-3">2.5.</span> Part 5</h3>
+<div id="outline-container-org6375121" class="outline-3">
+<h3 id="org6375121"><span class="section-number-3">2.5.</span> Part 5</h3>
 <div class="outline-text-3" id="text-2-5">
 <p>
 Define a function \(\mathtt{any}\) which, given a list of Booleans (i.e.,
@@ -452,8 +452,8 @@ otherwise.
 </div>
 </div>
 
-<div id="outline-container-org56dc788" class="outline-3">
-<h3 id="org56dc788"><span class="section-number-3">2.6.</span> Part 6</h3>
+<div id="outline-container-orgebbf875" class="outline-3">
+<h3 id="orgebbf875"><span class="section-number-3">2.6.</span> Part 6</h3>
 <div class="outline-text-3" id="text-2-6">
 <p>
 Define a function \(\mathtt{sum}\) which, given a list of natural numbers,
@@ -462,8 +462,8 @@ returns their sum.
 </div>
 </div>
 
-<div id="outline-container-org5cfaf66" class="outline-3">
-<h3 id="org5cfaf66"><span class="section-number-3">2.7.</span> Part 7</h3>
+<div id="outline-container-org71c815a" class="outline-3">
+<h3 id="org71c815a"><span class="section-number-3">2.7.</span> Part 7</h3>
 <div class="outline-text-3" id="text-2-7">
 <p>
 Define a function \(\mathtt{map}\) which, given a function \(f\) from \(a\)'s to
@@ -475,8 +475,8 @@ of \(b\)'s. That is, \(\mathtt{map}\) should have the following behavior:
 </div>
 </div>
 
-<div id="outline-container-org22a447a" class="outline-3">
-<h3 id="org22a447a"><span class="section-number-3">2.8.</span> Part 8</h3>
+<div id="outline-container-org0fc26b3" class="outline-3">
+<h3 id="org0fc26b3"><span class="section-number-3">2.8.</span> Part 8</h3>
 <div class="outline-text-3" id="text-2-8">
 <p>
 Define a function \(\mathtt{filter}\) which, given a function \(f\) from \(a\)'s
@@ -494,7 +494,7 @@ should satisfy the following equivalences:
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-09-21 Thu 15:11</p>
+<p class="date">Created: 2023-09-21 Thu 16:51</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

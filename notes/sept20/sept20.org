@@ -96,9 +96,9 @@
    
 ** Part 2
    Define a function $\mathtt{ifThen}$ which takes two truth values and gives
-   back $𝕋$ if the first truth value is $𝕋$ or the second truth value is $𝔽$ (or
-   both). Do this without using either $\mathtt{not}$ or $\mathtt{or}$ in your
-   definition!
+   back $𝕋$ if the first truth value is $𝔽$ or the second truth value is $𝕋$ (or
+   if both the first is $𝔽$ and the second is $𝕋$). Do this without using either
+   $\mathtt{not}$ or $\mathtt{or}$ in your definition!
 
 ** Part 3
    Define a function $\mathtt{append}$ which takes two lists and appends
@@ -108,7 +108,7 @@
 
 ** Part 4
    Define a function $\mathtt{all}$ which, given a list of Booleans (i.e.,
-   either $𝕋$ or $𝔽$), returns $𝕋$ if any of them is $𝕋$ and returns $𝔽$
+   either $𝕋$ or $𝔽$), returns $𝕋$ if all of them are $𝕋$ and returns $𝔽$
    otherwise.
 
 ** Part 5
