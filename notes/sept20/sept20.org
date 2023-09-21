@@ -1,0 +1,138 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: Church encodings
+
+* Review
+  We looked at Church encodings of four different data types:
+  - Booleans
+  - Natural numbers
+  - Pairs
+  - Lists
+
+** Booleans
+   Booleans can be one of two values, $𝕋$ and $𝔽$. In Haskell, they are
+   represented by the algebraic data type ~Bool~:
+   #+begin_src haskell
+     data Bool = True | False
+   #+end_src
+   In λ-calculus we can represent them as two λ-terms:
+   $$𝕋 ≝ λx, y.x$$
+   $$𝔽 ≝ λx, y.y$$
+   Defining Booleans this way allows us to define fun operations on Booleans,
+   such as:
+   $$\mathtt{ifThenElse} ≝ λp, x, y.p\,x\,y$$
+   $$\mathtt{not} ≝ λp.p\,𝔽\,𝕋$$
+   $$\mathtt{and} ≝ λp, q.p\,q\,𝔽$$
+   $$\mathtt{or} ≝ λp, q.p\,𝕋\,q$$
+
+** Natural numbers
+   The natural numbers 0, 1, 2, etc., can be encoded in Haskell by the algebraic
+   data type ~Nat~:
+   #+begin_src haskell
+     data Nat = Zero | Succ Nat
+   #+end_src
+   In λ-calculus we can represent them by using the following translation
+   ($⌜·⌝$):
+   $$⌜0⌝ ≝ λs, z.z$$
+   $$⌜\mathtt{Succ}\,n⌝ ≝ λs, z.s\,(⌜n⌝\,s\,z)$$
+   For example, $1$ (i.e., $\mathtt{Succ}\,0$) would receive the translation
+   $⌜\mathtt{Succ}\,0⌝ = λs, z.s\,(⌜0⌝\,s\,z) = λs, z.s\,((λs, z.z)\,s\,z)
+   →_β^* λs, z.s\,(s\,z)$. In general, the number of occurrences of the variable
+   bound by the outer abstraction in the encoding of a natural number is just
+   that number.
+
+   We can now define functions on natural numbers, such as
+   $$\mathtt{succ} ≝ λn, s, z.s\,(n\,s\,z)$$
+   i.e., the successor function, which, given a natural number, takes its
+   successor. Other useful operations are
+   $$\mathtt{plus} ≝ λm, n.m\,\mathtt{succ}\,n$$
+   which takes the successor of $n$ $m$ times, and
+   $$\mathtt{mult} ≝ λm, n.m\,(\mathtt{plus}\,n)\,⌜0⌝$$
+   which adds $n$ to $0$ $m$ times.
+
+** Pairing
+   Taking a pair of two values can be done as follows:
+   $$⌜⟨a, b⟩⌝ ≝ λf.f\,⌜a⌝\,⌜b⌝$$
+   Given this encoding of pairing, we may define the following two /projection
+   functions/, which take the first and second projections of a pair,
+   respectively:
+   $$π₁ ≝ λp.p\,𝕋$$
+   $$π₂ ≝ λp.p\,𝔽$$
+   In Haskell, these functions correspond to the functions
+   #+begin_src haskell
+     fst :: (a, b) -> a
+     snd :: (a, b) -> b
+   #+end_src
+   which give back the first and second projections of a pair, respectively.
+
+** Lists
+   Finally, lists! In Haskell, these are encoded as an algebraic data type
+   (equivalent to)
+   #+begin_src haskell
+     data List a = Empty | Cons a (List a)
+   #+end_src
+   In the λ-calculus, we may define them as using the translation
+   $$⌜[]⌝ ≝ λc, n.n$$
+   $$⌜a : l⌝ ≝ λc, n.c\,⌜a⌝\,(⌜l⌝\,c\,n)$$
+   For example, the the list $[1]$ would be translated as $⌜[1]⌝ = λc,
+   n.c\,⌜1⌝(⌜[]⌝\,c\,n) = λc, n.c\,⌜1⌝\,((λc, n.n)\,c\,n) →_β^* λc,
+   n.c\,⌜1⌝\,n$.
+
+   We can now, e.g., take the length of a list in terms of a function
+   $$\mathtt{length} ≝ λl.l\,(λx.\mathtt{succ})\,⌜0⌝$$
+   and we can, e.g., take the head (i.e., first element) of a list using a
+   function
+   $$\mathtt{head} ≝ λl.l\,𝕋\,𝔽$$
+   Note that, if passed the empty list, $\mathtt{head}$ just gives back $𝔽$.
+   
+* Exercises
+** Part 1
+   Compute $\mathtt{plus}\,⌜2⌝\,⌜3⌝$.
+   
+** Part 2
+   Define a function $\mathtt{ifThen}$ which takes two truth values and gives
+   back $𝕋$ if the first truth value is $𝕋$ or the second truth value is $𝔽$ (or
+   both). Do this without using either $\mathtt{not}$ or $\mathtt{or}$ in your
+   definition!
+
+** Part 3
+   Define a function $\mathtt{append}$ which takes two lists and appends
+   them. That is, $\mathtt{append}$ should have the following behavior:
+   $$\mathtt{append}\,⌜[]⌝\,l ≡_β l$$
+   $$\mathtt{append}\,⌜a : l₁⌝\,l₂ ≡_β λc, n.c\,⌜a⌝\,(\mathtt{append}\,l₁\,l₂)$$
+
+** Part 4
+   Define a function $\mathtt{all}$ which, given a list of Booleans (i.e.,
+   either $𝕋$ or $𝔽$), returns $𝕋$ if any of them is $𝕋$ and returns $𝔽$
+   otherwise.
+
+** Part 5
+   Define a function $\mathtt{any}$ which, given a list of Booleans (i.e.,
+   either $𝕋$ or $𝔽$), returns $𝕋$ if any of them is $𝕋$ and returns $𝔽$
+   otherwise.
+
+** Part 6
+   Define a function $\mathtt{sum}$ which, given a list of natural numbers,
+   returns their sum.
+
+** Part 7
+   Define a function $\mathtt{map}$ which, given a function $f$ from \(a\)'s to
+   \(b\)'s, applies $f$ to each member of a list of \(a\)'s to get back a list
+   of \(b\)'s. That is, $\mathtt{map}$ should have the following behavior:
+   $$\mathtt{map}\,f\,⌜[]⌝ ≡_β ⌜[]⌝$$
+   $$\mathtt{map}\,f\,⌜a : l⌝ ≡_β λc, n.c\,(f\,⌜a⌝)\,(\mathtt{map}\,f\,⌜l⌝\,c\,n)$$
+
+** Part 8
+   Define a function $\mathtt{filter}$ which, given a function $f$ from \(a\)'s
+   to Booleans and a list of \(a\)'s, filters the list using $f$. That is, it
+   returns a new list of \(a\)'s such that $x$ is on the new list just in case
+   $x$ was on  the old list and $f x →_β^* 𝕋. In other words, $\mathtt{filter}$
+   should satisfy the following equivalences:
+   $$\mathtt{filter}\,f\,⌜[]⌝ ≡_β ⌜[]⌝$$
+   $$\mathtt{filter}\,f\,⌜a : l⌝ ≡_β λc, n.c\,⌜a⌝\,(\mathtt{filter}\,f\,⌜l⌝\,c\,n)\,\,\,\,\,\,\,\,\,\,\,\,\text{(if }f\,⌜a⌝ →_β^* 𝕋\text{)}$$
+   $$\mathtt{filter}\,f\,⌜a : l⌝ ≡_β \mathtt{filter}\,f\,⌜l⌝\,\,\,\,\,\,\,\,\,\,\,\,\text{(if }f\,⌜a⌝ →_β^* 𝔽\text{)}$$
