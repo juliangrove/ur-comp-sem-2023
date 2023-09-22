@@ -1,0 +1,319 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: Haskell: variables, data types, patterns, and recursion (Answer key)
+#+bibliography: ../../ur-comp-sem-2023.bib
+
+Let's first do some quick review of things we went over today. Exercises are at
+the end.
+
+* Review
+** ~let~ bindings
+   A ~let~ binding can be used to define a local variable anywhere you want:
+   #+begin_src haskell
+     five :: Integer
+     five = let x = 2
+	    in x + 3
+   #+end_src
+   or, you can even type in your [[https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop][REPL]]:
+   #+begin_src haskell
+     ghci> let x = 2 in x + 3
+   #+end_src
+   
+** ~where~ clauses
+   A ~where~ clause can be used to define a local variable inside of another
+   definition:
+   #+begin_src haskell
+     alsoFive :: Integer
+     alsoFive = x + 3
+       where x = 2
+   #+end_src
+
+** Anonymous functions
+   Functions are first-class in Haskell, so they are treated like other
+   data. This means that we can write function /literals/, or /anonymous functions/
+   (since they don't need to be named by some identifier).
+   #+begin_src haskell
+     addFour :: Integer -> Integer
+     addFour = \x -> x + 4
+   #+end_src
+   This function adds 4 to its single ~Integer~ argument.
+   
+** Sum types
+   Consider the following algebraic data type definition:
+   #+begin_src haskell
+     data Fruit
+       = Cherry
+       | Strawberry
+       | Orange
+       | Pretzel
+       | Pear
+       | Banana
+       deriving Show
+   #+end_src
+   ~Fruit~ is what is called a /sum type/.
+   - It enumerates all values it can have in different branches, delimiting
+     these values with a ~|~.
+   - In each branch is what is called a /data constructor/.
+   - The name of a data constructor in Haskell must begin with a capital letter
+     (just like the name of a data type).
+   - Note the ~deriving Show~, which allows us to print values of the data type
+     out in a REPL.
+
+** N-ary constructors
+   The ~Fruit~ sum type is an odd special case, in that its data constructors
+   don't carry an extra information besides their identity. Something more
+   common might have data constructors carry additional data; e.g., one data
+   constructor could carry a ~Bool~ and one could carry a ~String~:
+   #+begin_src haskell
+     data BoolOrString
+       = B Bool
+       | S String
+       deriving Show
+   #+end_src
+   This allows us to write functions that take /either/ a ~Bool~ /or/ a ~String~ as
+   their input, using /pattern matching/:
+   #+begin_src haskell
+     typeFlipper :: BoolOrString -> BoolOrString
+     typeFlipper (S "Julian") = B True
+     typeFlipper (B True) = S "Stephanie"
+     typeFlipper (B False) = S "Pavlo"
+     typeFlipper (S str) = S str
+   #+end_src
+   By the way, you might be wondering: if a data constructor can take an
+   argument, does that mean it's a function? The answer is ``yes'':
+   #+begin_src haskell
+     ghci> :t B
+     B :: Bool -> BoolOrString
+     ghci> :t S
+     S :: String -> BoolOrString
+   #+end_src
+
+** Pattern matching: order matters
+   Pattern branches get checked in top-to-bottom order. Check out the following
+   example:
+   #+begin_src haskell
+     onlyRochester :: String -> String
+     onlyRochester "Rochester" = "Rochester"
+     onlyRochester str = "Not Rochester, but rather " ++ str
+   #+end_src   
+   Flipping the branches would make the definition effectively stop at the first
+   branch, since ~str~ is a wildcard over all possible strings:
+   #+begin_src haskell
+     onlyRochesterFlipped :: String -> String
+     onlyRochesterFlipped str = "Not Rochester, but rather " ++ str
+     onlyRochesterFlipped "Rochester" = "Rochester"
+   #+end_src
+   ~onlyRochesterFlipped~ will /never/ return ~"Rochester"~.
+
+** Case expressions
+   You can also use a /case expression/ to do pattern matching:
+   #+begin_src haskell
+     lengthOrTruthValue :: BoolOrString -> Int
+     lengthOrTruthValue x = case x of
+       S s -> length s
+       B b -> if b then 1 else 0
+   #+end_src
+   Case expressions do more than just pattern match---they also evaluate the
+   expression between the ~case~ and the ~of~:
+   #+begin_src haskell
+     even' :: Integer -> Bool
+     even' n = case n `mod` 2 of
+       0 -> True
+       _ -> False
+   #+end_src
+
+** As patterns
+   An /as pattern/ (written with an ~@~ sign) allows you to bind an identifier to an
+   argument which has been deconstructed into a pattern:
+   #+begin_src haskell
+     doubleString :: BoolOrString -> BoolOrString
+     doubleString b@(B _) = b
+     doubleString (S str) = S (str ++ str)
+   #+end_src
+   ~b~ here is restricted to being instantiated by a ~B x~ (for some ~x~). So what
+   this definition says is that when you feed ~doubleString~ a ~B x~, it just
+   returns it back to you.
+   
+** Pattern guards
+   Pattern guards are useful when you want to further restrict the applicability
+   of a branch of a definition to patterns that satisfy some boolean condition:
+   #+begin_src haskell
+     amIEven :: Integer -> String
+     amIEven n
+       | n `mod` 2 == 0 = "Yes!"
+       | otherwise = "No :("
+   #+end_src
+   You use a ~|~ after the relevant pattern and then state the condition. (Note
+   that ~otherwise~ here is just defined as ~True~.)
+
+** Lists
+   Lists are deeply baked into Haskell, so we can't look at the source code. But
+   we can roll our own:
+   #+begin_src haskell
+     data List a
+       = Empty
+       | Cons a (List a)
+       deriving Show
+   #+end_src
+
+** Haskell lists
+   For convenience, Haskell lets you type, e.g., ~['a', 's', 'd', 'f']~ for a list
+   literal. When you see this, you should have in mind the following:
+   #+begin_src haskell
+     ('a' : ('s' : ('d' : ('f' : []))))
+   #+end_src
+   Everything is one of two cases; either:
+   - any empty list
+   - something cons-ed onto a list
+
+** Appending stuff
+   Let's define our first recursive function, ~append~:
+   #+begin_src haskell
+     append :: [a] -> [a] -> [a]
+     append [] l = l
+     append (a : l1) l2 = a : (append l1 l2)
+   #+end_src
+   
+** ~[a]~ to ~List a~
+   Here's how we could write a recursive function that maps values of type ~List
+   a~ to values of type ~[a]~:
+   #+begin_src haskell
+     listToHaskellList :: List a -> [a]
+     listToHaskellList Empty = []
+     listToHaskellList (Cons a l) = a : listToHaskellList l
+   #+end_src
+
+** ~map~
+   Haskell has a built-in function ~map~ for mapping functions of type ~a -> b~ to
+   functions from lists of ~a~'s to lists of ~b~'s.
+   #+begin_src haskell
+     map :: (a -> b) -> [a] -> [b]
+   #+end_src
+   How does ~map~ work?...
+   - We need a branch in the definition that applies to the empty list.
+   - We need a branch in the definition that applies to non-empty lists.
+   This fits the bill:
+   #+begin_src haskell
+     ourMap :: (a -> b) -> [a] -> [b]
+     ourMap f [] = []
+     ourMap f (a : as) = f a : ourMap f as
+   #+end_src
+   
+** ~filter~
+   Filter takes a predicate, i.e., a function of from ~a~'s to ~Bool~'s, along with
+   a list of ~a~'s, in order to give back a list of the ~a~'s that satisfy the
+   predicate.
+   #+begin_src haskell
+     filter :: (a -> Bool) -> [a] -> [a]
+   #+end_src
+   How does ~filter~ work?...
+   - We need a branch in the definition that applies to the empty list.
+   - We need a branch in the definition that applies to non-empty lists.
+   This works:
+   #+begin_src haskell
+     ourFilter :: (a -> Bool) -> [a] -> [a]
+     ourFilter p [] = []
+     ourFilter p (a : as) = if p a then a : ourFilter p as else ourFilter p as
+   #+end_src
+
+** ~foldr~ and ~foldl~
+   Haskell has functions ~foldr~ and ~foldl~ that each take a two-place operation, a
+   starting value, and some list, in order to iteratively apply the function to
+   the elements of the list, one-by-one.
+   #+begin_src haskell
+     foldr :: (a -> b -> b) -> b -> [a] -> b
+     foldl :: (b -> a -> b) -> b -> [a] -> b
+   #+end_src
+
+** ~foldr~
+   ~foldr~, in a way, conceptualizes a list as right-branching. Note the following
+   behavior:
+   #+begin_src haskell
+     ghci> foldr (++) "0" ["7", "8", "9", "10"]
+     "789100"
+   #+end_src
+   How would ~foldr~ be defined, such that it produces this behavior? This could
+   work:
+   #+begin_src haskell
+     ourFoldR f b [] = b
+     ourFoldR f b (a : as) = f a (ourFoldR f b as)
+   #+end_src
+
+** ~foldl~
+   Meanwhile, ~foldl~ conceptualizes a list as left-branching. It behaves as
+   follows:
+   #+begin_src haskell
+     ghci> foldl (++) "0" ["7", "8", "9", "10"]
+     "078910"
+   #+end_src
+
+* Exercises
+** Part 1
+   Consider a function ~ourFoldL~ with the following type:
+   #+begin_src haskell
+     ourFoldL :: (b -> a -> b) -> b -> [a] -> b
+   #+end_src
+   Imagine that it behaves as ~foldl~ does---that is, in the way illustrated
+   above. Write a definition for ~ourFoldL~ that produces this behavior.
+
+   An answer:
+   #+begin_src haskell
+     ourFoldL f b [] = b
+     ourFoldL f b (a:as) = ourFoldL f (f b a) as
+   #+end_src
+
+** Part 2
+   Recall the definition of ~ourFilter~ above:
+   #+begin_src haskell
+     ourFilter :: (a -> Bool) -> [a] -> [a]
+     ourFilter p [] = []
+     ourFilter p (a : as) = if p a then a : ourFilter p as else ourFilter p as
+   #+end_src
+   Define a new function ~ourFilter'~ with the same type and behavior as
+   ~ourFilter~, but which invokes ~foldr~. That is, you should be able to define
+   ~ourFilter'~ in a single line, without separately defining a base case and a
+   recursive case. Note that ~b~ in the type of ~foldr~ can be anything!
+
+   An answer:
+   #+begin_src haskell
+     ourFilter' :: (a -> Bool) -> [a] -> [a]
+     ourFilter' p = foldr (\a as -> if p a then p a : as else as) []
+   #+end_src
+
+** Part 3
+   Define a function
+   #+begin_src haskell
+     takeWhile' :: (a -> Bool) -> [a] -> [a]
+   #+end_src
+   which behaves as follows: it takes a predicate, along with a list, and
+   returns the longest prefix of the list all of whose members satisfy the
+   predicate. That is, as soon as some element of the list fails to satisfy the
+   list up until that point. For example, it should behave as follows:
+   #+begin_src haskell
+     ghci> takeWhile' even' [2, 4, 6, 8, 1, 2, 3]
+     [2,4,6,8]
+   #+end_src
+
+   An answer:
+   #+begin_src haskell
+     takeWhile' p (a:as) = if p a then a : takeWhile' p as else []
+   #+end_src
+   
+** Part 4
+   Define a function
+   #+begin_src haskell
+     takeWhile'' :: (a -> Bool) -> [a] -> [a]
+   #+end_src
+   which behaves in the same way as ~takeWhile'~, but which is defined in a way
+   that invokes either ~foldr~ or ~foldl~.
+
+   An answer:
+   #+begin_src haskell
+     takewhile'' p = foldl (\as a -> if p a then as ++ [a] else []) []
+   #+end_src

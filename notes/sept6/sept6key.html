@@ -1,0 +1,790 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2023-09-22 Fri 19:52 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Haskell: variables, data types, patterns, and recursion (Answer key)</title>
+<meta name="author" content="Julian Grove" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+<script src="../../jquery.min.js"></script>
+<script src="../../bootstrap.min.js"></script>
+<script type="text/javascript" src="../../readtheorg.js"></script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Haskell: variables, data types, patterns, and recursion (Answer key)</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org8717035">1. Review</a>
+<ul>
+<li><a href="#orgabd4411">1.1. <code>let</code> bindings</a></li>
+<li><a href="#org81ef034">1.2. <code>where</code> clauses</a></li>
+<li><a href="#org5d4096b">1.3. Anonymous functions</a></li>
+<li><a href="#org60926b0">1.4. Sum types</a></li>
+<li><a href="#org531b1aa">1.5. N-ary constructors</a></li>
+<li><a href="#org379d3cb">1.6. Pattern matching: order matters</a></li>
+<li><a href="#orga98260d">1.7. Case expressions</a></li>
+<li><a href="#orgc7e2173">1.8. As patterns</a></li>
+<li><a href="#orgd7fe2ce">1.9. Pattern guards</a></li>
+<li><a href="#org0596630">1.10. Lists</a></li>
+<li><a href="#org19ce30e">1.11. Haskell lists</a></li>
+<li><a href="#org7ee7559">1.12. Appending stuff</a></li>
+<li><a href="#org224f0d7">1.13. <code>[a]</code> to <code>List a</code></a></li>
+<li><a href="#org97eabaa">1.14. <code>map</code></a></li>
+<li><a href="#org1850401">1.15. <code>filter</code></a></li>
+<li><a href="#org7e5ee7a">1.16. <code>foldr</code> and <code>foldl</code></a></li>
+<li><a href="#orgaba3c66">1.17. <code>foldr</code></a></li>
+<li><a href="#org8326b27">1.18. <code>foldl</code></a></li>
+</ul>
+</li>
+<li><a href="#org8f18bc4">2. Exercises</a>
+<ul>
+<li><a href="#org74948a2">2.1. Part 1</a></li>
+<li><a href="#org60cbe7d">2.2. Part 2</a></li>
+<li><a href="#orgd2bf04e">2.3. Part 3</a></li>
+<li><a href="#org1ec1820">2.4. Part 4</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Let's first do some quick review of things we went over today. Exercises are at
+the end.
+</p>
+
+<div id="outline-container-org8717035" class="outline-2">
+<h2 id="org8717035"><span class="section-number-2">1.</span> Review</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-orgabd4411" class="outline-3">
+<h3 id="orgabd4411"><span class="section-number-3">1.1.</span> <code>let</code> bindings</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+A <code>let</code> binding can be used to define a local variable anywhere you want:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">five</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Integer</span>
+<span style="color: #fabd2f;">five</span> <span style="color: #83a598;">=</span> <span style="color: #fb4933;">let</span> x <span style="color: #83a598;">=</span> 2
+       <span style="color: #fb4933;">in</span> x <span style="color: #83a598;">+</span> 3
+</pre>
+</div>
+<p>
+or, you can even type in your <a href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop">REPL</a>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell">ghci<span style="color: #fabd2f;">&gt;</span> <span style="color: #fb4933;">let</span> x <span style="color: #83a598;">=</span> 2 <span style="color: #fb4933;">in</span> x <span style="color: #83a598;">+</span> 3
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org81ef034" class="outline-3">
+<h3 id="org81ef034"><span class="section-number-3">1.2.</span> <code>where</code> clauses</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+A <code>where</code> clause can be used to define a local variable inside of another
+definition:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">alsoFive</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Integer</span>
+<span style="color: #fabd2f;">alsoFive</span> <span style="color: #83a598;">=</span> x <span style="color: #83a598;">+</span> 3
+  <span style="color: #fb4933;">where</span> x <span style="color: #83a598;">=</span> 2
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5d4096b" class="outline-3">
+<h3 id="org5d4096b"><span class="section-number-3">1.3.</span> Anonymous functions</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+Functions are first-class in Haskell, so they are treated like other
+data. This means that we can write function <i>literals</i>, or <i>anonymous functions</i>
+(since they don't need to be named by some identifier).
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">addFour</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Integer</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Integer</span>
+<span style="color: #fabd2f;">addFour</span> <span style="color: #83a598;">=</span> <span style="color: #83a598;">\</span>x <span style="color: #83a598;">-&gt;</span> x <span style="color: #83a598;">+</span> 4
+</pre>
+</div>
+<p>
+This function adds 4 to its single <code>Integer</code> argument.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org60926b0" class="outline-3">
+<h3 id="org60926b0"><span class="section-number-3">1.4.</span> Sum types</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+Consider the following algebraic data type definition:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Fruit</span>
+  <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Cherry</span>
+  <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Strawberry</span>
+  <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Orange</span>
+  <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Pretzel</span>
+  <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Pear</span>
+  <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Banana</span>
+  <span style="color: #fb4933;">deriving</span> <span style="color: #d3869b;">Show</span>
+</pre>
+</div>
+<p>
+<code>Fruit</code> is what is called a <i>sum type</i>.
+</p>
+<ul class="org-ul">
+<li>It enumerates all values it can have in different branches, delimiting
+these values with a <code>|</code>.</li>
+<li>In each branch is what is called a <i>data constructor</i>.</li>
+<li>The name of a data constructor in Haskell must begin with a capital letter
+(just like the name of a data type).</li>
+<li>Note the <code>deriving Show</code>, which allows us to print values of the data type
+out in a REPL.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org531b1aa" class="outline-3">
+<h3 id="org531b1aa"><span class="section-number-3">1.5.</span> N-ary constructors</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+The <code>Fruit</code> sum type is an odd special case, in that its data constructors
+don't carry an extra information besides their identity. Something more
+common might have data constructors carry additional data; e.g., one data
+constructor could carry a <code>Bool</code> and one could carry a <code>String</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">BoolOrString</span>
+  <span style="color: #83a598;">=</span> <span style="color: #d3869b;">B</span> <span style="color: #d3869b;">Bool</span>
+  <span style="color: #83a598;">|</span> <span style="color: #d3869b;">S</span> <span style="color: #d3869b;">String</span>
+  <span style="color: #fb4933;">deriving</span> <span style="color: #d3869b;">Show</span>
+</pre>
+</div>
+<p>
+This allows us to write functions that take <i>either</i> a <code>Bool</code> <i>or</i> a <code>String</code> as
+their input, using <i>pattern matching</i>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">typeFlipper</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">BoolOrString</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">BoolOrString</span>
+<span style="color: #fabd2f;">typeFlipper</span> (<span style="color: #d3869b;">S</span> <span style="color: #b8bb26;">"Julian"</span>) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">B</span> <span style="color: #d3869b;">True</span>
+<span style="color: #fabd2f;">typeFlipper</span> (<span style="color: #d3869b;">B</span> <span style="color: #d3869b;">True</span>) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">S</span> <span style="color: #b8bb26;">"Stephanie"</span>
+<span style="color: #fabd2f;">typeFlipper</span> (<span style="color: #d3869b;">B</span> <span style="color: #d3869b;">False</span>) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">S</span> <span style="color: #b8bb26;">"Pavlo"</span>
+<span style="color: #fabd2f;">typeFlipper</span> (<span style="color: #d3869b;">S</span> str) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">S</span> str
+</pre>
+</div>
+<p>
+By the way, you might be wondering: if a data constructor can take an
+argument, does that mean it's a function? The answer is ``yes'':
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell">ghci<span style="color: #fabd2f;">&gt;</span> <span style="color: #d3869b;">:</span>t <span style="color: #d3869b;">B</span>
+<span style="color: #d3869b;">B</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Bool</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">BoolOrString</span>
+ghci<span style="color: #fabd2f;">&gt;</span> <span style="color: #d3869b;">:</span>t <span style="color: #d3869b;">S</span>
+<span style="color: #d3869b;">S</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">String</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">BoolOrString</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org379d3cb" class="outline-3">
+<h3 id="org379d3cb"><span class="section-number-3">1.6.</span> Pattern matching: order matters</h3>
+<div class="outline-text-3" id="text-1-6">
+<p>
+Pattern branches get checked in top-to-bottom order. Check out the following
+example:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">onlyRochester</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">String</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">String</span>
+<span style="color: #fabd2f;">onlyRochester</span> <span style="color: #b8bb26;">"Rochester"</span> <span style="color: #83a598;">=</span> <span style="color: #b8bb26;">"Rochester"</span>
+<span style="color: #fabd2f;">onlyRochester</span> str <span style="color: #83a598;">=</span> <span style="color: #b8bb26;">"Not Rochester, but rather "</span> <span style="color: #83a598;">++</span> str
+</pre>
+</div>
+<p>
+Flipping the branches would make the definition effectively stop at the first
+branch, since <code>str</code> is a wildcard over all possible strings:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">onlyRochesterFlipped</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">String</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">String</span>
+<span style="color: #fabd2f;">onlyRochesterFlipped</span> str <span style="color: #83a598;">=</span> <span style="color: #b8bb26;">"Not Rochester, but rather "</span> <span style="color: #83a598;">++</span> str
+<span style="color: #fabd2f;">onlyRochesterFlipped</span> <span style="color: #b8bb26;">"Rochester"</span> <span style="color: #83a598;">=</span> <span style="color: #b8bb26;">"Rochester"</span>
+</pre>
+</div>
+<p>
+<code>onlyRochesterFlipped</code> will <i>never</i> return <code>"Rochester"</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga98260d" class="outline-3">
+<h3 id="orga98260d"><span class="section-number-3">1.7.</span> Case expressions</h3>
+<div class="outline-text-3" id="text-1-7">
+<p>
+You can also use a <i>case expression</i> to do pattern matching:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">lengthOrTruthValue</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">BoolOrString</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Int</span>
+<span style="color: #fabd2f;">lengthOrTruthValue</span> x <span style="color: #83a598;">=</span> <span style="color: #fb4933;">case</span> x <span style="color: #fb4933;">of</span>
+  <span style="color: #d3869b;">S</span> s <span style="color: #83a598;">-&gt;</span> length s
+  <span style="color: #d3869b;">B</span> b <span style="color: #83a598;">-&gt;</span> <span style="color: #fb4933;">if</span> b <span style="color: #fb4933;">then</span> 1 <span style="color: #fb4933;">else</span> 0
+</pre>
+</div>
+<p>
+Case expressions do more than just pattern match&#x2014;they also evaluate the
+expression between the <code>case</code> and the <code>of</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">even'</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Integer</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Bool</span>
+<span style="color: #fabd2f;">even'</span> n <span style="color: #83a598;">=</span> <span style="color: #fb4933;">case</span> n <span style="color: #83a598;">`mod`</span> 2 <span style="color: #fb4933;">of</span>
+  0 <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">True</span>
+  <span style="color: #fb4933;">_</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">False</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc7e2173" class="outline-3">
+<h3 id="orgc7e2173"><span class="section-number-3">1.8.</span> As patterns</h3>
+<div class="outline-text-3" id="text-1-8">
+<p>
+An <i>as pattern</i> (written with an <code>@</code> sign) allows you to bind an identifier to an
+argument which has been deconstructed into a pattern:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">doubleString</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">BoolOrString</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">BoolOrString</span>
+<span style="color: #fabd2f;">doubleString</span> b<span style="color: #83a598;">@</span>(<span style="color: #d3869b;">B</span> <span style="color: #fb4933;">_</span>) <span style="color: #83a598;">=</span> b
+<span style="color: #fabd2f;">doubleString</span> (<span style="color: #d3869b;">S</span> str) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">S</span> (str <span style="color: #83a598;">++</span> str)
+</pre>
+</div>
+<p>
+<code>b</code> here is restricted to being instantiated by a <code>B x</code> (for some <code>x</code>). So what
+this definition says is that when you feed <code>doubleString</code> a <code>B x</code>, it just
+returns it back to you.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd7fe2ce" class="outline-3">
+<h3 id="orgd7fe2ce"><span class="section-number-3">1.9.</span> Pattern guards</h3>
+<div class="outline-text-3" id="text-1-9">
+<p>
+Pattern guards are useful when you want to further restrict the applicability
+of a branch of a definition to patterns that satisfy some boolean condition:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">amIEven</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Integer</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">String</span>
+<span style="color: #fabd2f;">amIEven</span> n
+  <span style="color: #83a598;">|</span> n <span style="color: #83a598;">`mod`</span> 2 <span style="color: #83a598;">==</span> 0 <span style="color: #83a598;">=</span> <span style="color: #b8bb26;">"Yes!"</span>
+  <span style="color: #83a598;">|</span> otherwise <span style="color: #83a598;">=</span> <span style="color: #b8bb26;">"No :("</span>
+</pre>
+</div>
+<p>
+You use a <code>|</code> after the relevant pattern and then state the condition. (Note
+that <code>otherwise</code> here is just defined as <code>True</code>.)
+</p>
+</div>
+</div>
+
+<div id="outline-container-org0596630" class="outline-3">
+<h3 id="org0596630"><span class="section-number-3">1.10.</span> Lists</h3>
+<div class="outline-text-3" id="text-1-10">
+<p>
+Lists are deeply baked into Haskell, so we can't look at the source code. But
+we can roll our own:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">List</span> a
+  <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Empty</span>
+  <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Cons</span> a (<span style="color: #d3869b;">List</span> a)
+  <span style="color: #fb4933;">deriving</span> <span style="color: #d3869b;">Show</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org19ce30e" class="outline-3">
+<h3 id="org19ce30e"><span class="section-number-3">1.11.</span> Haskell lists</h3>
+<div class="outline-text-3" id="text-1-11">
+<p>
+For convenience, Haskell lets you type, e.g., <code>['a', 's', 'd', 'f']</code> for a list
+literal. When you see this, you should have in mind the following:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell">(<span style="color: #b8bb26;">'a'</span> <span style="color: #d3869b;">:</span> (<span style="color: #b8bb26;">'s'</span> <span style="color: #d3869b;">:</span> (<span style="color: #b8bb26;">'d'</span> <span style="color: #d3869b;">:</span> (<span style="color: #b8bb26;">'f'</span> <span style="color: #d3869b;">:</span> <span style="color: #d3869b;">[]</span>))))
+</pre>
+</div>
+<p>
+Everything is one of two cases; either:
+</p>
+<ul class="org-ul">
+<li>any empty list</li>
+<li>something cons-ed onto a list</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org7ee7559" class="outline-3">
+<h3 id="org7ee7559"><span class="section-number-3">1.12.</span> Appending stuff</h3>
+<div class="outline-text-3" id="text-1-12">
+<p>
+Let's define our first recursive function, <code>append</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">append</span> <span style="color: #83a598;">::</span> [a] <span style="color: #83a598;">-&gt;</span> [a] <span style="color: #83a598;">-&gt;</span> [a]
+<span style="color: #fabd2f;">append</span> <span style="color: #d3869b;">[]</span> l <span style="color: #83a598;">=</span> l
+<span style="color: #fabd2f;">append</span> (a <span style="color: #d3869b;">:</span> l1) l2 <span style="color: #83a598;">=</span> a <span style="color: #d3869b;">:</span> (append l1 l2)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org224f0d7" class="outline-3">
+<h3 id="org224f0d7"><span class="section-number-3">1.13.</span> <code>[a]</code> to <code>List a</code></h3>
+<div class="outline-text-3" id="text-1-13">
+<p>
+Here's how we could write a recursive function that maps values of type <code>List
+   a</code> to values of type <code>[a]</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">listToHaskellList</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">List</span> a <span style="color: #83a598;">-&gt;</span> [a]
+<span style="color: #fabd2f;">listToHaskellList</span> <span style="color: #d3869b;">Empty</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">[]</span>
+<span style="color: #fabd2f;">listToHaskellList</span> (<span style="color: #d3869b;">Cons</span> a l) <span style="color: #83a598;">=</span> a <span style="color: #d3869b;">:</span> listToHaskellList l
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org97eabaa" class="outline-3">
+<h3 id="org97eabaa"><span class="section-number-3">1.14.</span> <code>map</code></h3>
+<div class="outline-text-3" id="text-1-14">
+<p>
+Haskell has a built-in function <code>map</code> for mapping functions of type <code>a -&gt; b</code> to
+functions from lists of <code>a</code>'s to lists of <code>b</code>'s.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">map</span> <span style="color: #83a598;">::</span> (a <span style="color: #83a598;">-&gt;</span> b) <span style="color: #83a598;">-&gt;</span> [a] <span style="color: #83a598;">-&gt;</span> [b]
+</pre>
+</div>
+<p>
+How does <code>map</code> work?&#x2026;
+</p>
+<ul class="org-ul">
+<li>We need a branch in the definition that applies to the empty list.</li>
+<li>We need a branch in the definition that applies to non-empty lists.</li>
+</ul>
+<p>
+This fits the bill:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">ourMap</span> <span style="color: #83a598;">::</span> (a <span style="color: #83a598;">-&gt;</span> b) <span style="color: #83a598;">-&gt;</span> [a] <span style="color: #83a598;">-&gt;</span> [b]
+<span style="color: #fabd2f;">ourMap</span> f <span style="color: #d3869b;">[]</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">[]</span>
+<span style="color: #fabd2f;">ourMap</span> f (a <span style="color: #d3869b;">:</span> as) <span style="color: #83a598;">=</span> f a <span style="color: #d3869b;">:</span> ourMap f as
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1850401" class="outline-3">
+<h3 id="org1850401"><span class="section-number-3">1.15.</span> <code>filter</code></h3>
+<div class="outline-text-3" id="text-1-15">
+<p>
+Filter takes a predicate, i.e., a function of from <code>a</code>'s to <code>Bool</code>'s, along with
+a list of <code>a</code>'s, in order to give back a list of the <code>a</code>'s that satisfy the
+predicate.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">filter</span> <span style="color: #83a598;">::</span> (a <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Bool</span>) <span style="color: #83a598;">-&gt;</span> [a] <span style="color: #83a598;">-&gt;</span> [a]
+</pre>
+</div>
+<p>
+How does <code>filter</code> work?&#x2026;
+</p>
+<ul class="org-ul">
+<li>We need a branch in the definition that applies to the empty list.</li>
+<li>We need a branch in the definition that applies to non-empty lists.</li>
+</ul>
+<p>
+This works:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">ourFilter</span> <span style="color: #83a598;">::</span> (a <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Bool</span>) <span style="color: #83a598;">-&gt;</span> [a] <span style="color: #83a598;">-&gt;</span> [a]
+<span style="color: #fabd2f;">ourFilter</span> p <span style="color: #d3869b;">[]</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">[]</span>
+<span style="color: #fabd2f;">ourFilter</span> p (a <span style="color: #d3869b;">:</span> as) <span style="color: #83a598;">=</span> <span style="color: #fb4933;">if</span> p a <span style="color: #fb4933;">then</span> a <span style="color: #d3869b;">:</span> ourFilter p as <span style="color: #fb4933;">else</span> ourFilter p as
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7e5ee7a" class="outline-3">
+<h3 id="org7e5ee7a"><span class="section-number-3">1.16.</span> <code>foldr</code> and <code>foldl</code></h3>
+<div class="outline-text-3" id="text-1-16">
+<p>
+Haskell has functions <code>foldr</code> and <code>foldl</code> that each take a two-place operation, a
+starting value, and some list, in order to iteratively apply the function to
+the elements of the list, one-by-one.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">foldr</span> <span style="color: #83a598;">::</span> (a <span style="color: #83a598;">-&gt;</span> b <span style="color: #83a598;">-&gt;</span> b) <span style="color: #83a598;">-&gt;</span> b <span style="color: #83a598;">-&gt;</span> [a] <span style="color: #83a598;">-&gt;</span> b
+<span style="color: #fabd2f;">foldl</span> <span style="color: #83a598;">::</span> (b <span style="color: #83a598;">-&gt;</span> a <span style="color: #83a598;">-&gt;</span> b) <span style="color: #83a598;">-&gt;</span> b <span style="color: #83a598;">-&gt;</span> [a] <span style="color: #83a598;">-&gt;</span> b
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgaba3c66" class="outline-3">
+<h3 id="orgaba3c66"><span class="section-number-3">1.17.</span> <code>foldr</code></h3>
+<div class="outline-text-3" id="text-1-17">
+<p>
+<code>foldr</code>, in a way, conceptualizes a list as right-branching. Note the following
+behavior:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell">ghci<span style="color: #fabd2f;">&gt;</span> foldr (<span style="color: #83a598;">++</span>) <span style="color: #b8bb26;">"0"</span> [<span style="color: #b8bb26;">"7"</span>, <span style="color: #b8bb26;">"8"</span>, <span style="color: #b8bb26;">"9"</span>, <span style="color: #b8bb26;">"10"</span>]
+<span style="color: #b8bb26;">"789100"</span>
+</pre>
+</div>
+<p>
+How would <code>foldr</code> be defined, such that it produces this behavior? This could
+work:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">ourFoldR</span> f b <span style="color: #d3869b;">[]</span> <span style="color: #83a598;">=</span> b
+<span style="color: #fabd2f;">ourFoldR</span> f b (a <span style="color: #d3869b;">:</span> as) <span style="color: #83a598;">=</span> f a (ourFoldR f b as)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8326b27" class="outline-3">
+<h3 id="org8326b27"><span class="section-number-3">1.18.</span> <code>foldl</code></h3>
+<div class="outline-text-3" id="text-1-18">
+<p>
+Meanwhile, <code>foldl</code> conceptualizes a list as left-branching. It behaves as
+follows:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell">ghci<span style="color: #fabd2f;">&gt;</span> foldl (<span style="color: #83a598;">++</span>) <span style="color: #b8bb26;">"0"</span> [<span style="color: #b8bb26;">"7"</span>, <span style="color: #b8bb26;">"8"</span>, <span style="color: #b8bb26;">"9"</span>, <span style="color: #b8bb26;">"10"</span>]
+<span style="color: #b8bb26;">"078910"</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org8f18bc4" class="outline-2">
+<h2 id="org8f18bc4"><span class="section-number-2">2.</span> Exercises</h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-org74948a2" class="outline-3">
+<h3 id="org74948a2"><span class="section-number-3">2.1.</span> Part 1</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Consider a function <code>ourFoldL</code> with the following type:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">ourFoldL</span> <span style="color: #83a598;">::</span> (b <span style="color: #83a598;">-&gt;</span> a <span style="color: #83a598;">-&gt;</span> b) <span style="color: #83a598;">-&gt;</span> b <span style="color: #83a598;">-&gt;</span> [a] <span style="color: #83a598;">-&gt;</span> b
+</pre>
+</div>
+<p>
+Imagine that it behaves as <code>foldl</code> does&#x2014;that is, in the way illustrated
+above. Write a definition for <code>ourFoldL</code> that produces this behavior.
+</p>
+
+<p>
+An answer:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">ourFoldL</span> f b <span style="color: #d3869b;">[]</span> <span style="color: #83a598;">=</span> b
+<span style="color: #fabd2f;">ourFoldL</span> f b (a<span style="color: #d3869b;">:</span>as) <span style="color: #83a598;">=</span> ourFoldL f (f b a) as
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org60cbe7d" class="outline-3">
+<h3 id="org60cbe7d"><span class="section-number-3">2.2.</span> Part 2</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Recall the definition of <code>ourFilter</code> above:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">ourFilter</span> <span style="color: #83a598;">::</span> (a <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Bool</span>) <span style="color: #83a598;">-&gt;</span> [a] <span style="color: #83a598;">-&gt;</span> [a]
+<span style="color: #fabd2f;">ourFilter</span> p <span style="color: #d3869b;">[]</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">[]</span>
+<span style="color: #fabd2f;">ourFilter</span> p (a <span style="color: #d3869b;">:</span> as) <span style="color: #83a598;">=</span> <span style="color: #fb4933;">if</span> p a <span style="color: #fb4933;">then</span> a <span style="color: #d3869b;">:</span> ourFilter p as <span style="color: #fb4933;">else</span> ourFilter p as
+</pre>
+</div>
+<p>
+Define a new function <code>ourFilter'</code> with the same type and behavior as
+<code>ourFilter</code>, but which invokes <code>foldr</code>. That is, you should be able to define
+<code>ourFilter'</code> in a single line, without separately defining a base case and a
+recursive case. Note that <code>b</code> in the type of <code>foldr</code> can be anything!
+</p>
+
+<p>
+An answer:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">ourFilter'</span> <span style="color: #83a598;">::</span> (a <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Bool</span>) <span style="color: #83a598;">-&gt;</span> [a] <span style="color: #83a598;">-&gt;</span> [a]
+<span style="color: #fabd2f;">ourFilter'</span> p <span style="color: #83a598;">=</span> foldr (<span style="color: #83a598;">\</span>a as <span style="color: #83a598;">-&gt;</span> <span style="color: #fb4933;">if</span> p a <span style="color: #fb4933;">then</span> p a <span style="color: #d3869b;">:</span> as <span style="color: #fb4933;">else</span> as) <span style="color: #d3869b;">[]</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd2bf04e" class="outline-3">
+<h3 id="orgd2bf04e"><span class="section-number-3">2.3.</span> Part 3</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+Define a function
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">takeWhile'</span> <span style="color: #83a598;">::</span> (a <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Bool</span>) <span style="color: #83a598;">-&gt;</span> [a] <span style="color: #83a598;">-&gt;</span> [a]
+</pre>
+</div>
+<p>
+which behaves as follows: it takes a predicate, along with a list, and
+returns the longest prefix of the list all of whose members satisfy the
+predicate. That is, as soon as some element of the list fails to satisfy the
+list up until that point. For example, it should behave as follows:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell">ghci<span style="color: #fabd2f;">&gt;</span> takeWhile' even' [2, 4, 6, 8, 1, 2, 3]
+[2,4,6,8]
+</pre>
+</div>
+
+<p>
+An answer:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">takeWhile'</span> p (a<span style="color: #d3869b;">:</span>as) <span style="color: #83a598;">=</span> <span style="color: #fb4933;">if</span> p a <span style="color: #fb4933;">then</span> a <span style="color: #d3869b;">:</span> takeWhile' p as <span style="color: #fb4933;">else</span> <span style="color: #d3869b;">[]</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1ec1820" class="outline-3">
+<h3 id="org1ec1820"><span class="section-number-3">2.4.</span> Part 4</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+Define a function
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">takeWhile''</span> <span style="color: #83a598;">::</span> (a <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Bool</span>) <span style="color: #83a598;">-&gt;</span> [a] <span style="color: #83a598;">-&gt;</span> [a]
+</pre>
+</div>
+<p>
+which behaves in the same way as <code>takeWhile'</code>, but which is defined in a way
+that invokes either <code>foldr</code> or <code>foldl</code>.
+</p>
+
+<p>
+An answer:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">takewhile''</span> p <span style="color: #83a598;">=</span> foldl (<span style="color: #83a598;">\</span>as a <span style="color: #83a598;">-&gt;</span> <span style="color: #fb4933;">if</span> p a <span style="color: #fb4933;">then</span> as <span style="color: #83a598;">++</span> [a] <span style="color: #fb4933;">else</span> <span style="color: #d3869b;">[]</span>) <span style="color: #d3869b;">[]</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Julian Grove</p>
+<p class="date">Created: 2023-09-22 Fri 19:52</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
