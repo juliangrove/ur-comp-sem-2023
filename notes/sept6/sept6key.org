@@ -315,5 +315,5 @@ the end.
 
    An answer:
    #+begin_src haskell
-     takewhile'' p = foldl (\as a -> if p a then as ++ [a] else []) []
+     takewhile'' p = foldr (\a as -> if p a then a:as else []) []
    #+end_src
