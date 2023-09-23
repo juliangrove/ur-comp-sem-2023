@@ -1,0 +1,228 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: Introducing untyped λ-calculus (Answer key)
+
+* Review
+  We will now start to talk about untyped λ-calculus as a precursor to
+  λ-calculus with types. Before using it for anything, we will need to define
+  it, including the relations on terms β, η, and α.
+  $$\def\IF#1{[\hspace{-0.8mm}[#1]\hspace{-0.8mm}]}$$
+  $$\def\divd{\ |\ }$$
+  $$\def\Coloneqq{::=}$$
+  
+** Definition
+   To define the λ-calculus, we need an infinite set $\mathcal{V}$ of
+   variables. We can assume that these are denumerably infinite, i.e., in a
+   one-to-one correspondence with the natural numbers. Given such a set, we may
+   define the set Λ of untyped λ-terms as the smallest set meeting the following
+   constraints:
+   - If $x ∈ \mathcal{V}$, then $x ∈ Λ$. $\mbox{}\,\,\,\,\,\,\,\,\,\,\,\mbox{}$ (Variables)
+   - If $M, N ∈ Λ$, then $(M\,N) ∈ Λ$. $\mbox{}\,\,\,\,\,\,\,\,\,\,\,\mbox{}$  (Applications)
+   - If $M ∈ Λ$ and $x ∈ \mathcal{V}$, then $(λx.M) ∈ Λ$. $\mbox{}\,\,\,\,\,\,\,\,\,\,\,\mbox{}$  (Abstractions)
+   This definition can be expressed more succinctly in Backus-Naur form, as:
+   $$M, N \Coloneqq x \divd (M\,N) \divd (λx.M)$$
+
+   Let us also introduce a few notational conventions. We will leave parentheses
+   off λ-terms when doing so does not generate ambiguity. As a convention, we
+   will assume that applications associate to the left:
+   $$M\,N\,O\ ≝\ ((M\,N)\,O)$$
+   We will also assume that application has a higher precedence than
+   abstraction:
+   $$λx.M\, N\ ≝\ (λx.(M\,N))$$
+   Finally, when we have a sequence of abstractions it is nice to write them
+   with the binder occurrences of variables separated by commas:
+   $$λx, y, ...,z.M\ ≝\ (λx.(λy.(...(λz.M)...)))$$
+
+** Free and bound variables
+   An important distinction relevant to the /meaning/ of λ-terms is that between
+   variables which are free and variables which are bound. This distinction will
+   determine whether or not a variable with a given name inside of a λ-term is
+   bound in that term, and, hence, whether or not it can be substituted. To
+   illustrate, take the term
+   $$(λx.(λx.x))$$
+   Here, we want the embedded term $(λx.x)$ to encode the identity function
+   regardless of the context in which it occurs. Thus the variable $x$ which
+   occurs in the body of this term will be considered to be bound there by the
+   `$λx$'. We can encode this understanding of λ-terms in terms of the following
+   definition of free variables via the function $fv : Λ → 2^\mathcal{V}$:
+   $$fv(x) = \{x\}$$
+   $$fv(M\,N) = fv(M) ∪ fv(N)$$
+   $$fv(λx.M) = fv(M) - \{x\}$$
+   As we see, a variable is no longer free in the scope of the closest matching
+   binder for that variable.
+
+** Substitution
+   We now define the notion of substitution on λ-terms; we write $M[x≔N]$ to
+   denote the result of substituting the λ-term $N$ for free occurrences of the
+   variable $x$ inside the λ-term $M$. (That is, we are defining a function
+   $(·)[x≔N] : Λ → Λ$ which takes any λ-term $M$ onto the λ-term just like $M$,
+   but with $N$ substituted for all of its free occurrences of $x$.)
+   - $x[x≔N] ≝ N$
+   - $y[x≔N] ≝ y$ $\mbox{}\,\,\,\,\,\,\,\,\,\,\,\mbox{}$ (when $y≠x$)
+   - $(M\,N)[x≔O] ≝ (M[x≔O]\,N[x≔O])$
+   - $(λx.M)[x≔N] ≝ (λx.M)$
+   - $(λy.M)[x≔N] ≝ (λy.M[x≔N])$ $\mbox{}\,\,\,\,\,\,\,\,\,\,\,\mbox{}$ (when $y≠x$ and $y ∉ fv(N)$)
+   - $(λy.M)[x≔N] ≝ (λz.M[y≔z][x≔N])$ \\
+     @@latex:\hfill@@(when $y≠x$ and $z ∉ fv(M) ∪ fv(N)$, i.e., $z$ is fresh for
+     $M$ and $N$)
+
+** Relations on λ-terms
+   The relation of β-conversion provides the meaning of the application of a
+   function to an argument. It is defined as follows:
+   - $(λx.M)\,N\ ▹_β\ M[x≔N]$
+
+   The relation of η-conversion is defined as follows:
+   - $λx.M\,x\ ▹_η\ M$ $\mbox{}\,\,\,\,\,\,\,\,\,\,\,\mbox{}$ (when $x ∉ fv(M)$)
+   η provides a kind of functional extensionality for λ-terms. That is, assuming
+   it has the result that λ-terms are equivalent (inter-reducible) when they
+   compute the same function.
+
+   Finally, α-conversion is defined as follows:
+   - $λx.M\ ▹_α λy.M[x≔y]$ $\mbox{}\,\,\,\,\,\,\,\,\,\,\,\mbox{}$ (when $y ∉ fv(M)$)
+   α-conversion is just the renaming of bound variables. 
+
+** Extending relations
+   Given a relation $R ∈ \{α, β, η\}$, its compatible closure $→_R$ is the
+   relation gotten by extending $R$ to apply to sub-parts of λ-terms. More
+   precisely, $→_R$ is the least relation such that:
+   1) $R ⊆ →_R$
+   2) If $M →_R\,N$, then $M\,O →_R N\,O$
+   3) If $O →_R\,N$, then $M\,O →_R M\,N$
+   4) If $M →_R\,N$, then $λx.M →_R λx.N$
+   This allows us to apply (one-step) α-, β-, or η-conversion anywhere inside a
+   λ-term.
+
+   Next, it is useful to have the reflexive transitive closure of a relation
+   $R$. Given $R ⊆ Λ × Λ$, its reflexive transitive closure $R^*$ is the least
+   relation such that:
+   1) $R ⊆ R^*$
+   2) $⟨M, M⟩ ∈ R^*$ for every $M ∈ Λ$
+   3) If $⟨M, N⟩ ∈ R^*$ and $⟨N, O⟩ ∈ R^*$, then $⟨M, O⟩ ∈ R^*$
+   It will be useful to have $→_α^*$, $→_β^*$, and $→_η^*$, in order to do α-,
+   β-, and η-conversion while bypassing any number of intermediate reductions.
+
+   We will also sometimes refer to the reflexive symmetric transitive closure of
+   a relation $R$. This extension $≡_R$ is defined just like $→_R^*$, except
+   that there is also a condition of symmetry:
+   - If $M ≡_R N$, then $N ≡_R M$
+   That is, $≡_R$ is the least equivalence relation respecting $R$. When we talk
+   about two terms $M$ and $N$ as being ``α-, β-, η-equivalent'', it will mean
+   that they satisfy $M ≡_{α/β/η} N$. 
+
+** Normal forms
+   A λ-term is in $R$ normal form if it does not have any $R$ redices; that is,
+   sub-terms to which the relation $R$ may be applied. $R$ here may be β, η, or
+   βη ($≝ β ∪ η$). We will speak of a λ-term $M$ as having an $R$ normal form
+   (or just a normal form, when the context is clear) if there is some λ-term
+   $N$ in $R$ normal form, and $M →_R^* N$.
+
+   Does every λ-term have a β normal form? No. For example:
+   $$(λx.x\,x)\,(λx.x\,x)$$
+   is not in normal form and, moreover, it β-reduces to itself.
+
+* Exercises
+** Part 1
+   Prove that $(λx.M\,x) N →_β M\,N$ whenever $x ∉ FV(M)$.
+
+   An answer: \\
+   Note that $(λx.M\,x) N ▹_β (M\,x)[x:=N]$, and hence $(λx.M\,x) N →_β
+   (M\,x)[x:=N]$. Since $x ∉ fv(M)$, $M[x:=N] = M$, so that this is equivalent
+   to $M\, N$.
+
+** Part 2
+   β-reduce the following term as much as possible:
+   $$(λx.x\,(λz.z\,y))\,(λz, y.z\,y)$$
+
+   An answer:
+   $$(λx.x\,(λz.z\,y))\,(λz, y.z\,y)$$
+   $$→_β (λz, y.z\,y)\,(λz.z\,y)$$
+   $$→_β λw.(λz.z\,y)\,w$$
+   $$→_β λw.w\,y$$
+
+** Part 3
+   Let $M$, $N$, and $L$ be λ-terms, and let $x$ and $y$ be variables such that
+   $x ≠ y$ and $x ∉ FV(L)$. Prove that first substituting $N$ for $x$ in $M$ and
+   then substituting $L$ for $y$ in the result is the same as substituting $L$
+   for $y$ in $M$ and then substituting the result of substituting $L$ for $y$
+   in $N$ for $x$ in $M$. That is, show the following:
+   $$M[x≔N][y≔L] = M[y≔L][x≔N[y≔L]]$$
+   Hint: show this inductively. The proof would be analogous to the answer to
+   Part 5 of the `Formal preliminaries' exercises (note that there is an answer
+   key on Zulip).
+   In particular, first show that this statement is true of variables. Then,
+   show that, given that it is true for arbitrary λ-terms $M_1$ and $M_2$, it is
+   also true of the λ-term $(M_1\,M_2)$, as well as the λ-term $(λx.M_1)$ (for
+   $x ∈ \mathcal{V}$).
+
+   Why does such a proof show what we want?
+
+   An answer:
+
+*** Variables $v$
+    Case 1: $v = x$.
+    $$x[x≔N][y≔L]$$
+    $$= N[y≔L]$$
+    $$= x[y≔L][x≔N[y≔L]]$$
+
+    Case 2: $v = y$.
+    $$y[x≔N][y≔L]$$
+    $$= L$$
+    $$= y[y≔L][x≔N[y≔L]]$$
+    The last step is justified because $x ∉ fv(L)$.
+
+    Case 3: $v$ is something else.
+    $$v[x≔L][y≔L]$$
+    $$= v$$
+    $$= v[y≔L][x≔N[y≔L]]$$
+
+*** Applications
+    Taking the statement to be true of $M_1$ and $M_2$, we have
+    $$(M_1\,M_2)[x≔N][y≔L]$$
+    $$= (M_1[x≔N][y≔L]\,M_2[x≔N][y≔L])$$
+    $$= (M_1[y≔L][x≔N[y≔L]]\,M_2[y≔L][x≔N[y≔L]])$$
+    $$= (M_1\,M_2)[y≔L][x≔N[y≔L]]$$
+
+*** Abstractions
+    Note that throughout this part, we have to understand equality as
+    α-equivalence.
+    
+    Case 1: the abstraction binds $x$. Assuming the statement is true of $M_1$,
+    and taking $z$ to be fresh for $N$ and $L$, we have
+    $$(λx.M_1)[x≔N][y≔L]$$
+    $$= (λx.M_1)[y≔L]$$
+    $$= (λz.M_1[x≔z][y≔L])$$
+    Since $x ∈ fv(L)$, this can continue as
+    $$= (λz.M_1[x≔z][y≔L][x≔N[y≔L]])$$
+    $$= (λz.M_1[x≔z])[y≔L][x≔N[y≔L]]$$
+    $$= (λx.M_1)[y≔L][x≔N[y≔L]]$$
+
+    Case 2: the abstraction binds $y$. Assuming the statement is true of $M_1$,
+    and taking $z$ to be fresh for $N$ and $L$,
+    we have
+    $$(λy.M_1)[x≔N][y≔L]$$
+    $$= (λz.M_1[y≔z][x≔N][y≔L])$$
+    $$= (λz.M_1[y≔z][x≔N[y≔L]])$$
+    $$= (λz.M_1[y≔z][y≔L][x≔N[y≔L]])$$
+    $$= (λz.M_1[y≔z])[y≔L][x≔N[y≔L]]$$
+    $$= (λy.M_1)[y≔L][x≔N[y≔L]]$$
+
+    Case 3: the abstraction binds neither $x$ nor $y$. Assuming the statement is
+    true of $M_1[v≔z]$, and taking $z$ to be fresh for $N$ and $L$, we have
+    $$(λv.M_1)[x≔N][y≔L]$$
+    $$= (λz.M_1[v≔z][x≔N][y≔L])$$
+    Because of the induction hypothesis, this can continue as
+    $$= (λz.M_1[v≔z][y≔L][x≔N[y≔L]])$$
+    $$= (λz.M_1[v≔z])[y≔L][x≔N[y≔L]]$$
+    $$= (λv.M_1)[y≔L][x≔N[y≔L]]$$
+
+*** Why does this proof show what we want?
+    Note that we defined $Λ$ as the smallest set containing variables and closed
+    under applications and abstractions. What we showed above is that
+    $$S = \{M \divd M[x≔N][y≔L] = M[y≔L][x≔N[y≔L]]\}$$
+    also contains variables and is closed under applications and
+    abstractions. Since $Λ$ is the smallest such set, $Λ ⊆ S$.
