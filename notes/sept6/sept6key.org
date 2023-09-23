@@ -302,6 +302,7 @@ the end.
 
    An answer:
    #+begin_src haskell
+     takeWhile' _ [] = []
      takeWhile' p (a:as) = if p a then a : takeWhile' p as else []
    #+end_src
    
