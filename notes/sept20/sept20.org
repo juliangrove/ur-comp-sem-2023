@@ -131,7 +131,7 @@
    Define a function $\mathtt{filter}$ which, given a function $f$ from \(a\)'s
    to Booleans and a list of \(a\)'s, filters the list using $f$. That is, it
    returns a new list of \(a\)'s such that $x$ is on the new list just in case
-   $x$ was on  the old list and $f x →_β^* 𝕋. In other words, $\mathtt{filter}$
+   $x$ was on  the old list and $f x →_β^* 𝕋$. In other words, $\mathtt{filter}$
    should satisfy the following equivalences:
    $$\mathtt{filter}\,f\,⌜[]⌝ ≡_β ⌜[]⌝$$
    $$\mathtt{filter}\,f\,⌜a : l⌝ ≡_β λc, n.c\,⌜a⌝\,(\mathtt{filter}\,f\,⌜l⌝\,c\,n)\,\,\,\,\,\,\,\,\,\,\,\,\text{(if }f\,⌜a⌝ →_β^* 𝕋\text{)}$$
