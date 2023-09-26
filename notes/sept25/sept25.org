@@ -41,7 +41,7 @@
    $n = λs, z.…$ , it passes $n$ two arguments in a way that causes it to
    return $𝕋$ if $n$ is $⌜0⌝$ and $𝔽$ if $n$ is some larger number. The
    following definition does the trick:
-   $$\mathtt{isZero} := λn.n\,(λb.𝔽)\,𝕋$$
+   $$\mathtt{isZero} ≝ λn.n\,(λb.𝔽)\,𝕋$$
    If $n$ is $⌜0⌝$, it will return its second argument, $𝕋$; if $n$ is some
    other number, it will return the result of applying $λb.𝔽$ to whatever is the
    argument of the highest bound $s$, giving back $𝔽$.
@@ -50,7 +50,7 @@
    We want to define $\mathtt{pred}$ in such a way that, given an argument $n =
    λs, z.s\,(m\,s\,z)$, it simply gives back $m$ (i.e., \(n\)'s predecessor).
    The following definition does this:
-   $$\mathtt{pred} := λn.π_1\,(n\,(λp.⟨π_2\,p, \mathtt{succ}\,(π_2\,p)⟩)\,⟨⌜0⌝,
+   $$\mathtt{pred} ≝ λn.π_1\,(n\,(λp.⟨π_2\,p, \mathtt{succ}\,(π_2\,p)⟩)\,⟨⌜0⌝,
    ⌜0⌝⟩)$$
    It's easiest to see why this definition works by looking at examples. Taking
    the predecessor of $⌜0⌝$, for instance, gives the following result:

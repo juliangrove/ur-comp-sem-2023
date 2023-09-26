@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-09-25 Mon 23:21 -->
+<!-- 2023-09-26 Tue 13:20 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>While you were partying, I studied the λ-calculus</title>
@@ -238,27 +238,27 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orge5c165e">1. Review</a>
+<li><a href="#orgcf046f3">1. Review</a>
 <ul>
-<li><a href="#org24c905a">1.1. \(\mathtt{isZero}\)</a></li>
-<li><a href="#org5080fbb">1.2. \(\mathtt{pred}\)</a></li>
-<li><a href="#orgd795004">1.3. Fixed points</a></li>
-<li><a href="#org04a6e2a">1.4. The \(Y\)-combinator</a></li>
-<li><a href="#org37fce88">1.5. More combinators</a></li>
+<li><a href="#org4d44673">1.1. \(\mathtt{isZero}\)</a></li>
+<li><a href="#orgca07729">1.2. \(\mathtt{pred}\)</a></li>
+<li><a href="#org7d8aa87">1.3. Fixed points</a></li>
+<li><a href="#orgfd81c41">1.4. The \(Y\)-combinator</a></li>
+<li><a href="#org1e5be3b">1.5. More combinators</a></li>
 </ul>
 </li>
-<li><a href="#org8beb65f">2. Exercises</a>
+<li><a href="#orgff1da63">2. Exercises</a>
 <ul>
-<li><a href="#orgf9a5666">2.1. Part 1</a></li>
-<li><a href="#org7ac574c">2.2. Part 2</a></li>
+<li><a href="#orgb03bf68">2.1. Part 1</a></li>
+<li><a href="#org2d8e94e">2.2. Part 2</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orge5c165e" class="outline-2">
-<h2 id="orge5c165e"><span class="section-number-2">1.</span> Review</h2>
+<div id="outline-container-orgcf046f3" class="outline-2">
+<h2 id="orgcf046f3"><span class="section-number-2">1.</span> Review</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Today's goal was to give ourselves the tools to define recursive functions in
@@ -296,15 +296,15 @@ which we haven't previously defined: \(\mathtt{isZero}\) and \(\mathtt{pred}\).
 </p>
 </div>
 
-<div id="outline-container-org24c905a" class="outline-3">
-<h3 id="org24c905a"><span class="section-number-3">1.1.</span> \(\mathtt{isZero}\)</h3>
+<div id="outline-container-org4d44673" class="outline-3">
+<h3 id="org4d44673"><span class="section-number-3">1.1.</span> \(\mathtt{isZero}\)</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 We want to define \(\mathtt{isZero}\) in such a way that, given some argument
 \(n = λs, z.…\) , it passes \(n\) two arguments in a way that causes it to
 return \(𝕋\) if \(n\) is \(⌜0⌝\) and \(𝔽\) if \(n\) is some larger number. The
 following definition does the trick:
-\[\mathtt{isZero} := λn.n\,(λb.𝔽)\,𝕋\]
+\[\mathtt{isZero} ≝ λn.n\,(λb.𝔽)\,𝕋\]
 If \(n\) is \(⌜0⌝\), it will return its second argument, \(𝕋\); if \(n\) is some
 other number, it will return the result of applying \(λb.𝔽\) to whatever is the
 argument of the highest bound \(s\), giving back \(𝔽\).
@@ -312,14 +312,14 @@ argument of the highest bound \(s\), giving back \(𝔽\).
 </div>
 </div>
 
-<div id="outline-container-org5080fbb" class="outline-3">
-<h3 id="org5080fbb"><span class="section-number-3">1.2.</span> \(\mathtt{pred}\)</h3>
+<div id="outline-container-orgca07729" class="outline-3">
+<h3 id="orgca07729"><span class="section-number-3">1.2.</span> \(\mathtt{pred}\)</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 We want to define \(\mathtt{pred}\) in such a way that, given an argument \(n =
    λs, z.s\,(m\,s\,z)\), it simply gives back \(m\) (i.e., \(n\)'s predecessor).
 The following definition does this:
-\[\mathtt{pred} := λn.π_1\,(n\,(λp.⟨π_2\,p, \mathtt{succ}\,(π_2\,p)⟩)\,⟨⌜0⌝,
+\[\mathtt{pred} ≝ λn.π_1\,(n\,(λp.⟨π_2\,p, \mathtt{succ}\,(π_2\,p)⟩)\,⟨⌜0⌝,
    ⌜0⌝⟩)\]
 It's easiest to see why this definition works by looking at examples. Taking
 the predecessor of \(⌜0⌝\), for instance, gives the following result:
@@ -355,8 +355,8 @@ In other words, the predecessor of \(⌜2⌝\) is (β-equivalent to) \(⌜1⌝\)
 </div>
 </div>
 
-<div id="outline-container-orgd795004" class="outline-3">
-<h3 id="orgd795004"><span class="section-number-3">1.3.</span> Fixed points</h3>
+<div id="outline-container-org7d8aa87" class="outline-3">
+<h3 id="org7d8aa87"><span class="section-number-3">1.3.</span> Fixed points</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 To make recursive calls in the λ-calculus, we will define recursive functions
@@ -388,7 +388,7 @@ This discussion gives us a general recipe for defining recursive functions:
 <ul class="org-ul">
 <li>Step 1: give a single-line definition of the function using an indentifier,
 which somewhere makes a call to itself, just like we did for
-\(\mathtt{factorial}\) in §<a href="#orge5c165e">1</a>.</li>
+\(\mathtt{factorial}\) in §<a href="#orgcf046f3">1</a>.</li>
 <li>Step 2: stick a fresh variable into the position(s) of the call, and
 immediately abstract over it at the top of the definition-in-progress.</li>
 <li>Step 3: apply a fixed-point combinator \(F\) to the result.</li>
@@ -404,8 +404,8 @@ recipe, define \(\mathtt{factorial}\) as the following fixed point:
 </div>
 </div>
 
-<div id="outline-container-org04a6e2a" class="outline-3">
-<h3 id="org04a6e2a"><span class="section-number-3">1.4.</span> The \(Y\)-combinator</h3>
+<div id="outline-container-orgfd81c41" class="outline-3">
+<h3 id="orgfd81c41"><span class="section-number-3">1.4.</span> The \(Y\)-combinator</h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 Crucially, we can define a fixed-point combinator, i.e., which behaves like
@@ -446,8 +446,8 @@ and so on, until we get to
 </div>
 </div>
 
-<div id="outline-container-org37fce88" class="outline-3">
-<h3 id="org37fce88"><span class="section-number-3">1.5.</span> More combinators</h3>
+<div id="outline-container-org1e5be3b" class="outline-3">
+<h3 id="org1e5be3b"><span class="section-number-3">1.5.</span> More combinators</h3>
 <div class="outline-text-3" id="text-1-5">
 <p>
 Recall the definition of a fixed point combinator \(F\):
@@ -476,12 +476,12 @@ then we can define the above combinator as simply \(θ\,θ\).
 </div>
 </div>
 
-<div id="outline-container-org8beb65f" class="outline-2">
-<h2 id="org8beb65f"><span class="section-number-2">2.</span> Exercises</h2>
+<div id="outline-container-orgff1da63" class="outline-2">
+<h2 id="orgff1da63"><span class="section-number-2">2.</span> Exercises</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-orgf9a5666" class="outline-3">
-<h3 id="orgf9a5666"><span class="section-number-3">2.1.</span> Part 1</h3>
+<div id="outline-container-orgb03bf68" class="outline-3">
+<h3 id="orgb03bf68"><span class="section-number-3">2.1.</span> Part 1</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 One of the things we saw how to do with a list is take its first element via
@@ -496,8 +496,8 @@ Hint: remember \(\mathtt{pred}\)?!
 </div>
 </div>
 
-<div id="outline-container-org7ac574c" class="outline-3">
-<h3 id="org7ac574c"><span class="section-number-3">2.2.</span> Part 2</h3>
+<div id="outline-container-org2d8e94e" class="outline-3">
+<h3 id="org2d8e94e"><span class="section-number-3">2.2.</span> Part 2</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 Define \(\mathtt{filter}\) from the last assignment as a fixed point.
@@ -508,7 +508,7 @@ Define \(\mathtt{filter}\) from the last assignment as a fixed point.
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-09-25 Mon 23:21</p>
+<p class="date">Created: 2023-09-26 Tue 13:20</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
