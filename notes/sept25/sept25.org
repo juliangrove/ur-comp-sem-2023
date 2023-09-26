@@ -1,0 +1,192 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: While you were partying, I studied the λ-calculus
+
+* Review
+  Today's goal was to give ourselves the tools to define recursive functions in
+  the untyped λ-calculus, using the /factorial/ function on natural numbers as an
+  illustrative example. This function can be defined as follows in Haskell:
+  #+begin_src haskell
+    factorial :: Nat -> Nat
+    factorial n = if n == Zero then Succ Zero else mult n (factorial (pred n))
+      where mult :: Nat -> Nat -> Nat
+	    mult Zero n = Zero
+	    mult (Succ m) n = plus n (mult m n)
+
+            plus :: Nat -> Nat -> Nat
+	    plus Zero n = n
+	    plus (Succ m) n = Succ (plus n m)
+
+	    pred :: Nat -> Nat
+	    pred Zero = Zero
+	    pred (Succ n) = n
+  #+end_src
+  Crucially, this definition of ~factorial~ makes a recursive call to ~factorial~,
+  i.e., inside the second branch of the ~if~ statement. Thus when we define this
+  function in the λ-calculus, we'll want to have a way of making recursive calls
+  of this kind:
+  $$\mathtt{factorial} ≝ λn.\mathtt{ifThenElse}\,(\mathtt{isZero}\,n)\,⌜1⌝\,
+  (\mathtt{mult}\,n\,(\mathtt{factorial}\,(\mathtt{pred}\,n)))$$
+
+  Before we get there, let's look at the two functions $\mathtt{factorial}$ uses
+  which we haven't previously defined: $\mathtt{isZero}$ and $\mathtt{pred}$.
+
+** $\mathtt{isZero}$
+   We want to define $\mathtt{isZero}$ in such a way that, given some argument
+   $n = λs, z.…$ , it passes $n$ two arguments in a way that causes it to
+   return $𝕋$ if $n$ is $⌜0⌝$ and $𝔽$ if $n$ is some larger number. The
+   following definition does the trick:
+   $$\mathtt{isZero} := λn.n\,(λb.𝔽)\,𝕋$$
+   If $n$ is $⌜0⌝$, it will return its second argument, $𝕋$; if $n$ is some
+   other number, it will return the result of applying $λb.𝔽$ to whatever is the
+   argument of the highest bound $s$, giving back $𝔽$.
+
+** $\mathtt{pred}$
+   We want to define $\mathtt{pred}$ in such a way that, given an argument $n =
+   λs, z.s\,(m\,s\,z)$, it simply gives back $m$ (i.e., \(n\)'s predecessor).
+   The following definition does this:
+   $$\mathtt{pred} := λn.π_1\,(n\,(λp.⟨π_2\,p, \mathtt{succ}\,(π_2\,p)⟩)\,⟨⌜0⌝,
+   ⌜0⌝⟩)$$
+   It's easiest to see why this definition works by looking at examples. Taking
+   the predecessor of $⌜0⌝$, for instance, gives the following result:
+   $$\mathtt{pred}\,⌜0⌝$$
+   $$→_β\,\,\,π_1\,(⌜0⌝\,(λp.⟨π_2\,p, \mathtt{succ}\,(π_2\,p)⟩)\,⟨⌜0⌝, ⌜0⌝⟩)$$
+   $$=\,\,\,π_1\,((λs, z.z)\,(λp.⟨π_2\,p, \mathtt{succ}\,(π_2\,p)⟩)\,⟨⌜0⌝,
+   ⌜0⌝⟩)$$
+   $$→_β^*\,\,\,π_1\,⟨⌜0⌝, ⌜0⌝⟩$$
+   $$→_β^*\,\,\,⌜0⌝$$
+   In other words, the predecessor of $⌜0⌝$ is just $⌜0⌝$, according to
+   $\mathtt{pred}$. If instead we take the predecessor of, say, $⌜2⌝$, we'd get
+   the following result:
+   $$\mathtt{pred}\,⌜2⌝$$
+   $$→_β^*\,\,\,\mathtt{pred}\,(λs, z.s\,(s\,z))$$
+   $$→_β\,\,\,π_1\,((λs, z.s\,(s\,z))\,(λp.⟨π_2\,p,
+   \mathtt{succ}\,(π_2\,p)⟩)\,⟨⌜0⌝, ⌜0⌝⟩)$$
+   $$→_β\,\,\,π_1\,((λz.(λp.⟨π_2\,p, \mathtt{succ}\,(π_2\,p)⟩)\,((λp.⟨π_2\,p,
+   \mathtt{succ}\,(π_2\,p)⟩)\,z))\,⟨⌜0⌝, ⌜0⌝⟩)$$
+   $$→_β\,\,\,π_1\,((λp.⟨π_2\,p, \mathtt{succ}\,(π_2\,p)⟩)\,((λp.⟨π_2\,p,
+   \mathtt{succ}\,(π_2\,p)⟩)\,⟨⌜0⌝, ⌜0⌝⟩))$$
+   There are now two β-redices. Targeting the more embedded one first gives us
+   $$→_β\,\,\,π_1\,((λp.⟨π_2\,p,
+   \mathtt{succ}\,(π_2\,p)⟩)\,{(\color{red}(λp.⟨π_2\,p,\mathtt{succ}\,(π_2\,p)⟩)\,⟨⌜0⌝,
+   ⌜0⌝⟩)})$$
+   $$→_β^*\,\,\,π_1\,((λp.⟨π_2\,p, \mathtt{succ}\,(π_2\,p)⟩)\,⟨⌜0⌝,
+   \mathtt{succ}\,⌜0⌝⟩)$$
+   $$→_β^*\,\,\,π_1\,\,⟨\mathtt{succ}\,⌜0⌝,
+   \mathtt{succ}\,(\mathtt{succ}\,⌜0⌝)⟩$$
+   $$→_β^*\,\,\,\mathtt{succ}\,⌜0⌝$$
+   $$→_β^*\,\,\,λs, z.s\,z$$
+   In other words, the predecessor of $⌜2⌝$ is (β-equivalent to) $⌜1⌝$.
+
+** Fixed points
+   To make recursive calls in the λ-calculus, we will define recursive functions
+   as /fixed points/. A fixed point of a function $f$ is a value $x$ such that
+   $f\,x = x$. We will find fixed points of functions by using a /fixed point
+   combinator/; that is, some function $F$ which when applied to $f$, gives back
+   such an $x$. That is, we want $F$ to be such that
+   $$f\,(F\,f) ≡_β F\,f$$
+   The reason we can define recursive functions, such as $\mathtt{factorial}$,
+   as fixed points is because their definitions have the following shape, in
+   general, for some $M$:
+   $$\mathtt{factorial} = M[x:=\mathtt{factorial}]$$
+   Here, $x$ just marks wherever the recursive call is actually made inside $M$.
+   In the case of $\mathtt{factorial}$, $x$ would be inside the second branch of
+   the $\mathtt{ifThenElse}$ statement---the part that says
+   `\(\mathtt{factorial}\)'. Viewing $\mathtt{factorial}$ this way allows us to
+   define it as the following fixed point:
+   $$\mathtt{factorial} ≝ F\,(λx.M)$$
+   Why? Because now, we know that its definition satisfies the following
+   equivalence:
+   $$F\,(λx.M) ≡_β (λx.M)\,(F\,(λx.M))$$
+   $$▹_β\,\,\,M[x:=F\,(λx.M)]$$
+   That is, we have that $\mathtt{factorial} ≡_β M[x:=\mathtt{factorial}]$!
+
+   This discussion gives us a general recipe for defining recursive functions:
+   - Step 1: give a single-line definition of the function using an indentifier,
+     which somewhere makes a call to itself, just like we did for
+     $\mathtt{factorial}$ in §[[Review]].
+   - Step 2: stick a fresh variable into the position(s) of the call, and
+     immediately abstract over it at the top of the definition-in-progress.
+   - Step 3: apply a fixed-point combinator $F$ to the result.
+   - Step 4: profit???
+
+   Given some fixed-point combinator $F$ that does the job, we can, using this
+   recipe, define $\mathtt{factorial}$ as the following fixed point:
+   $$\mathtt{factorial} ≝ F\,(λx,
+   n.\mathtt{ifThenElse}\,(\mathtt{isZero}\,n)\,⌜1⌝\,(\mathtt{mult}\,n\,(x\,(\mathtt{pred}\,n))))$$
+
+** The \(Y\)-combinator
+   Crucially, we can define a fixed-point combinator, i.e., which behaves like
+   $F$. The following is what is known as the \(Y\)-combinator:
+   $$Y ≝ λf.(λx.f\,(x\,x))\,(λx.f\,(x\,x))$$
+   Note that, for any $f$, we have
+   $$Y\,f$$
+   $$=\,\,\,(λf.(λx.f\,(x\,x))\,(λx.f\,(x\,x)))\,f$$
+   $$▹_β\,\,\,(λx.f\,(x\,x))\,(λx.f\,(x\,x))$$
+   $$▹_β\,\,\,f\,((λx.f\,(x\,x))\,(λx.f\,(x\,x)))$$
+   $$≡_β\,\,\,f\,(Y\,f)$$
+   So, for example, $Y$ can go in place of $F$ up above in the definition
+   $\mathtt{factorial}$.
+
+   To illustrate this all in action, let's compute (most of) $\mathtt{factorial}\,⌜3⌝$.
+   $$\mathtt{factorial}\,⌜3⌝$$
+   $$=\,\,\,Y\,(λx,
+   n.\mathtt{ifThenElse}\,(\mathtt{isZero}\,n)\,⌜1⌝\,(\mathtt{mult}\,n\,(x\,(\mathtt{pred}\,n))))\,⌜3⌝$$
+   Given the demonstration above, we can continue this as
+   $$≡_β\,\,\,(λx,
+   n.\mathtt{ifThenElse}\,(\mathtt{isZero}\,n)\,⌜1⌝\,(\mathtt{mult}\,n\,(x\,(\mathtt{pred}\,n))))\,\mathtt{factorial}\,⌜3⌝$$
+   $$→_β\,\,\,(λn.\mathtt{ifThenElse}\,(\mathtt{isZero}\,n)\,⌜1⌝\,(\mathtt{mult}\,n\,(\mathtt{factorial}\,(\mathtt{pred}\,n))))\,⌜3⌝$$
+   $$→_β\,\,\,\mathtt{ifThenElse}\,(\mathtt{isZero}\,⌜3⌝)\,⌜1⌝\,(\mathtt{mult}\,⌜3⌝\,(\mathtt{factorial}\,(\mathtt{pred}\,\,⌜3⌝)))$$
+   $$→_β^*\,\,\,\mathtt{mult}\,⌜3⌝\,(\mathtt{factorial}\,(\mathtt{pred}\,\,⌜3⌝))$$
+   $$≡_β\,\,\,\mathtt{mult}\,⌜3⌝\,(\mathtt{factorial}\,⌜2⌝)$$
+   $$≡_β\,\,\,\mathtt{mult}\,⌜3⌝\,((λx,
+   n.\mathtt{ifThenElse}\,(\mathtt{isZero}\,n)\,⌜1⌝\,(\mathtt{mult}\,n\,(x\,(\mathtt{pred}\,n))))\,\mathtt{factorial}\,⌜2⌝)$$
+   $$→_β\,\,\,\mathtt{mult}\,⌜3⌝\,((λn.\mathtt{ifThenElse}\,(\mathtt{isZero}\,n)\,⌜1⌝\,(\mathtt{mult}\,n\,(\mathtt{factorial}\,(\mathtt{pred}\,n))))\,⌜2⌝)$$
+   $$→_β\,\,\,\mathtt{mult}\,⌜3⌝\,(\mathtt{ifThenElse}\,(\mathtt{isZero}\,⌜2⌝)\,⌜1⌝\,(\mathtt{mult}\,⌜2⌝\,(\mathtt{factorial}\,(\mathtt{pred}\,⌜2⌝))))$$
+   $$→_β^*\,\,\,\mathtt{mult}\,⌜3⌝\,(\mathtt{mult}\,⌜2⌝\,(\mathtt{factorial}\,(\mathtt{pred}\,⌜2⌝)))$$
+   $$≡_β\,\,\,\mathtt{mult}\,⌜3⌝\,(\mathtt{mult}\,⌜2⌝\,(\mathtt{factorial}\,⌜1⌝))$$
+   and so on, until we get to
+   $$≡_β\,\,\,\mathtt{mult}\,⌜3⌝\,(\mathtt{mult}\,⌜2⌝\,⌜1⌝)$$
+   $$≡_β ⌜6⌝$$
+
+** More combinators
+   Recall the definition of a fixed point combinator $F$:
+   $$F\,f ≡_β f\,(F\,f)$$
+   where $f$ is arbitrary. What's kind of interesting about this definition is
+   that it almost looks kind of like a recursive equation. Here's how. Let's
+   first abstract over the $f$ on both sides of the equivalence to get the
+   following equivalence instead:
+   $$λf.F\,f ≡_β λf.f\,(F\,f)$$
+   Notice that the left side is now an η-redex, which we can contract:
+   $$F ≡_{βη} λf.f\,(F\,f)$$
+   That is, a fixed-combinator /itself/ has a definition that makes it look like a
+   kind of fixed point. Specifically it is the fixed point of 
+   $$λx, f.f\,(x\,f)$$
+   Given that we already have a fixed-fixed point combinator $Y$, we can get the
+   fixed point of this function by applying $Y$ to it:
+   $$Y\,(λx, f.f\,(x\,f))$$
+   $$=\,\,\,(λf.(λx.f\,(x\,x))\,(λx.f\,(x\,x)))\,(λx, f.f\,(x\,f))$$
+   $$→_β\,\,\,(λx.(λx, f.f\,(x\,f))\,(x\,x))\,(λx.(λx, f.f\,(x\,f))\,(x\,x))$$
+   $$→_β^*\,\,\,(λx, f.f\,(x\,x\,f)))\,(λx, f.f\,(x\,x\,f))$$
+   Note that if we define the abbreviation
+   $$θ ≝ λx, f.f\,(x\,x\,f)$$
+   then we can define the above combinator as simply $θ\,θ$.
+   
+* Exercises
+** Part 1
+   One of the things we saw how to do with a list is take its first element via
+   $\mathtt{head}$.
+   $$\mathtt{head} ≝ λl.l\,𝕋\,𝔽$$
+   Can you define a function $\mathtt{tail}$ which takes the /tail/ of a list?
+   That is, it should behave as follows:
+   $$\mathtt{tail}\,⌜[]⌝ ≡_β ⌜[]⌝$$
+   $$\mathtt{tail}\,⌜a : l⌝ ≡_β ⌜l⌝$$
+   Hint: remember $\mathtt{pred}$?!
+
+** Part 2
+   Define $\mathtt{filter}$ from the last assignment as a fixed point.
