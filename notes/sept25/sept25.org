@@ -164,8 +164,8 @@
    $$λf.F\,f ≡_β λf.f\,(F\,f)$$
    Notice that the left side is now an η-redex, which we can contract:
    $$F ≡_{βη} λf.f\,(F\,f)$$
-   That is, a fixed-combinator /itself/ has a definition that makes it look like a
-   kind of fixed point. Specifically it is the fixed point of 
+   That is, a fixed-point combinator /itself/ has a definition that makes it look
+   like a kind of fixed point. Specifically it is the fixed point of 
    $$λx, f.f\,(x\,f)$$
    Given that we already have a fixed-fixed point combinator $Y$, we can get the
    fixed point of this function by applying $Y$ to it:
