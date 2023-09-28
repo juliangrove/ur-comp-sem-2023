@@ -84,7 +84,7 @@
    Prove any or all of the following! Practice makes perfect!
    1. $p → (¬p ∨ q) → q$
    2. $p → ¬¬p$
-   3. $¬p ∧ ¬q → ¬(p ∨ q)$
-   4. $¬p ∨ ¬q → ¬(p ∧ q)$
+   3. $(¬p ∧ ¬q) → ¬(p ∨ q)$
+   4. $(¬p ∨ ¬q) → ¬(p ∧ q)$
    5. $¬¬(p ∨ ¬p)$
  
