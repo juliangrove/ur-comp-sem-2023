@@ -28,7 +28,7 @@
    e.g., $x : p, y : q, z : r$ is the context $Γ$ such that $Γ(x) = p$, $Γ(y) =
    q$, and $Γ(z) = r$.
 
-   Finally, let us introduce a couple of notational convention. Just as we had
+   Finally, let us introduce a couple of notational conventions. Just as we had
    applications in the λ-calculus associate to the left, we will allow
    implications in propositional logic to associate to the right. That is, when
    we have a formula $φ → (ψ → χ)$, we leave off the parentheses, writing simply
