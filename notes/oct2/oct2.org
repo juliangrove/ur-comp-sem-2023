@@ -1,0 +1,62 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: Structural rules
+
+* Review
+  In our presentation of propositional logic and typed λ-calculus, we have
+  implicitly baked certain /structural rules/ into our proof system. Such
+  structural rules pertain to the structure of our judgments; i.e., objects of
+  the form $Γ ⊢ φ$.
+
+** Exchange
+   To start, we have been assuming our contexts to be /sets/ of named formulae
+   (or, equivalently, partial functions from a set of names to the set of
+   formulae). By regarding contexts as such sets, we have implicitly assumed
+   that the /order/ in which assumptions are listed makes no difference. Thus the
+   context $x : p, y : q$ (for example) is the same as the context $y : q, x :
+   p$. If we instead view contexts as /sequences/ of named formulae, we may encode
+   that assumptions are commutative as a structural rule, called `exchange'.
+   $$\frac{Γ, x : φ, y : ψ, Δ ⊢ χ}{Γ, y : ψ, x : φ, Δ ⊢ χ}\mathtt{Exch.}$$
+
+** Contraction
+   Additionally, viewing contexts as sets carries the commitment that a given
+   assumption is either present or absent in a context, but that it may not, for
+   example, occur multiple distinct times. Thus the context $x : p, x : p, y: q$
+   is the same as the context $x : p, y : q$, where the assumption $x : p$ is
+   written only once. Moreover, when we join two contexts $Γ$ and $Δ$ together,
+   we simply take their union $Γ ∪ Δ$, and we allow that a given assumption may
+   have occurred in both $Γ$ and $Δ$. Again viewing contexts as sequences,
+   rather than sets, these two facts may be encoded as a structural rule,
+   /contraction/, that allows two occurrences of an assumption to be contracted
+   into only one occurrence.[fn::As a matter of convention, we can pick a $z$
+   which is fresh for both $Γ$ and $Δ$; doing so ensures, for example, that
+   names are associated with formulae uniquely.]
+   $$\frac{Γ, x : φ, y : φ, Δ ⊢ ψ}{Γ, z : φ, Δ ⊢ ψ}\mathtt{Contr.}$$
+
+   If one were to get rid of the rule of contraction, one would obtain a logic
+   of resources: it would matter, not just whether or not an assumption is used
+   in some proof, but /how many times/ it is used.
+
+** Weakening
+   Finally, we have been assuming a formulation of the $\mathtt{Ax}$ rule that
+   allows us to introduce assumptions which are never used. That is, our current
+   rule is formulated as
+   $$\frac{}{Γ, x : φ ⊢ φ}\mathtt{Ax}$$
+   where $Γ$ may contain any number of assumptions in it. By doing so, we have
+   implicitly assumed a structural rule, /weakening/, which allows a given context
+   to spontaneously introduce new assumptions, though they may never be
+   used.[fn::We may again adopt the convention of assuming that $z$ is fresh for
+   $Γ$ and $Δ$.]
+   $$\frac{Γ, Δ ⊢ ψ}{Γ, z : φ, Δ ⊢ ψ}\mathtt{Weak.}$$  
+   We may therefore reformulate our axiom rule as
+   $$\frac{}{x : φ ⊢ φ}\mathtt{Ax}$$
+   and use weakening to recapture the rule as originally formulated.
+   
+   Logics that don't assume weakening are called `relevant' logics---they ensure
+   that assumptions which are introduced in a proof are, in fact, relevant to
+   that proof, i.e., by being used in it in some way.

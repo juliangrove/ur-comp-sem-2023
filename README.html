@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-09-28 Thu 14:10 -->
+<!-- 2023-10-04 Wed 00:15 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Computational Semantics, Fall 2023</title>
@@ -239,30 +239,30 @@ $$\def\IF#1{[\hspace{-0.8mm}[#1]\hspace{-0.8mm}]}$$
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgd51ba06">1. Overview</a></li>
-<li><a href="#orgd3df34a">2. Schedule</a></li>
-<li><a href="#org6020827">3. Installing Haskell</a>
+<li><a href="#org65d2099">1. Overview</a></li>
+<li><a href="#org8948c54">2. Schedule</a></li>
+<li><a href="#org1ca60a0">3. Installing Haskell</a>
 <ul>
-<li><a href="#orgea7a865">3.1. Using Windows or Linux</a></li>
-<li><a href="#org51e0c4b">3.2. Using MacOS</a></li>
-<li><a href="#org99e915f">3.3. Using Nix shells</a></li>
+<li><a href="#orga2ea4ac">3.1. Using Windows or Linux</a></li>
+<li><a href="#org50e0f27">3.2. Using MacOS</a></li>
+<li><a href="#org6178439">3.3. Using Nix shells</a></li>
 </ul>
 </li>
-<li><a href="#orgf427d89">4. Your development environment</a></li>
-<li><a href="#org26d9399">5. Logistics</a>
+<li><a href="#orgf5b3777">4. Your development environment</a></li>
+<li><a href="#orgda3f2fa">5. Logistics</a>
 <ul>
-<li><a href="#orgcf9ba70">5.1. Office hours</a></li>
-<li><a href="#orgdd69c9f">5.2. Assignments</a></li>
-<li><a href="#org0adfb41">5.3. Zulip</a></li>
+<li><a href="#org3c436c5">5.1. Office hours</a></li>
+<li><a href="#org9b8490a">5.2. Assignments</a></li>
+<li><a href="#org22da256">5.3. Zulip</a></li>
 </ul>
 </li>
-<li><a href="#orgac6bb72">6. Useful resources</a></li>
+<li><a href="#orgb82a6cb">6. Useful resources</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgd51ba06" class="outline-2">
-<h2 id="orgd51ba06"><span class="section-number-2">1.</span> Overview</h2>
+<div id="outline-container-org65d2099" class="outline-2">
+<h2 id="org65d2099"><span class="section-number-2">1.</span> Overview</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Welcome to Computational Semantics!
@@ -330,8 +330,8 @@ think it will now.
 </div>
 </div>
 
-<div id="outline-container-orgd3df34a" class="outline-2">
-<h2 id="orgd3df34a"><span class="section-number-2">2.</span> Schedule</h2>
+<div id="outline-container-org8948c54" class="outline-2">
+<h2 id="org8948c54"><span class="section-number-2">2.</span> Schedule</h2>
 <div class="outline-text-2" id="text-2">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
@@ -412,14 +412,14 @@ think it will now.
 
 <tr>
 <td class="org-left">October 2</td>
-<td class="org-left">Propositional logic: structural rules, minimal logic, and coding proofs</td>
-<td class="org-left">&#xa0;</td>
+<td class="org-left">Propositional logic: structural rules</td>
+<td class="org-left"><a href="./notes/oct2/oct2.html">Oct2 notes</a></td>
 <td class="org-left">&#xa0;</td>
 </tr>
 
 <tr>
 <td class="org-left">October 4</td>
-<td class="org-left">Propositional logic: proof normalization</td>
+<td class="org-left">Propositional logic: coding proofs in Haskell, minimal logic, and normalization</td>
 <td class="org-left">&#xa0;</td>
 <td class="org-left">&#xa0;</td>
 </tr>
@@ -554,8 +554,8 @@ think it will now.
 </div>
 </div>
 
-<div id="outline-container-org6020827" class="outline-2">
-<h2 id="org6020827"><span class="section-number-2">3.</span> Installing Haskell</h2>
+<div id="outline-container-org1ca60a0" class="outline-2">
+<h2 id="org1ca60a0"><span class="section-number-2">3.</span> Installing Haskell</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 This course will be <a href="https://www.haskell.org/">Haskell</a>-based, so if you don't have a Haskell development
@@ -579,8 +579,8 @@ Haskell code.</li>
 </ul>
 </div>
 
-<div id="outline-container-orgea7a865" class="outline-3">
-<h3 id="orgea7a865"><span class="section-number-3">3.1.</span> Using Windows or Linux</h3>
+<div id="outline-container-orga2ea4ac" class="outline-3">
+<h3 id="orga2ea4ac"><span class="section-number-3">3.1.</span> Using Windows or Linux</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 If you are on a Linux distribution or Windows, you should try installing
@@ -591,8 +591,8 @@ but it can sometimes be difficult to configure properly.
 </div>
 </div>
 
-<div id="outline-container-org51e0c4b" class="outline-3">
-<h3 id="org51e0c4b"><span class="section-number-3">3.2.</span> Using MacOS</h3>
+<div id="outline-container-org50e0f27" class="outline-3">
+<h3 id="org50e0f27"><span class="section-number-3">3.2.</span> Using MacOS</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 If you are on macOS, you can install stack using <a href="https://brew.sh/"><code>homebrew</code></a>. You should first
@@ -621,8 +621,8 @@ instructions provided <a href="https://www.haskell.org/downloads/">here</a>.
 </div>
 </div>
 
-<div id="outline-container-org99e915f" class="outline-3">
-<h3 id="org99e915f"><span class="section-number-3">3.3.</span> Using Nix shells</h3>
+<div id="outline-container-org6178439" class="outline-3">
+<h3 id="org6178439"><span class="section-number-3">3.3.</span> Using Nix shells</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 I tend to run Haskell only inside of <a href="https://nixos.org/"><code>nix</code></a> shells. During development, these
@@ -662,8 +662,8 @@ pkgs.stdenv.mkDerivation {
 </div>
 </div>
 
-<div id="outline-container-orgf427d89" class="outline-2">
-<h2 id="orgf427d89"><span class="section-number-2">4.</span> Your development environment</h2>
+<div id="outline-container-orgf5b3777" class="outline-2">
+<h2 id="orgf5b3777"><span class="section-number-2">4.</span> Your development environment</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 You can develop Haskell code using whatever text editor you want! But for
@@ -722,12 +722,12 @@ Haskell, I would very highly recommend <a href="https://www.gnu.org/software/ema
 </div>
 </div>
 
-<div id="outline-container-org26d9399" class="outline-2">
-<h2 id="org26d9399"><span class="section-number-2">5.</span> Logistics</h2>
+<div id="outline-container-orgda3f2fa" class="outline-2">
+<h2 id="orgda3f2fa"><span class="section-number-2">5.</span> Logistics</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<div id="outline-container-orgcf9ba70" class="outline-3">
-<h3 id="orgcf9ba70"><span class="section-number-3">5.1.</span> Office hours</h3>
+<div id="outline-container-org3c436c5" class="outline-3">
+<h3 id="org3c436c5"><span class="section-number-3">5.1.</span> Office hours</h3>
 <div class="outline-text-3" id="text-5-1">
 <p>
 I'll hold office hours every Monday and Tuesday from 12-1pm. My office is 507
@@ -736,8 +736,8 @@ Lattimore Hall.
 </div>
 </div>
 
-<div id="outline-container-orgdd69c9f" class="outline-3">
-<h3 id="orgdd69c9f"><span class="section-number-3">5.2.</span> Assignments</h3>
+<div id="outline-container-org9b8490a" class="outline-3">
+<h3 id="org9b8490a"><span class="section-number-3">5.2.</span> Assignments</h3>
 <div class="outline-text-3" id="text-5-2">
 <p>
 This course will have weekly pair of assignments (each given at the end of
@@ -756,8 +756,8 @@ to me on Zulip.
 </div>
 </div>
 
-<div id="outline-container-org0adfb41" class="outline-3">
-<h3 id="org0adfb41"><span class="section-number-3">5.3.</span> Zulip</h3>
+<div id="outline-container-org22da256" class="outline-3">
+<h3 id="org22da256"><span class="section-number-3">5.3.</span> Zulip</h3>
 <div class="outline-text-3" id="text-5-3">
 <p>
 There is a Zulip for this course. I'll use it to post updates. You should use
@@ -767,8 +767,8 @@ it to post questions/discussion.
 </div>
 </div>
 
-<div id="outline-container-orgac6bb72" class="outline-2">
-<h2 id="orgac6bb72"><span class="section-number-2">6.</span> Useful resources</h2>
+<div id="outline-container-orgb82a6cb" class="outline-2">
+<h2 id="orgb82a6cb"><span class="section-number-2">6.</span> Useful resources</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 <a href="http://learnyouahaskell.com/chapters">Learn You a Haskell</a>
@@ -795,7 +795,7 @@ van Eijck, Jan and Unger, Christina (2010). <i>Computational {Semantics} with {F
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-09-28 Thu 14:10</p>
+<p class="date">Created: 2023-10-04 Wed 00:15</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
