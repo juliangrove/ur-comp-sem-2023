@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-10-04 Wed 22:33 -->
+<!-- 2023-10-04 Wed 23:07 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Encoding Intuitionistic Logic proofs</title>
@@ -238,20 +238,20 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org102597b">1. Review</a>
+<li><a href="#orged59248">1. Review</a>
 <ul>
-<li><a href="#orgc51f0ad">1.1. Formulae</a></li>
-<li><a href="#org6505aab">1.2. Being in a context</a></li>
-<li><a href="#org31dfd90">1.3. Building proofs</a></li>
+<li><a href="#orgde4fcea">1.1. Formulae</a></li>
+<li><a href="#orgee42b67">1.2. Being in a context</a></li>
+<li><a href="#org61d59ad">1.3. Building proofs</a></li>
 </ul>
 </li>
-<li><a href="#org6df2f18">2. Exercises</a></li>
+<li><a href="#org8fe290f">2. Exercises</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org102597b" class="outline-2">
-<h2 id="org102597b"><span class="section-number-2">1.</span> Review</h2>
+<div id="outline-container-orged59248" class="outline-2">
+<h2 id="orged59248"><span class="section-number-2">1.</span> Review</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 We've now begun encoding propositional logic proofs in Haskell. Doing this
@@ -259,8 +259,8 @@ involved a few steps, which we rehash here in turn.
 </p>
 </div>
 
-<div id="outline-container-orgc51f0ad" class="outline-3">
-<h3 id="orgc51f0ad"><span class="section-number-3">1.1.</span> Formulae</h3>
+<div id="outline-container-orgde4fcea" class="outline-3">
+<h3 id="orgde4fcea"><span class="section-number-3">1.1.</span> Formulae</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 We defined formulae using the standard way of defining a set of syntactic
@@ -292,8 +292,8 @@ so on, all of these expressions being of type <code>Form</code>.
 </div>
 </div>
 
-<div id="outline-container-org6505aab" class="outline-3">
-<h3 id="org6505aab"><span class="section-number-3">1.2.</span> Being in a context</h3>
+<div id="outline-container-orgee42b67" class="outline-3">
+<h3 id="orgee42b67"><span class="section-number-3">1.2.</span> Being in a context</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 Ultimately, we want to have a way of encoding judgments of the form \(Γ ⊢ φ\).
@@ -334,8 +334,9 @@ your Haskell file:
 </div>
 <p>
 Second, we have begun using data types themselves, i.e., <code>Form</code> and <code>Context</code> as
-<i>parameters</i> of a new type constructor <code>In</code>. Note that this is very different
-from how data types are usually defined&#x2014;even data types like <code>List a</code>:
+the types of <i>parameters</i> of a new type constructor <code>In</code>.<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>
+Note that this is very different from how data types are usually
+defined&#x2014;even data types like <code>List a</code>:
 </p>
 <div class="org-src-container">
 <pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">List</span> a <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Empty</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Cons</span> a (<span style="color: #d3869b;">List</span> a)
@@ -390,8 +391,8 @@ the first element, the second element, etc.
 </div>
 </div>
 
-<div id="outline-container-org31dfd90" class="outline-3">
-<h3 id="org31dfd90"><span class="section-number-3">1.3.</span> Building proofs</h3>
+<div id="outline-container-org61d59ad" class="outline-3">
+<h3 id="org61d59ad"><span class="section-number-3">1.3.</span> Building proofs</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 We can continue by declaring a data type to encode <i>proofs</i>. In general, the
@@ -425,8 +426,8 @@ declaration of <code>Proof γ φ</code> by encoding the rules \(∨\mathtt{I}_L\
 </div>
 </div>
 
-<div id="outline-container-org6df2f18" class="outline-2">
-<h2 id="org6df2f18"><span class="section-number-2">2.</span> Exercises</h2>
+<div id="outline-container-org8fe290f" class="outline-2">
+<h2 id="org8fe290f"><span class="section-number-2">2.</span> Exercises</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Finish declaring <code>Proof γ φ</code>. That is, fill in the following types:
@@ -447,14 +448,23 @@ Finish declaring <code>Proof γ φ</code>. That is, fill in the following types:
 </pre>
 </div>
 <p>
-Refer to <a href="https://juliangrove.github.io/ur-comp-sem-2023/notes/sept27/sept27.html#orge40b96e">the old notes</a>!
+Refer to <a href="https://juliangrove.github.io/ur-comp-sem-2023/notes/sept27/sept27.html#orge40b96e">the rules</a>!
 </p>
 </div>
 </div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">Kinds, really:
+<a href="https://ghc.gitlab.haskell.org/ghc/doc/users_guide/exts/data_kinds.html">https://ghc.gitlab.haskell.org/ghc/doc/users_guide/exts/data_kinds.html</a></p></div></div>
+
+
 </div>
+</div></div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-10-04 Wed 22:33</p>
+<p class="date">Created: 2023-10-04 Wed 23:07</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
