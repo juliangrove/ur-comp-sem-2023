@@ -28,9 +28,9 @@
 	       | Contr         -- contradiction
 	  deriving (Show)
    #+end_src
-   For example, we represent the formula $p ∧ q$ as the expression ~P :/\ Q~, the
-   formula $p → q$ as ~P :-> Q~, the formula $p ∨ (q → r)$ as ~P :\/ (Q :-> R)~, and
-   so on, all of these expressions being of type ~Form~.
+   For example, we represent the formula $p ∧ q$ as the expression ~At P :/\ At
+   Q~, the formula $p → q$ as ~At P :-> At Q~, the formula $p ∨ (q → r)$ as ~At P
+   :\/ (At Q :-> At R)~, and so on, all of these expressions being of type ~Form~.
 
 ** Being in a context
    Ultimately, we want to have a way of encoding judgments of the form $Γ ⊢ φ$.
@@ -60,8 +60,10 @@
      {-# LANGUAGE GADTs #-}
    #+end_src
    Second, we have begun using data types themselves, i.e., ~Form~ and ~Context~ as
-   /parameters/ of a new type constructor ~In~. Note that this is very different
-   from how data types are usually defined---even data types like ~List a~:
+   the types of /parameters/ of a new type constructor ~In~.[fn::Kinds, really:
+   https://ghc.gitlab.haskell.org/ghc/doc/users_guide/exts/data_kinds.html]
+   Note that this is very different from how data types are usually
+   defined---even data types like ~List a~:
    #+begin_src haskell
      data List a = Empty | Cons a (List a)
    #+end_src
@@ -139,4 +141,4 @@
       TautIntro :: _ -- ⊤I
       ContrElim :: _ -- ⊥E
    #+end_src
-   Refer to [[https://juliangrove.github.io/ur-comp-sem-2023/notes/sept27/sept27.html#orge40b96e][the old notes]]!
+   Refer to [[https://juliangrove.github.io/ur-comp-sem-2023/notes/sept27/sept27.html#orge40b96e][the rules]]!
