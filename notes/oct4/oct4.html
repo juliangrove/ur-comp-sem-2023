@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2023-10-04 Wed 22:33 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Encoding Intuitionistic Logic proofs</title>
+<meta name="author" content="Julian Grove" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+<script src="../../jquery.min.js"></script>
+<script src="../../bootstrap.min.js"></script>
+<script type="text/javascript" src="../../readtheorg.js"></script>
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Encoding Intuitionistic Logic proofs</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org102597b">1. Review</a>
+<ul>
+<li><a href="#orgc51f0ad">1.1. Formulae</a></li>
+<li><a href="#org6505aab">1.2. Being in a context</a></li>
+<li><a href="#org31dfd90">1.3. Building proofs</a></li>
+</ul>
+</li>
+<li><a href="#org6df2f18">2. Exercises</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org102597b" class="outline-2">
+<h2 id="org102597b"><span class="section-number-2">1.</span> Review</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+We've now begun encoding propositional logic proofs in Haskell. Doing this
+involved a few steps, which we rehash here in turn.
+</p>
+</div>
+
+<div id="outline-container-orgc51f0ad" class="outline-3">
+<h3 id="orgc51f0ad"><span class="section-number-3">1.1.</span> Formulae</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+We defined formulae using the standard way of defining a set of syntactic
+objects in Haskell, i.e., in terms of an algebraic data type. Given a set of
+atomic formulae
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Atom</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">P</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Q</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">R</span> <span style="color: #fb4933;">deriving</span> (<span style="color: #d3869b;">Show</span>)
+</pre>
+</div>
+<p>
+we can define the set of all formulae as a data type <code>Form</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Form</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">At</span> <span style="color: #d3869b;">Atom</span>       <span style="color: #928374;">-- </span><span style="color: #928374;">atomic formulae</span>
+          <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Form</span> <span style="color: #d3869b;">:/\</span> <span style="color: #d3869b;">Form</span> <span style="color: #928374;">-- </span><span style="color: #928374;">conjunctions</span>
+          <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Form</span> <span style="color: #d3869b;">:\/</span> <span style="color: #d3869b;">Form</span> <span style="color: #928374;">-- </span><span style="color: #928374;">disjunctions</span>
+          <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Form</span> <span style="color: #d3869b;">:-&gt;</span> <span style="color: #d3869b;">Form</span> <span style="color: #928374;">-- </span><span style="color: #928374;">implications</span>
+          <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Taut</span>          <span style="color: #928374;">-- </span><span style="color: #928374;">tautology</span>
+          <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Contr</span>         <span style="color: #928374;">-- </span><span style="color: #928374;">contradiction</span>
+     <span style="color: #fb4933;">deriving</span> (<span style="color: #d3869b;">Show</span>)
+</pre>
+</div>
+<p>
+For example, we represent the formula \(p ∧ q\) as the expression <code>P :/\ Q</code>, the
+formula \(p → q\) as <code>P :-&gt; Q</code>, the formula \(p ∨ (q → r)\) as <code>P :\/ (Q :-&gt; R)</code>, and
+so on, all of these expressions being of type <code>Form</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6505aab" class="outline-3">
+<h3 id="org6505aab"><span class="section-number-3">1.2.</span> Being in a context</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+Ultimately, we want to have a way of encoding judgments of the form \(Γ ⊢ φ\).
+But before we get there, we need to go about encoding contexts \(Γ\), as well
+as talk about what it means for some assumption \(x : φ\) to be <i>in</i> a context
+\(Γ\).
+</p>
+
+<p>
+As for contexts, we can encode them as an algebraic data type analogous to
+lists:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Context</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Empty</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Cons</span> <span style="color: #d3869b;">Form</span> <span style="color: #d3869b;">Context</span>
+</pre>
+</div>
+<p>
+With contexts at hand, we can begin talking, <i>in Haskell</i>, about what it means
+for some assumption to be in a context. In particular, we use the following
+encoding of <i>ways of being in a context</i> as a generalized algebraic data type
+(GADT):
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">In</span> (&#966; <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Form</span>) (&#947; <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Context</span>) <span style="color: #fb4933;">where</span>
+  <span style="color: #d3869b;">First</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">In</span> &#966; (<span style="color: #d3869b;">Cons</span> &#966; &#947;)
+  <span style="color: #d3869b;">Next</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">In</span> &#966; &#947; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">In</span> &#966; (<span style="color: #d3869b;">Cons</span> &#968; &#947;)
+</pre>
+</div>
+<p>
+We have done a couple of novel things here, which require particular Haskell
+language extensions. First, we've encoded the data type <code>In φ γ</code> as a GADT,
+necessitating the following language extension, which should go at the top of
+your Haskell file:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fe8019;">{-# LANGUAGE GADTs #-}</span>
+</pre>
+</div>
+<p>
+Second, we have begun using data types themselves, i.e., <code>Form</code> and <code>Context</code> as
+<i>parameters</i> of a new type constructor <code>In</code>. Note that this is very different
+from how data types are usually defined&#x2014;even data types like <code>List a</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">List</span> a <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Empty</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Cons</span> a (<span style="color: #d3869b;">List</span> a)
+</pre>
+</div>
+<p>
+Here, the <code>a</code> in <code>List a</code> is a <i>type</i> (specifically, it can be any type). But the <code>φ</code>
+of <code>In φ γ</code> isn't a type; it's a <code>Form</code>! Similarly, the <code>γ</code> of <code>In φ γ</code> isn't a type
+either; it's a <code>Context</code>! In order to allow not only types but <i>data</i> to serve as
+the parameters of data types, we need to turn on two other language
+extensions:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fe8019;">{-# LANGUAGE DataKinds #-}</span>
+<span style="color: #fe8019;">{-# LANGUAGE KindSignatures #-}</span>
+</pre>
+</div>
+<p>
+The first language extension, <code>DataKinds</code>, allows data to be promoted to the
+same level as types; i.e., so that it can serve as  the parameter of a type
+constructor, for example, in the way that a formula <code>φ</code> can be the parameter of
+the type constructor <code>In</code>. The second, <code>KindSignatures</code>, allows new data types to
+be declared by annotating their parameters with what kind of data they should
+be (e.g., <code>(φ :: Form)</code> and <code>(γ :: Context)</code> above).
+</p>
+
+<p>
+Thus what the data type <code>In φ γ</code> encodes is a way of an <i>index</i> into some context
+<code>γ</code> which correspond to an assumption of <code>φ</code>. For example, if you were to request
+the type of <code>First</code> in your ghci repl, you would get
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #83a598;">&gt;&gt;&gt;</span> <span style="color: #d3869b;">:</span>t <span style="color: #d3869b;">First</span>
+<span style="color: #d3869b;">First</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">In</span> &#966; (<span style="color: #d3869b;">Cons</span> &#966; &#947;)
+</pre>
+</div>
+<p>
+meaning that <code>First</code> just indexes the first element of the context <code>Cons φ γ</code>. If
+you were to request the type of, e.g., <code>Next First</code>, you would get
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #83a598;">&gt;&gt;&gt;</span> <span style="color: #d3869b;">:</span>t <span style="color: #d3869b;">Next</span> <span style="color: #d3869b;">First</span>
+<span style="color: #d3869b;">Next</span> <span style="color: #d3869b;">First</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">In</span> &#966; (<span style="color: #d3869b;">Cons</span> &#968; (<span style="color: #d3869b;">Cons</span> &#966; &#947;))
+</pre>
+</div>
+<p>
+meaning that <code>Next First</code> indexes the second element of the context <code>Cons ψ
+   (Cons φ γ)</code>. And so on. In other words, the data type <code>In φ γ</code> just gives us all
+the possible ways that some formula <code>φ</code> could be in a context <code>γ</code>; i.e., by being
+the first element, the second element, etc.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org31dfd90" class="outline-3">
+<h3 id="org31dfd90"><span class="section-number-3">1.3.</span> Building proofs</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+We can continue by declaring a data type to encode <i>proofs</i>. In general, the
+constructors of this data type act as functions: they either take a way of
+being in a context onto an axiom that crucially uses that way of being in a
+context, or they take old proofs onto new proofs. In the former case, we are
+simply encoding the axiom rule:
+\[\frac{φ ∈ Γ}{Γ ⊢ φ}\mathtt{Ax}\]
+or, translated into Haskell,
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Proof</span> (&#947; <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Context</span>) (&#966; <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Form</span>) <span style="color: #fb4933;">where</span>
+  <span style="color: #d3869b;">Ax</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">In</span> &#966; &#947; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Proof</span> &#947; &#966;
+</pre>
+</div>
+<p>
+In the latter case, we are encoding the rules of Intuitionistic Logic, e.g.,
+\(∧\mathtt{I}\), \(∨\mathtt{E}\), etc. As we saw in class, we can continue the
+declaration of <code>Proof γ φ</code> by encoding the rules \(∨\mathtt{I}_L\),
+\(∨\mathtt{I}_R\), and \(∨\mathtt{E}\):
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Proof</span> (&#947; <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Context</span>) (&#966; <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Form</span>) <span style="color: #fb4933;">where</span>
+  <span style="color: #d3869b;">Ax</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">In</span> &#966; &#947; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Proof</span> &#947; &#966;
+  <span style="color: #d3869b;">OrIntroL</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Proof</span> &#947; &#966; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Proof</span> &#947; (&#966; <span style="color: #d3869b;">:\/</span> &#968;)
+  <span style="color: #d3869b;">OrIntroR</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Proof</span> &#947; &#968; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Proof</span> &#947; (&#966; <span style="color: #d3869b;">:\/</span> &#968;)
+  <span style="color: #d3869b;">OrElim</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Proof</span> &#947; (&#966; <span style="color: #d3869b;">:\/</span> &#968;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Proof</span> (<span style="color: #d3869b;">Cons</span> &#966; &#947;) &#967; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Proof</span> (<span style="color: #d3869b;">Cons</span> &#968; &#947;) &#967; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Proof</span> &#947; &#967;
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6df2f18" class="outline-2">
+<h2 id="org6df2f18"><span class="section-number-2">2.</span> Exercises</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Finish declaring <code>Proof γ φ</code>. That is, fill in the following types:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Proof</span> (&#947; <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Context</span>) (&#966; <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Form</span>) <span style="color: #fb4933;">where</span>
+  <span style="color: #d3869b;">Ax</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">In</span> &#966; &#947; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Proof</span> &#947; &#966;                  <span style="color: #928374;">-- </span><span style="color: #928374;">Ax</span>
+  <span style="color: #d3869b;">OrIntroL</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Proof</span> &#947; &#966; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Proof</span> &#947; (&#966; <span style="color: #d3869b;">:\/</span> &#968;) <span style="color: #928374;">-- </span><span style="color: #928374;">&#8744;I_L</span>
+  <span style="color: #d3869b;">OrIntroR</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Proof</span> &#947; &#968; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Proof</span> &#947; (&#966; <span style="color: #d3869b;">:\/</span> &#968;) <span style="color: #928374;">-- </span><span style="color: #928374;">&#8744;I_R</span>
+  <span style="color: #d3869b;">OrElim</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Proof</span> &#947; (&#966; <span style="color: #d3869b;">:\/</span> &#968;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Proof</span> (<span style="color: #d3869b;">Cons</span> &#966; &#947;) &#967; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Proof</span> (<span style="color: #d3869b;">Cons</span> &#968; &#947;) &#967; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Proof</span> &#947; &#967; <span style="color: #928374;">-- </span><span style="color: #928374;">&#8744;E</span>
+  <span style="color: #d3869b;">AndIntro</span> <span style="color: #83a598;">::</span> <span style="color: #fb4933;">_</span>  <span style="color: #928374;">-- </span><span style="color: #928374;">&#8743;I</span>
+  <span style="color: #d3869b;">AndElimL</span> <span style="color: #83a598;">::</span> <span style="color: #fb4933;">_</span>  <span style="color: #928374;">-- </span><span style="color: #928374;">&#8743;E_L</span>
+  <span style="color: #d3869b;">AndElimR</span> <span style="color: #83a598;">::</span> <span style="color: #fb4933;">_</span>  <span style="color: #928374;">-- </span><span style="color: #928374;">&#8743;E_R</span>
+  <span style="color: #d3869b;">ArrIntro</span> <span style="color: #83a598;">::</span> <span style="color: #fb4933;">_</span>  <span style="color: #928374;">-- </span><span style="color: #928374;">&#8594;I</span>
+  <span style="color: #d3869b;">ArrElim</span> <span style="color: #83a598;">::</span> <span style="color: #fb4933;">_</span>   <span style="color: #928374;">-- </span><span style="color: #928374;">&#8594;E</span>
+  <span style="color: #d3869b;">TautIntro</span> <span style="color: #83a598;">::</span> <span style="color: #fb4933;">_</span> <span style="color: #928374;">-- </span><span style="color: #928374;">&#8868;I</span>
+  <span style="color: #d3869b;">ContrElim</span> <span style="color: #83a598;">::</span> <span style="color: #fb4933;">_</span> <span style="color: #928374;">-- </span><span style="color: #928374;">&#8869;E</span>
+</pre>
+</div>
+<p>
+Refer to <a href="https://juliangrove.github.io/ur-comp-sem-2023/notes/sept27/sept27.html#orge40b96e">the old notes</a>!
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Julian Grove</p>
+<p class="date">Created: 2023-10-04 Wed 22:33</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

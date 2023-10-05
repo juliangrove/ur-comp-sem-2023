@@ -1,0 +1,142 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: Encoding Intuitionistic Logic proofs
+
+* Review
+  We've now begun encoding propositional logic proofs in Haskell. Doing this
+  involved a few steps, which we rehash here in turn.
+  
+** Formulae
+   We defined formulae using the standard way of defining a set of syntactic
+   objects in Haskell, i.e., in terms of an algebraic data type. Given a set of
+   atomic formulae
+   #+begin_src haskell
+     data Atom = P | Q | R deriving (Show)
+   #+end_src
+   we can define the set of all formulae as a data type ~Form~:
+   #+begin_src haskell
+     data Form = At Atom       -- atomic formulae
+	       | Form :/\ Form -- conjunctions
+	       | Form :\/ Form -- disjunctions
+	       | Form :-> Form -- implications
+	       | Taut          -- tautology
+	       | Contr         -- contradiction
+	  deriving (Show)
+   #+end_src
+   For example, we represent the formula $p ∧ q$ as the expression ~P :/\ Q~, the
+   formula $p → q$ as ~P :-> Q~, the formula $p ∨ (q → r)$ as ~P :\/ (Q :-> R)~, and
+   so on, all of these expressions being of type ~Form~.
+
+** Being in a context
+   Ultimately, we want to have a way of encoding judgments of the form $Γ ⊢ φ$.
+   But before we get there, we need to go about encoding contexts $Γ$, as well
+   as talk about what it means for some assumption $x : φ$ to be /in/ a context
+   $Γ$.
+
+   As for contexts, we can encode them as an algebraic data type analogous to
+   lists:
+   #+begin_src haskell
+     data Context = Empty | Cons Form Context
+   #+end_src
+   With contexts at hand, we can begin talking, /in Haskell/, about what it means
+   for some assumption to be in a context. In particular, we use the following
+   encoding of /ways of being in a context/ as a generalized algebraic data type
+   (GADT):
+   #+begin_src haskell
+     data In (φ :: Form) (γ :: Context) where
+       First :: In φ (Cons φ γ)
+       Next :: In φ γ -> In φ (Cons ψ γ)
+   #+end_src
+   We have done a couple of novel things here, which require particular Haskell
+   language extensions. First, we've encoded the data type ~In φ γ~ as a GADT,
+   necessitating the following language extension, which should go at the top of
+   your Haskell file:
+   #+begin_src haskell
+     {-# LANGUAGE GADTs #-}
+   #+end_src
+   Second, we have begun using data types themselves, i.e., ~Form~ and ~Context~ as
+   /parameters/ of a new type constructor ~In~. Note that this is very different
+   from how data types are usually defined---even data types like ~List a~:
+   #+begin_src haskell
+     data List a = Empty | Cons a (List a)
+   #+end_src
+   Here, the ~a~ in ~List a~ is a /type/ (specifically, it can be any type). But the ~φ~
+   of ~In φ γ~ isn't a type; it's a ~Form~! Similarly, the ~γ~ of ~In φ γ~ isn't a type
+   either; it's a ~Context~! In order to allow not only types but /data/ to serve as
+   the parameters of data types, we need to turn on two other language
+   extensions:
+   #+begin_src haskell
+     {-# LANGUAGE DataKinds #-}
+     {-# LANGUAGE KindSignatures #-}
+   #+end_src
+   The first language extension, ~DataKinds~, allows data to be promoted to the
+   same level as types; i.e., so that it can serve as  the parameter of a type
+   constructor, for example, in the way that a formula ~φ~ can be the parameter of
+   the type constructor ~In~. The second, ~KindSignatures~, allows new data types to
+   be declared by annotating their parameters with what kind of data they should
+   be (e.g., ~(φ :: Form)~ and ~(γ :: Context)~ above).
+
+   Thus what the data type ~In φ γ~ encodes is a way of an /index/ into some context
+   ~γ~ which correspond to an assumption of ~φ~. For example, if you were to request
+   the type of ~First~ in your ghci repl, you would get
+   #+begin_src haskell
+     >>> :t First
+     First :: In φ (Cons φ γ)
+   #+end_src
+   meaning that ~First~ just indexes the first element of the context ~Cons φ γ~. If
+   you were to request the type of, e.g., ~Next First~, you would get
+   #+begin_src haskell
+     >>> :t Next First
+     Next First :: In φ (Cons ψ (Cons φ γ))
+   #+end_src
+   meaning that ~Next First~ indexes the second element of the context ~Cons ψ
+   (Cons φ γ)~. And so on. In other words, the data type ~In φ γ~ just gives us all
+   the possible ways that some formula ~φ~ could be in a context ~γ~; i.e., by being
+   the first element, the second element, etc.
+
+** Building proofs
+   We can continue by declaring a data type to encode /proofs/. In general, the
+   constructors of this data type act as functions: they either take a way of
+   being in a context onto an axiom that crucially uses that way of being in a
+   context, or they take old proofs onto new proofs. In the former case, we are
+   simply encoding the axiom rule:
+   $$\frac{φ ∈ Γ}{Γ ⊢ φ}\mathtt{Ax}$$
+   or, translated into Haskell,
+   #+begin_src haskell
+     data Proof (γ :: Context) (φ :: Form) where
+       Ax :: In φ γ -> Proof γ φ
+   #+end_src
+   In the latter case, we are encoding the rules of Intuitionistic Logic, e.g.,
+   $∧\mathtt{I}$, $∨\mathtt{E}$, etc. As we saw in class, we can continue the
+   declaration of ~Proof γ φ~ by encoding the rules $∨\mathtt{I}_L$,
+   $∨\mathtt{I}_R$, and $∨\mathtt{E}$:
+   #+begin_src haskell
+     data Proof (γ :: Context) (φ :: Form) where
+       Ax :: In φ γ -> Proof γ φ
+       OrIntroL :: Proof γ φ -> Proof γ (φ :\/ ψ)
+       OrIntroR :: Proof γ ψ -> Proof γ (φ :\/ ψ)
+       OrElim :: Proof γ (φ :\/ ψ) -> Proof (Cons φ γ) χ -> Proof (Cons ψ γ) χ -> Proof γ χ
+   #+end_src
+
+* Exercises
+  Finish declaring ~Proof γ φ~. That is, fill in the following types:
+  #+begin_src haskell
+    data Proof (γ :: Context) (φ :: Form) where
+      Ax :: In φ γ -> Proof γ φ                  -- Ax
+      OrIntroL :: Proof γ φ -> Proof γ (φ :\/ ψ) -- ∨I_L
+      OrIntroR :: Proof γ ψ -> Proof γ (φ :\/ ψ) -- ∨I_R
+      OrElim :: Proof γ (φ :\/ ψ) -> Proof (Cons φ γ) χ -> Proof (Cons ψ γ) χ -> Proof γ χ -- ∨E
+      AndIntro :: _  -- ∧I
+      AndElimL :: _  -- ∧E_L
+      AndElimR :: _  -- ∧E_R
+      ArrIntro :: _  -- →I
+      ArrElim :: _   -- →E
+      TautIntro :: _ -- ⊤I
+      ContrElim :: _ -- ⊥E
+   #+end_src
+   Refer to [[https://juliangrove.github.io/ur-comp-sem-2023/notes/sept27/sept27.html#orge40b96e][the old notes]]!
