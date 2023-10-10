@@ -1,0 +1,54 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: More practice with Intuitionistic Logic proofs
+
+* Review
+  Yesterday, we encoded Intuitionistic Logic proofs in Haskell. High fives all
+  around!
+  
+** The full encoding
+   #+begin_src haskell
+     {-# LANGUAGE DataKinds #-}
+     {-# LANGUAGE GADTs #-}
+     {-# LANGUAGE KindSignatures #-}
+
+     -- Formulae
+     data Atom = P | Q | R
+     data Form = At Atom
+	       | Form :/\ Form -- Conjunctions
+	       | Form :\/ Form -- Disjunctions
+	       | Form :-> Form -- Implications
+	       | Taut          -- Tautology
+	       | Contr         -- Contradiction
+
+     -- Contexts
+     data Context = Empty | Cons Form Context
+
+     -- Ways of being in a context
+     data In (φ :: Form) (γ :: Context) where
+       First :: In φ (Cons φ γ)
+       Next :: In φ γ -> In φ (Cons ψ γ)
+
+     -- Proofs
+     data Proof (γ :: Context) (φ :: Form) where
+       Ax :: In φ γ -> Proof γ φ                  -- Ax
+       OrIntroL :: Proof γ φ -> Proof γ (φ :\/ ψ) -- ∨I_L
+       OrIntroR :: Proof γ ψ -> Proof γ (φ :\/ ψ) -- ∨I_R
+       OrElim :: Proof γ (φ :\/ ψ) -> Proof (Cons φ γ) χ -> Proof (Cons ψ γ) χ -> Proof γ χ -- ∨E
+       AndIntro :: Proof γ φ -> Proof γ ψ -> Proof γ (φ :/\ ψ)  -- ∧I
+       AndElimL :: Proof γ (φ :/\ ψ) -> Proof γ φ  -- ∧E_L
+       AndElimR :: Proof γ (φ :/\ ψ) -> Proof γ ψ  -- ∧E_R
+       ArrIntro :: Proof (Cons φ γ) ψ -> Proof γ (φ :-> ψ)  -- →I
+       ArrElim :: Proof γ (φ :-> ψ) -> Proof γ φ -> Proof γ ψ   -- →E
+       TautIntro :: Proof γ Taut -- ⊤I
+       ContrElim :: Proof γ Contr -> Proof γ φ -- ⊥E
+   #+end_src
+
+* Exercises
+  Do (or redo) any or all of [[../sept27/sept27.html#org34a4a85][the exercises from September 27th]], but by encoding
+  your proof in Haskell as a value of type ~Proof γ φ~ (for the relevant ~φ~).
