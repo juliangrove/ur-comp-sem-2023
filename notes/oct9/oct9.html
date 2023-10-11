@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-10-10 Tue 12:30 -->
+<!-- 2023-10-10 Tue 21:09 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>More practice with Intuitionistic Logic proofs</title>
@@ -206,18 +206,18 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org6ed4206">1. Review</a>
+<li><a href="#org7d90a32">1. Review</a>
 <ul>
-<li><a href="#org1f15cc4">1.1. The full encoding</a></li>
+<li><a href="#orga3398c4">1.1. The full encoding</a></li>
 </ul>
 </li>
-<li><a href="#org3504b38">2. Exercises</a></li>
+<li><a href="#org729cc55">2. Exercises</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org6ed4206" class="outline-2">
-<h2 id="org6ed4206"><span class="section-number-2">1.</span> Review</h2>
+<div id="outline-container-org7d90a32" class="outline-2">
+<h2 id="org7d90a32"><span class="section-number-2">1.</span> Review</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Yesterday, we encoded Intuitionistic Logic proofs in Haskell. High fives all
@@ -225,13 +225,14 @@ around!
 </p>
 </div>
 
-<div id="outline-container-org1f15cc4" class="outline-3">
-<h3 id="org1f15cc4"><span class="section-number-3">1.1.</span> The full encoding</h3>
+<div id="outline-container-orga3398c4" class="outline-3">
+<h3 id="orga3398c4"><span class="section-number-3">1.1.</span> The full encoding</h3>
 <div class="outline-text-3" id="text-1-1">
 <div class="org-src-container">
 <pre class="src src-haskell"><span style="color: #fe8019;">{-# LANGUAGE DataKinds #-}</span>
 <span style="color: #fe8019;">{-# LANGUAGE GADTs #-}</span>
 <span style="color: #fe8019;">{-# LANGUAGE KindSignatures #-}</span>
+<span style="color: #fe8019;">{-# LANGUATE TypeOperators #-}</span>
 
 <span style="color: #928374;">-- </span><span style="color: #928374;">Formulae</span>
 <span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Atom</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">P</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Q</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">R</span>
@@ -269,8 +270,8 @@ around!
 </div>
 </div>
 
-<div id="outline-container-org3504b38" class="outline-2">
-<h2 id="org3504b38"><span class="section-number-2">2.</span> Exercises</h2>
+<div id="outline-container-org729cc55" class="outline-2">
+<h2 id="org729cc55"><span class="section-number-2">2.</span> Exercises</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Do (or redo) any or all of <a href="../sept27/sept27.html#org34a4a85">the exercises from September 27th</a>, but by encoding
@@ -281,7 +282,7 @@ your proof in Haskell as a value of type <code>Proof γ φ</code> (for the relev
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-10-10 Tue 12:30</p>
+<p class="date">Created: 2023-10-10 Tue 21:09</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

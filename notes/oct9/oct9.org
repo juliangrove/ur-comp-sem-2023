@@ -16,6 +16,7 @@
      {-# LANGUAGE DataKinds #-}
      {-# LANGUAGE GADTs #-}
      {-# LANGUAGE KindSignatures #-}
+     {-# LANGUATE TypeOperators #-}
 
      -- Formulae
      data Atom = P | Q | R
