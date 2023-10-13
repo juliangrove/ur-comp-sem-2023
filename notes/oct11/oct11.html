@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-10-12 Thu 23:14 -->
+<!-- 2023-10-13 Fri 01:10 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Propositional logic: encoding structural rules, and local completeness</title>
@@ -206,14 +206,14 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org2584ad3">1. Review</a>
+<li><a href="#org0a40113">1. Review</a>
 <ul>
-<li><a href="#org0917131">1.1. Encoding structural rules</a></li>
-<li><a href="#orgd86abf5">1.2. Local completeness</a>
+<li><a href="#orga6f9bb4">1.1. Encoding structural rules</a></li>
+<li><a href="#org078abae">1.2. Local completeness</a>
 <ul>
-<li><a href="#org2685ce4">1.2.1. Conjunction rules</a></li>
-<li><a href="#org217635c">1.2.2. Disjunction rules</a></li>
-<li><a href="#org5befd0e">1.2.3. Implication rules</a></li>
+<li><a href="#orgd61c42a">1.2.1. Conjunction rules</a></li>
+<li><a href="#org46cf40d">1.2.2. Disjunction rules</a></li>
+<li><a href="#org99024f5">1.2.3. Implication rules</a></li>
 </ul>
 </li>
 </ul>
@@ -222,8 +222,8 @@
 </div>
 </div>
 
-<div id="outline-container-org2584ad3" class="outline-2">
-<h2 id="org2584ad3"><span class="section-number-2">1.</span> Review</h2>
+<div id="outline-container-org0a40113" class="outline-2">
+<h2 id="org0a40113"><span class="section-number-2">1.</span> Review</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Yesterday, we determined a way to encode structural rules (e.g., Weakening,
@@ -232,12 +232,12 @@ We also talked about the notion of local completeness.
 </p>
 </div>
 
-<div id="outline-container-org0917131" class="outline-3">
-<h3 id="org0917131"><span class="section-number-3">1.1.</span> Encoding structural rules</h3>
+<div id="outline-container-orga6f9bb4" class="outline-3">
+<h3 id="orga6f9bb4"><span class="section-number-3">1.1.</span> Encoding structural rules</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 To encode structural rules, we defined a function <code>reorder</code>, which, given some
-function that manipulates ways of being a context (i.e., some <code>f :: forall
+function that manipulates ways of being in a context (i.e., some <code>f :: forall
    φ. In φ γ -&gt; in φ δ</code>), provides a general protocol for reordering the
 assumptions in contexts as dictated by <code>f</code>.
 </p>
@@ -300,8 +300,8 @@ versions of weakening, exchange, and contraction:
 </div>
 </div>
 
-<div id="outline-container-orgd86abf5" class="outline-3">
-<h3 id="orgd86abf5"><span class="section-number-3">1.2.</span> Local completeness</h3>
+<div id="outline-container-org078abae" class="outline-3">
+<h3 id="org078abae"><span class="section-number-3">1.2.</span> Local completeness</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 Each of the connectives with both elimination and introduction rules exhibit
@@ -324,33 +324,33 @@ left, and the expanded proof with the detour is on the right.
 </p>
 </div>
 
-<div id="outline-container-org2685ce4" class="outline-4">
-<h4 id="org2685ce4"><span class="section-number-4">1.2.1.</span> Conjunction rules</h4>
+<div id="outline-container-orgd61c42a" class="outline-4">
+<h4 id="orgd61c42a"><span class="section-number-4">1.2.1.</span> Conjunction rules</h4>
 <div class="outline-text-4" id="text-1-2-1">
 
-<div id="orgca49ae9" class="figure">
+<div id="org0e1af6e" class="figure">
 <p><img src="./lc_and.png" alt="lc_and.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org217635c" class="outline-4">
-<h4 id="org217635c"><span class="section-number-4">1.2.2.</span> Disjunction rules</h4>
+<div id="outline-container-org46cf40d" class="outline-4">
+<h4 id="org46cf40d"><span class="section-number-4">1.2.2.</span> Disjunction rules</h4>
 <div class="outline-text-4" id="text-1-2-2">
 
-<div id="org95d9462" class="figure">
+<div id="org832d1ed" class="figure">
 <p><img src="./lc_or.png" alt="lc_or.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org5befd0e" class="outline-4">
-<h4 id="org5befd0e"><span class="section-number-4">1.2.3.</span> Implication rules</h4>
+<div id="outline-container-org99024f5" class="outline-4">
+<h4 id="org99024f5"><span class="section-number-4">1.2.3.</span> Implication rules</h4>
 <div class="outline-text-4" id="text-1-2-3">
 
-<div id="orgf57b43f" class="figure">
+<div id="orgc13d41f" class="figure">
 <p><img src="./lc_arrow.png" alt="lc_arrow.png" />
 </p>
 </div>
@@ -361,7 +361,7 @@ left, and the expanded proof with the detour is on the right.
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-10-12 Thu 23:14</p>
+<p class="date">Created: 2023-10-13 Fri 01:10</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

@@ -14,7 +14,7 @@
 
 ** Encoding structural rules
    To encode structural rules, we defined a function ~reorder~, which, given some
-   function that manipulates ways of being a context (i.e., some ~f :: forall
+   function that manipulates ways of being in a context (i.e., some ~f :: forall
    φ. In φ γ -> in φ δ~), provides a general protocol for reordering the
    assumptions in contexts as dictated by ~f~.
    #+begin_src haskell
