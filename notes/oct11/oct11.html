@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2023-10-12 Thu 23:14 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Propositional logic: encoding structural rules, and local completeness</title>
+<meta name="author" content="Julian Grove" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+<script src="../../jquery.min.js"></script>
+<script src="../../bootstrap.min.js"></script>
+<script type="text/javascript" src="../../readtheorg.js"></script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Propositional logic: encoding structural rules, and local completeness</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org2584ad3">1. Review</a>
+<ul>
+<li><a href="#org0917131">1.1. Encoding structural rules</a></li>
+<li><a href="#orgd86abf5">1.2. Local completeness</a>
+<ul>
+<li><a href="#org2685ce4">1.2.1. Conjunction rules</a></li>
+<li><a href="#org217635c">1.2.2. Disjunction rules</a></li>
+<li><a href="#org5befd0e">1.2.3. Implication rules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org2584ad3" class="outline-2">
+<h2 id="org2584ad3"><span class="section-number-2">1.</span> Review</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Yesterday, we determined a way to encode structural rules (e.g., Weakening,
+Contraction, Exchange) in our presentation of Intuitionistic Logic in Haskell.
+We also talked about the notion of local completeness.
+</p>
+</div>
+
+<div id="outline-container-org0917131" class="outline-3">
+<h3 id="org0917131"><span class="section-number-3">1.1.</span> Encoding structural rules</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+To encode structural rules, we defined a function <code>reorder</code>, which, given some
+function that manipulates ways of being a context (i.e., some <code>f :: forall
+   φ. In φ γ -&gt; in φ δ</code>), provides a general protocol for reordering the
+assumptions in contexts as dictated by <code>f</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">reorder</span> <span style="color: #83a598;">::</span> <span style="color: #fb4933;">forall</span> &#947; &#948; &#968;<span style="color: #83a598;">.</span> (<span style="color: #fb4933;">forall</span> &#966;<span style="color: #83a598;">.</span> <span style="color: #d3869b;">In</span> &#966; &#947; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">In</span> &#966; &#948;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Proof</span> &#947; &#968; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Proof</span> &#948; &#968;
+<span style="color: #fabd2f;">reorder</span> f (<span style="color: #d3869b;">Ax</span> i) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Ax</span> (f i)
+<span style="color: #fabd2f;">reorder</span> f (<span style="color: #d3869b;">AndIntro</span> t u) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">AndIntro</span> (reorder f t) (reorder f u)
+<span style="color: #fabd2f;">reorder</span> f (<span style="color: #d3869b;">AndElimL</span> t) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">AndElimL</span> (reorder f t)
+<span style="color: #fabd2f;">reorder</span> f (<span style="color: #d3869b;">AndElimR</span> t) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">AndElimR</span> (reorder f t)
+<span style="color: #fabd2f;">reorder</span> f (<span style="color: #d3869b;">OrIntroL</span> t) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">OrIntroL</span> (reorder f t)
+<span style="color: #fabd2f;">reorder</span> f (<span style="color: #d3869b;">OrIntroR</span> t) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">OrIntroR</span> (reorder f t)
+<span style="color: #fabd2f;">reorder</span> f (<span style="color: #d3869b;">OrElim</span> t u v) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">OrElim</span> (reorder f t) (reorder g u) (reorder h v)
+  <span style="color: #fb4933;">where</span> g <span style="color: #83a598;">::</span> (<span style="color: #fb4933;">forall</span> &#967;<span style="color: #83a598;">.</span> <span style="color: #d3869b;">In</span> &#967; (<span style="color: #d3869b;">Cons</span> &#966;1 &#947;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">In</span> &#967; (<span style="color: #d3869b;">Cons</span> &#966;1 &#948;))
+        g <span style="color: #d3869b;">First</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">First</span>
+        g (<span style="color: #d3869b;">Next</span> i) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Next</span> (f i)
+
+        h <span style="color: #83a598;">::</span> (<span style="color: #fb4933;">forall</span> &#967;<span style="color: #83a598;">.</span> <span style="color: #d3869b;">In</span> &#967; (<span style="color: #d3869b;">Cons</span> &#966;2 &#947;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">In</span> &#967; (<span style="color: #d3869b;">Cons</span> &#966;2 &#948;))
+        h <span style="color: #d3869b;">First</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">First</span>
+        h (<span style="color: #d3869b;">Next</span> i) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Next</span> (f i)
+<span style="color: #fabd2f;">reorder</span> f (<span style="color: #d3869b;">ArrIntro</span> t) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">ArrIntro</span> (reorder g t)
+  <span style="color: #fb4933;">where</span> g <span style="color: #83a598;">::</span> (<span style="color: #fb4933;">forall</span> &#967;<span style="color: #83a598;">.</span> <span style="color: #d3869b;">In</span> &#967; (<span style="color: #d3869b;">Cons</span> &#966; &#947;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">In</span> &#967; (<span style="color: #d3869b;">Cons</span> &#966; &#948;))
+        g <span style="color: #d3869b;">First</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">First</span>
+        g (<span style="color: #d3869b;">Next</span> i) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Next</span> (f i)
+<span style="color: #fabd2f;">reorder</span> f (<span style="color: #d3869b;">ArrElim</span> t u) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">ArrElim</span> (reorder f t) (reorder f u)
+<span style="color: #fabd2f;">reorder</span> f <span style="color: #d3869b;">TautIntro</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">TautIntro</span>
+<span style="color: #fabd2f;">reorder</span> f (<span style="color: #d3869b;">ContrElim</span> t) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">ContrElim</span> (reorder f t)
+</pre>
+</div>
+<p>
+Note that the following additional language extensions are required for the
+above to compile:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fe8019;">{-# LANGUAGE RankNTypes #-}</span>
+<span style="color: #fe8019;">{-# LANGUAGE ScopedTypeVariables #-}</span>
+</pre>
+</div>
+
+<p>
+For example, we can now define the following functions that encode particular
+versions of weakening, exchange, and contraction:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">weaken1</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Proof</span> &#947; &#968; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Proof</span> (<span style="color: #d3869b;">Cons</span> &#966; &#947;) &#968;
+<span style="color: #fabd2f;">weaken1</span> <span style="color: #83a598;">=</span> reorder <span style="color: #d3869b;">Next</span>
+
+<span style="color: #fabd2f;">contraction1</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Proof</span> (<span style="color: #d3869b;">Cons</span> &#966; (<span style="color: #d3869b;">Cons</span> &#966; &#947;)) &#968; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Proof</span> (<span style="color: #d3869b;">Cons</span> &#966; &#947;) &#968;
+<span style="color: #fabd2f;">contraction1</span> <span style="color: #83a598;">=</span> reorder f
+  <span style="color: #fb4933;">where</span> f <span style="color: #d3869b;">First</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">First</span>
+        f (<span style="color: #d3869b;">Next</span> <span style="color: #d3869b;">First</span>) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">First</span>
+        f i <span style="color: #83a598;">=</span> i
+
+<span style="color: #fabd2f;">exchange1</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Proof</span> (<span style="color: #d3869b;">Cons</span> &#966; (<span style="color: #d3869b;">Cons</span> &#968; &#947;)) &#967; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Proof</span> (<span style="color: #d3869b;">Cons</span> &#968; (<span style="color: #d3869b;">Cons</span> &#966; &#947;)) &#967;
+<span style="color: #fabd2f;">exchange1</span> <span style="color: #83a598;">=</span> reorder f
+  <span style="color: #fb4933;">where</span> f <span style="color: #d3869b;">First</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Next</span> <span style="color: #d3869b;">First</span>
+        f (<span style="color: #d3869b;">Next</span> <span style="color: #d3869b;">First</span>) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">First</span>
+        f i <span style="color: #83a598;">=</span> i
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd86abf5" class="outline-3">
+<h3 id="orgd86abf5"><span class="section-number-3">1.2.</span> Local completeness</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+Each of the connectives with both elimination and introduction rules exhibit
+the property of local completeness in Intuitionistic Logic. For any given
+connective, what this property essentially says is that its elimination rules
+are <i>strong enough</i> for its introduction rules. That this is true can be shown
+by introducing <i>proof detours</i>: for any judgment in a proof whose consequent
+has some particular connective as its main connective, that judgment can be
+replaced with a sub-proof which uses the elimination rule(s) to take apart
+the connective and uses the introduction rule(s) to build the original
+formula back up again. In effect, if you take apart a connective using the
+elimination rules, you're always left with enough pieces to rebuild the
+formula.
+</p>
+
+<p>
+Local completeness is witnessed by the following schematic proof expansions;
+i.e., introductions of detours. In each case, the simpler proof is on the
+left, and the expanded proof with the detour is on the right. 
+</p>
+</div>
+
+<div id="outline-container-org2685ce4" class="outline-4">
+<h4 id="org2685ce4"><span class="section-number-4">1.2.1.</span> Conjunction rules</h4>
+<div class="outline-text-4" id="text-1-2-1">
+
+<div id="orgca49ae9" class="figure">
+<p><img src="./lc_and.png" alt="lc_and.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org217635c" class="outline-4">
+<h4 id="org217635c"><span class="section-number-4">1.2.2.</span> Disjunction rules</h4>
+<div class="outline-text-4" id="text-1-2-2">
+
+<div id="org95d9462" class="figure">
+<p><img src="./lc_or.png" alt="lc_or.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5befd0e" class="outline-4">
+<h4 id="org5befd0e"><span class="section-number-4">1.2.3.</span> Implication rules</h4>
+<div class="outline-text-4" id="text-1-2-3">
+
+<div id="orgf57b43f" class="figure">
+<p><img src="./lc_arrow.png" alt="lc_arrow.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Julian Grove</p>
+<p class="date">Created: 2023-10-12 Thu 23:14</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
