@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2023-10-19 Thu 15:23 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Propositional logic: local soundness and propositions as types</title>
+<meta name="author" content="Julian Grove" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+<script src="../../jquery.min.js"></script>
+<script src="../../bootstrap.min.js"></script>
+<script type="text/javascript" src="../../readtheorg.js"></script>
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Propositional logic: local soundness and propositions as types</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgb3ea0de">1. Review</a>
+<ul>
+<li><a href="#org1df868f">1.1. Local soundness</a>
+<ul>
+<li><a href="#orgad36032">1.1.1. Conjunction rules</a></li>
+<li><a href="#org5c952c8">1.1.2. Disjunction rules</a></li>
+<li><a href="#orgeddd8f6">1.1.3. Implication rules</a></li>
+</ul>
+</li>
+<li><a href="#orgc5587cc">1.2. Propositions as types</a></li>
+</ul>
+</li>
+<li><a href="#org87fd351">2. Exercise</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb3ea0de" class="outline-2">
+<h2 id="orgb3ea0de"><span class="section-number-2">1.</span> Review</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+We've now covered the property of <i>local soundness</i> for those connectives of
+propositional logic having both introduction and elimination rules. In
+addition, we (finally!) got to the propositions-as-types (or ``Curry-Howard'')
+correspondence.
+</p>
+</div>
+
+<div id="outline-container-org1df868f" class="outline-3">
+<h3 id="org1df868f"><span class="section-number-3">1.1.</span> Local soundness</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+Recall that local completeness is the property of a connective that its
+introduction rules are strong enough for its introduction rules; i.e., no
+matter how you destruct the connective using the elimination rules, you can
+build it back up again.
+</p>
+
+<p>
+Meanwhile, local soundness says that a connective's elimination rules are
+<i>not too strong</i> for its introduction rules. This is witnessed by showing that,
+every time you follow an introduction rule by an elimination rule, you're
+just introducing a proof detour that you can get rid of and still have a
+proof of the relevant formula. In other words, the elimination rules are
+never giving you anything <i>new</i>; they're just recycling old stuff.
+</p>
+
+<p>
+The following detour-elimination schemata illustrate local soundness for \(∧\),
+\(∨\), and \(→\).
+</p>
+</div>
+
+<div id="outline-container-orgad36032" class="outline-4">
+<h4 id="orgad36032"><span class="section-number-4">1.1.1.</span> Conjunction rules</h4>
+<div class="outline-text-4" id="text-1-1-1">
+
+<div id="orgf97e966" class="figure">
+<p><img src="./ls_and.png" alt="ls_and.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5c952c8" class="outline-4">
+<h4 id="org5c952c8"><span class="section-number-4">1.1.2.</span> Disjunction rules</h4>
+<div class="outline-text-4" id="text-1-1-2">
+
+<div id="org3deeac2" class="figure">
+<p><img src="./ls_or.png" alt="ls_or.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgeddd8f6" class="outline-4">
+<h4 id="orgeddd8f6"><span class="section-number-4">1.1.3.</span> Implication rules</h4>
+<div class="outline-text-4" id="text-1-1-3">
+
+<div id="org358a4fc" class="figure">
+<p><img src="./ls_arrow.png" alt="ls_arrow.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc5587cc" class="outline-3">
+<h3 id="orgc5587cc"><span class="section-number-3">1.2.</span> Propositions as types</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+One neat thing about the system of Intuitionistic Logic we've been studying
+is that every proof has a so-called <i>normal form</i>. That is, for any proof of a
+formula in IL, there is another proof of the same formula just like the
+original proof, but all of whose detours have been removed, following the
+schemata given above.
+</p>
+
+<p>
+Importantly, if we take into account that proof detours can be eliminated,
+then our original encoding of propositional logic proofs can be viewed as an
+encoding of λ-calculus! In this case the proofs are the <i>terms</i> of the
+calculus, and the propositions are the <i>types</i> of those terms. Indeed, the
+elimination of detours, following local soundness, is known as β-reduction.
+Moreover, the result about Intuitionistic Logic above&#x2014;that each proof has a
+normal form&#x2014;translates into the result, for the different flavors of
+λ-calculus that we consider, that each <i>term</i> has a normal form (since terms
+are just proofs, after all).
+</p>
+
+<p>
+From this new point of view, we can encode our old system of proofs again,
+changing the names for things around a bit. Here, we consider only the system
+of Minimal Logic; that is, which excludes the rule <code>ContrElim</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #928374;">-- </span><span style="color: #928374;">Types (a.k.a. formulae)</span>
+<span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Atom</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">P</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Q</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">R</span> <span style="color: #928374;">-- </span><span style="color: #928374;">Don't worry, we'll change these, haha.</span>
+<span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Type</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">At</span> <span style="color: #d3869b;">Atom</span>
+          <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Type</span> <span style="color: #d3869b;">:/\</span> <span style="color: #d3869b;">Type</span> <span style="color: #928374;">-- </span><span style="color: #928374;">Conjunctions</span>
+          <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Type</span> <span style="color: #d3869b;">:\/</span> <span style="color: #d3869b;">Type</span> <span style="color: #928374;">-- </span><span style="color: #928374;">Disjunctions</span>
+          <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Type</span> <span style="color: #d3869b;">:-&gt;</span> <span style="color: #d3869b;">Type</span> <span style="color: #928374;">-- </span><span style="color: #928374;">Implications</span>
+          <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Taut</span>          <span style="color: #928374;">-- </span><span style="color: #928374;">Tautology</span>
+          <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Contr</span>         <span style="color: #928374;">-- </span><span style="color: #928374;">Contradiction</span>
+
+<span style="color: #928374;">-- </span><span style="color: #928374;">Contexts</span>
+<span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Context</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Empty</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Cons</span> <span style="color: #d3869b;">Type</span> <span style="color: #d3869b;">Context</span>
+
+<span style="color: #928374;">-- </span><span style="color: #928374;">Ways of being in a context</span>
+<span style="color: #fb4933;">data</span> <span style="color: #d3869b;">In</span> (&#966; <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Type</span>) (&#947; <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Context</span>) <span style="color: #fb4933;">where</span>
+  <span style="color: #d3869b;">First</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">In</span> &#966; (<span style="color: #d3869b;">Cons</span> &#966; &#947;)
+  <span style="color: #d3869b;">Next</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">In</span> &#966; &#947; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">In</span> &#966; (<span style="color: #d3869b;">Cons</span> &#968; &#947;)
+
+<span style="color: #928374;">-- </span><span style="color: #928374;">Terms (a.k.a. proofs)</span>
+<span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Term</span> (&#947; <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Context</span>) (&#966; <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Type</span>) <span style="color: #fb4933;">where</span>
+  <span style="color: #d3869b;">Var</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">In</span> &#966; &#947; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; &#966;                        <span style="color: #928374;">-- </span><span style="color: #928374;">a.k.a. Ax</span>
+  <span style="color: #d3869b;">Lam</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Term</span> (<span style="color: #d3869b;">Cons</span> &#966; &#947;) &#968; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; (&#966; <span style="color: #d3869b;">:-&gt;</span> &#968;)     <span style="color: #928374;">-- </span><span style="color: #928374;">a.k.a. &#8594;I</span>
+  <span style="color: #d3869b;">App</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Term</span> &#947; (&#966; <span style="color: #d3869b;">:-&gt;</span> &#968;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; &#966; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; &#968;  <span style="color: #928374;">-- </span><span style="color: #928374;">a.k.a. &#8594;E</span>
+  <span style="color: #d3869b;">Pair</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Term</span> &#947; &#966; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; &#968; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; (&#966; <span style="color: #d3869b;">:/\</span> &#968;) <span style="color: #928374;">-- </span><span style="color: #928374;">a.k.a. &#8743;I</span>
+  <span style="color: #d3869b;">Pi1</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Term</span> &#947; (&#966; <span style="color: #d3869b;">:/\</span> &#968;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; &#966;              <span style="color: #928374;">-- </span><span style="color: #928374;">a.k.a. &#8743;E_L</span>
+  <span style="color: #d3869b;">Pi2</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Term</span> &#947; (&#966; <span style="color: #d3869b;">:/\</span> &#968;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; &#968;              <span style="color: #928374;">-- </span><span style="color: #928374;">a.k.a. &#8743;E_R</span>
+  <span style="color: #d3869b;">Unit</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Term</span> &#947; <span style="color: #d3869b;">Taut</span>                              <span style="color: #928374;">-- </span><span style="color: #928374;">a.k.a. &#8868;I</span>
+  <span style="color: #d3869b;">Left</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Term</span> &#947; &#966; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; (&#966; <span style="color: #d3869b;">:\/</span> &#968;)             <span style="color: #928374;">-- </span><span style="color: #928374;">a.k.a. &#8744;I_L</span>
+  <span style="color: #d3869b;">Right</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Term</span> &#947; &#968; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; (&#966; <span style="color: #d3869b;">:\/</span> &#968;)            <span style="color: #928374;">-- </span><span style="color: #928374;">a.k.a. &#8744;I_R</span>
+  <span style="color: #d3869b;">Case</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Term</span> &#947; (&#966; <span style="color: #d3869b;">:\/</span> &#968;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> (<span style="color: #d3869b;">Cons</span> &#966; &#947;) &#967; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> (<span style="color: #d3869b;">Cons</span> &#968; &#947;) &#967; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; &#967; <span style="color: #928374;">-- </span><span style="color: #928374;">a.k.a. &#8744;E</span>
+</pre>
+</div>
+<p>
+What we would like to now do is define a function
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">normalForm</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Term</span> &#947; &#966; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; &#966;
+</pre>
+</div>
+<p>
+which takes any <code>Term γ φ</code> onto its β-normal form (and leave the term
+unaffected in case it already is in β-normal form). To do this, we will need
+ot define a general notion of <i>substitution</i> (just like we did for the untyped
+λ-calculus). Here, our function <code>subst</code> will have the following definition:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">subst</span> <span style="color: #83a598;">::</span> <span style="color: #fb4933;">forall</span> &#947; &#948; &#968;<span style="color: #83a598;">.</span> (<span style="color: #fb4933;">forall</span> &#966;<span style="color: #83a598;">.</span> <span style="color: #d3869b;">In</span> &#966; &#947; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#948; &#966;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; &#968; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#948; &#968;
+<span style="color: #fabd2f;">subst</span> f (<span style="color: #d3869b;">Var</span> i) <span style="color: #83a598;">=</span> f i
+<span style="color: #fabd2f;">subst</span> f (<span style="color: #d3869b;">Lam</span> t) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Lam</span> (subst g t)
+  <span style="color: #fb4933;">where</span> g <span style="color: #83a598;">::</span> <span style="color: #fb4933;">forall</span> &#966; &#967;<span style="color: #83a598;">.</span> <span style="color: #d3869b;">In</span> &#966; (<span style="color: #d3869b;">Cons</span> &#967; &#947;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> (<span style="color: #d3869b;">Cons</span> &#967; &#948;) &#966;
+        g <span style="color: #d3869b;">First</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Var</span> <span style="color: #d3869b;">First</span>
+        g (<span style="color: #d3869b;">Next</span> i) <span style="color: #83a598;">=</span> weaken (f i)
+<span style="color: #fabd2f;">subst</span> f (<span style="color: #d3869b;">App</span> t u) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">App</span> (subst f t) (subst f u)
+<span style="color: #fabd2f;">subst</span> f (<span style="color: #d3869b;">Pair</span> t u) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Pair</span> (subst f t) (subst f u)
+<span style="color: #fabd2f;">subst</span> f (<span style="color: #d3869b;">Pi1</span> t) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Pi1</span> (subst f t)
+<span style="color: #fabd2f;">subst</span> f (<span style="color: #d3869b;">Pi2</span> t) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Pi2</span> (subst f t)
+<span style="color: #fabd2f;">subst</span> f <span style="color: #d3869b;">Unit</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Unit</span>
+<span style="color: #fabd2f;">subst</span> f (<span style="color: #d3869b;">Left</span> t) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Left</span> (subst f t)
+<span style="color: #fabd2f;">subst</span> f (<span style="color: #d3869b;">Right</span> t) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Right</span> (subst f t)
+<span style="color: #fabd2f;">subst</span> f (<span style="color: #d3869b;">Case</span> t u v) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Case</span> (subst f t) (subst g u) (subst h v)
+  <span style="color: #fb4933;">where</span> g <span style="color: #83a598;">::</span> <span style="color: #d3869b;">In</span> &#966; (<span style="color: #d3869b;">Cons</span> &#967;1 &#947;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> (<span style="color: #d3869b;">Cons</span> &#967;1 &#948;) &#966;
+        g <span style="color: #d3869b;">First</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Var</span> <span style="color: #d3869b;">First</span>
+        g (<span style="color: #d3869b;">Next</span> i) <span style="color: #83a598;">=</span> weaken (f i)
+
+        h <span style="color: #83a598;">::</span> <span style="color: #d3869b;">In</span> &#966; (<span style="color: #d3869b;">Cons</span> &#967;2 &#947;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> (<span style="color: #d3869b;">Cons</span> &#967;2 &#948;) &#966;
+        h <span style="color: #d3869b;">First</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Var</span> <span style="color: #d3869b;">First</span>
+        h (<span style="color: #d3869b;">Next</span> i) <span style="color: #83a598;">=</span> weaken (f i)
+</pre>
+</div>
+<p>
+Note the use of the function <code>weaken</code> in the definitions of <code>subst</code> on <code>Lam</code> and
+<code>Case</code>. It is necessary to weaken the contexts of terms that we substitute
+underneath the variables bound by the <code>Lam</code> and <code>Case</code> constructors, both in
+order to ensure type-correctness and (hence) to avoid the problem of variable
+capture. Indeed, <code>weaken</code> is just one of our reordering operations:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">weaken</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Term</span> &#947; &#966; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> (<span style="color: #d3869b;">Cons</span> &#968; &#947;) &#966;
+<span style="color: #fabd2f;">weaken</span> <span style="color: #83a598;">=</span> reorder <span style="color: #d3869b;">Next</span>
+</pre>
+</div>
+<p>
+Recall the definition of <code>reorder</code> (though note that we've now changed the
+names of the constructors):
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">reorder</span> <span style="color: #83a598;">::</span> <span style="color: #fb4933;">forall</span> &#947; &#948; &#968;<span style="color: #83a598;">.</span> (<span style="color: #fb4933;">forall</span> &#966;<span style="color: #83a598;">.</span> <span style="color: #d3869b;">In</span> &#966; &#947; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">In</span> &#966; &#948;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; &#968; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#948; &#968;
+<span style="color: #fabd2f;">reorder</span> f (<span style="color: #d3869b;">Var</span> i) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Var</span> (f i)
+<span style="color: #fabd2f;">reorder</span> f (<span style="color: #d3869b;">Lam</span> t) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Lam</span> (reorder g t)
+  <span style="color: #fb4933;">where</span> g <span style="color: #83a598;">::</span> (<span style="color: #fb4933;">forall</span> &#967;<span style="color: #83a598;">.</span> <span style="color: #d3869b;">In</span> &#967; (<span style="color: #d3869b;">Cons</span> &#966; &#947;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">In</span> &#967; (<span style="color: #d3869b;">Cons</span> &#966; &#948;))
+        g <span style="color: #d3869b;">First</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">First</span>
+        g (<span style="color: #d3869b;">Next</span> i) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Next</span> (f i)
+<span style="color: #fabd2f;">reorder</span> f (<span style="color: #d3869b;">App</span> t u) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">App</span> (reorder f t) (reorder f u)
+<span style="color: #fabd2f;">reorder</span> f (<span style="color: #d3869b;">Pair</span> t u) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Pair</span> (reorder f t) (reorder f u)
+<span style="color: #fabd2f;">reorder</span> f (<span style="color: #d3869b;">Pi1</span> t) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Pi1</span> (reorder f t)
+<span style="color: #fabd2f;">reorder</span> f (<span style="color: #d3869b;">Pi2</span> t) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Pi2</span> (reorder f t)
+<span style="color: #fabd2f;">reorder</span> f <span style="color: #d3869b;">Unit</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Unit</span>
+<span style="color: #fabd2f;">reorder</span> f (<span style="color: #d3869b;">Left</span> t) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Left</span> (reorder f t)
+<span style="color: #fabd2f;">reorder</span> f (<span style="color: #d3869b;">Right</span> t) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Right</span> (reorder f t)
+<span style="color: #fabd2f;">reorder</span> f (<span style="color: #d3869b;">Case</span> t u v) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Case</span> (reorder f t) (reorder g u) (reorder h v)
+  <span style="color: #fb4933;">where</span> g <span style="color: #83a598;">::</span> (<span style="color: #fb4933;">forall</span> &#967;<span style="color: #83a598;">.</span> <span style="color: #d3869b;">In</span> &#967; (<span style="color: #d3869b;">Cons</span> &#966;1 &#947;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">In</span> &#967; (<span style="color: #d3869b;">Cons</span> &#966;1 &#948;))
+        g <span style="color: #d3869b;">First</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">First</span>
+        g (<span style="color: #d3869b;">Next</span> i) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Next</span> (f i)
+
+        h <span style="color: #83a598;">::</span> (<span style="color: #fb4933;">forall</span> &#967;<span style="color: #83a598;">.</span> <span style="color: #d3869b;">In</span> &#967; (<span style="color: #d3869b;">Cons</span> &#966;2 &#947;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">In</span> &#967; (<span style="color: #d3869b;">Cons</span> &#966;2 &#948;))
+        h <span style="color: #d3869b;">First</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">First</span>
+        h (<span style="color: #d3869b;">Next</span> i) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Next</span> (f i)
+</pre>
+</div>
+
+<p>
+Now in terms of <code>subst</code>, we can define a function <code>subst0</code>, which substitutes the
+axiom (i.e., variable) introducing the first assumption in any given context
+by some proof (i.e., λ-term).
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">subst0</span> <span style="color: #83a598;">::</span> <span style="color: #fb4933;">forall</span> &#947; &#966; &#968;<span style="color: #83a598;">.</span> <span style="color: #d3869b;">Term</span> &#947; &#966; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> (<span style="color: #d3869b;">Cons</span> &#966; &#947;) &#968; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; &#968;
+<span style="color: #fabd2f;">subst0</span> t <span style="color: #83a598;">=</span> subst f
+  <span style="color: #fb4933;">where</span> f <span style="color: #83a598;">::</span> <span style="color: #fb4933;">forall</span> &#967;<span style="color: #83a598;">.</span> <span style="color: #d3869b;">In</span> &#967; (<span style="color: #d3869b;">Cons</span> &#966; &#947;)<span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; &#967;
+        f <span style="color: #d3869b;">First</span> <span style="color: #83a598;">=</span> t
+        f (<span style="color: #d3869b;">Next</span> i) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Var</span> i
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org87fd351" class="outline-2">
+<h2 id="org87fd351"><span class="section-number-2">2.</span> Exercise</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Try to define the function <code>normalForm</code>. To start you off, here are the branches
+of the definition corresponding to the simply-typed λ-calculus (a.k.a., the
+<i>implicational fragment</i> of Intuitionistic Logic: 
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">normalForm</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Term</span> &#947; &#966; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; &#966;
+<span style="color: #fabd2f;">normalForm</span> v<span style="color: #83a598;">@</span>(<span style="color: #d3869b;">Var</span> <span style="color: #fb4933;">_</span>) <span style="color: #83a598;">=</span> v                <span style="color: #928374;">-- </span><span style="color: #928374;">Variables are already in normal form.</span>
+<span style="color: #fabd2f;">normalForm</span> (<span style="color: #d3869b;">Lam</span> t) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Lam</span> (normalForm t) <span style="color: #928374;">-- </span><span style="color: #928374;">Abstractions are in normal form just in case their bodies are in normal form.</span>
+<span style="color: #fabd2f;">normalForm</span> (<span style="color: #d3869b;">App</span> t u) <span style="color: #83a598;">=</span>
+  <span style="color: #fb4933;">case</span> normalForm t <span style="color: #fb4933;">of</span>
+    <span style="color: #d3869b;">Lam</span> t' <span style="color: #83a598;">-&gt;</span> normalForm (subst0 (normalForm u) t') <span style="color: #928374;">-- </span><span style="color: #928374;">If the normal form of t is an abstraction, then we need to substitute and further normalize.</span>
+    t' <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">App</span> t' (normalForm u)                     <span style="color: #928374;">-- </span><span style="color: #928374;">Otherwise, we just need to take the normal form of the argument.</span>
+<span style="color: #fabd2f;">normalForm</span> (<span style="color: #d3869b;">Pair</span> t u) <span style="color: #83a598;">=</span> <span style="color: #fb4933;">_</span>
+<span style="color: #fabd2f;">normalForm</span> (<span style="color: #d3869b;">Pi1</span> t) <span style="color: #83a598;">=</span> <span style="color: #fb4933;">_</span>
+<span style="color: #fabd2f;">normalForm</span> (<span style="color: #d3869b;">Pi2</span> t) <span style="color: #83a598;">=</span> <span style="color: #fb4933;">_</span>
+<span style="color: #fabd2f;">normalForm</span> <span style="color: #d3869b;">Unit</span> <span style="color: #83a598;">=</span> <span style="color: #fb4933;">_</span>
+<span style="color: #fabd2f;">normalForm</span> (<span style="color: #d3869b;">Left</span> t) <span style="color: #83a598;">=</span> <span style="color: #fb4933;">_</span>
+<span style="color: #fabd2f;">normalForm</span> (<span style="color: #d3869b;">Right</span> t) <span style="color: #83a598;">=</span> <span style="color: #fb4933;">_</span>
+<span style="color: #fabd2f;">normalForm</span> (<span style="color: #d3869b;">Case</span> t u v) <span style="color: #83a598;">=</span> <span style="color: #fb4933;">_</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Julian Grove</p>
+<p class="date">Created: 2023-10-19 Thu 15:23</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
