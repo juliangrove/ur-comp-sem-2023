@@ -1,0 +1,13 @@
+\frametitle{\texttt {filter}}
+Filter takes a predicate, i.e., a function of from \texttt{a}'s to \texttt{Bool}'s, along with
+a list of \texttt{a}'s, in order to give back a list of the \texttt{a}'s that satisfy the
+predicate.
+\begin{center}
+\texttt{filter :: (a -> Bool) -> [a] -> [a]}
+\end{center}
+How does \texttt{filter} work?\ldots{}
+\pause
+\begin{itemize}[<+->]
+\item We need a branch in the definition that applies to the empty list.
+\item We need a branch in the definition that applies to non-empty lists.
+\end{itemize}

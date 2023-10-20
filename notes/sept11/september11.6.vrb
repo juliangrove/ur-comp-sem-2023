@@ -1,0 +1,10 @@
+\frametitle{Either}
+A generalization of \texttt{Maybe a} is the data type \texttt{Either a b}. \\[0pt]
+\pause \bigskip
+\texttt{Left} means failure; \texttt{Right} means success.
+\pause \bigskip
+Questions:
+\begin{itemize}
+\item How might we represent \texttt{Maybe} data types as \texttt{Either} data types?
+\item In what sense are maybe types a generalization of either types?
+\end{itemize}

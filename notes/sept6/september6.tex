@@ -1,0 +1,474 @@
+% Created 2023-09-06 Wed 10:25
+% Intended LaTeX compiler: pdflatex
+\documentclass[presentation]{beamer}
+   \usepackage[T1]{fontenc}
+   \setbeamerfont{frametitle}{size=\large}
+   \setbeamertemplate{footline}{
+   \begin{flushright}
+   \insertframenumber/\inserttotalframenumber\hspace{2mm}\mbox{}
+   \end{flushright}}
+   \usepackage{libertine}
+   \usepackage[varqu]{zi4}
+   \usepackage[libertine]{newtxmath}
+   %%\usepackage[small]{eulervm}
+   %%\usepackage[{libertinust1math}
+   \usepackage[T1]{fontenc}
+   \renewcommand*\familydefault{\sfdefault}
+   \usepackage{tipa}
+   \usepackage{adjustbox}
+   \usepackage{multirow}
+   \usepackage{multicol}
+   \usepackage[backend=bibtex,uniquename=false,dashed=false,date=year,url=false,isbn=false,style=authoryear-comp]{biblatex}
+\addbibresource{/home/juliangrove/Documents/projects/FACTS.lab/ur-comp-sem-2023/ur-comp-sem-2023.bib}
+   \usepackage{expex}
+   \usepackage{stmaryrd}
+   \usepackage{stackrel}
+   \usepackage{stackengine}
+   \usepackage{relsize}
+   \usepackage{amsmath}
+   \usepackage{mathtools}
+   \usepackage{dsfont}
+   \usepackage{fixltx2e}
+   \usepackage{graphicx}
+   \usepackage{xcolor}
+   \usepackage[normalem]{ulem}
+\usetheme{metropolis}
+\author{Julian Grove}
+\date{September 6, 2023}
+\title{Haskell: variables, data types, patterns, and recursion}
+\usepackage{tikz}
+\usetikzlibrary{arrows,arrows.meta,automata}
+\usepackage[linguistics]{forest}
+\forestset{ downroof/.style={ for children={ if n=1{ edge path'={ (.parent first) -- (!u.parent anchor) -- (!ul.parent last) -- cycle }}{no edge} } } }
+\definecolor{highlight}{RGB}{7,102,120}
+\definecolor{dim}{RGB}{235,219,178}
+\definecolor{dimmer}{RGB}{150,130,50}
+\newcommand{\ct}[1]{\textsf{#1}}
+\newcommand{\eval}[1]{#1^\lightning}
+\newcommand\observe{\mathit{observe}}
+\newcommand\reset{\mathit{reset}}
+\newcommand\factor{\mathit{factor}}
+\def\divd{\ |\ }
+\newcommand{\maptyp}[1]{\overline{#1}}
+\usepackage[verbose]{newunicodechar}
+\newunicodechar{¬}{\ensuremath{\neg}} %
+\newunicodechar{¹}{^1}
+\newunicodechar{²}{^2}
+\newunicodechar{³}{^3}
+\newunicodechar{·}{\ensuremath{\cdot}}
+\newunicodechar{×}{\ensuremath{\times}} %
+\newunicodechar{÷}{\ensuremath{\div}} %
+\newunicodechar{ᵅ}{^α}
+\newunicodechar{ᵝ}{^β}
+\newunicodechar{ˠ}{^γ}
+\newunicodechar{ᵃ}{^a}
+\newunicodechar{ᵇ}{^b}
+\newunicodechar{ᶜ}{^c}
+\newunicodechar{ᵈ}{^d}
+\newunicodechar{ᵉ}{^e}
+\newunicodechar{ᶠ}{^f}
+\newunicodechar{ᵍ}{^g}
+\newunicodechar{ʰ}{^h}
+\newunicodechar{ⁱ}{^a}
+\newunicodechar{ʲ}{^j}
+\newunicodechar{ᵏ}{^K}
+\newunicodechar{ˡ}{^l}
+\newunicodechar{ᵐ}{^m}
+\newunicodechar{ⁿ}{^n}
+\newunicodechar{ᵒ}{^o}
+\newunicodechar{ᵖ}{^p}
+\newunicodechar{ʳ}{^r}
+\newunicodechar{₁}{_1}
+\newunicodechar{₂}{_2}
+\newunicodechar{₃}{_3}
+\newunicodechar{₄}{_4}
+\newunicodechar{ₐ}{_a}
+\newunicodechar{ₑ}{_e}
+\newunicodechar{ₕ}{_h}
+\newunicodechar{ᵢ}{_i}
+\newunicodechar{ₙ}{_n}
+\newunicodechar{ᵣ}{_r}
+\newunicodechar{ₛ}{_s}
+\newunicodechar{̷}{\not} %
+\newunicodechar{Γ}{\ensuremath{\Gamma}}   %
+\newunicodechar{Δ}{\ensuremath{\Delta}} %
+\newunicodechar{Η}{\ensuremath{\textrm{H}}} %
+\newunicodechar{Θ}{\ensuremath{\Theta}} %
+\newunicodechar{Λ}{\ensuremath{\Lambda}} %
+\newunicodechar{Ξ}{\ensuremath{\Xi}} %
+\newunicodechar{Π}{\ensuremath{\Pi}}   %
+\newunicodechar{Σ}{\ensuremath{\Sigma}} %
+\newunicodechar{Φ}{\ensuremath{\Phi}} %
+\newunicodechar{Ψ}{\ensuremath{\Psi}} %
+\newunicodechar{Ω}{\ensuremath{\Omega}} %
+\newunicodechar{α}{\ensuremath{\mathnormal{\alpha}}}
+\newunicodechar{β}{\ensuremath{\beta}} %
+\newunicodechar{γ}{\ensuremath{\mathnormal{\gamma}}} %
+\newunicodechar{δ}{\ensuremath{\mathnormal{\delta}}} %
+\newunicodechar{ε}{\ensuremath{\mathnormal{\varepsilon}}} %
+\newunicodechar{ζ}{\ensuremath{\mathnormal{\zeta}}} %
+\newunicodechar{η}{\ensuremath{\mathnormal{\eta}}} %
+\newunicodechar{θ}{\ensuremath{\mathnormal{\theta}}} %
+\newunicodechar{ι}{\ensuremath{\mathnormal{\iota}}} %
+\newunicodechar{κ}{\ensuremath{\mathnormal{\kappa}}} %
+\newunicodechar{λ}{\ensuremath{\mathnormal{\lambda}}} %
+\newunicodechar{μ}{\ensuremath{\mathnormal{\mu}}} %
+\newunicodechar{ν}{\ensuremath{\mathnormal{\mu}}} %
+\newunicodechar{ξ}{\ensuremath{\mathnormal{\xi}}} %
+\newunicodechar{π}{\ensuremath{\mathnormal{\pi}}}
+\newunicodechar{π}{\ensuremath{\mathnormal{\pi}}} %
+\newunicodechar{ρ}{\ensuremath{\mathnormal{\rho}}} %
+\newunicodechar{σ}{\ensuremath{\mathnormal{\sigma}}} %
+\newunicodechar{τ}{\ensuremath{\mathnormal{\tau}}} %
+\newunicodechar{φ}{\ensuremath{\mathnormal{\phi}}} %
+\newunicodechar{χ}{\ensuremath{\mathnormal{\chi}}} %
+\newunicodechar{ψ}{\ensuremath{\mathnormal{\psi}}} %
+\newunicodechar{ω}{\ensuremath{\mathnormal{\omega}}} %
+\newunicodechar{ϕ}{\ensuremath{\mathnormal{\phi}}} %
+\newunicodechar{ϕ}{\ensuremath{\mathnormal{\varphi}}} %
+\newunicodechar{ϵ}{\ensuremath{\mathnormal{\epsilon}}} %
+\newunicodechar{ᵏ}{^k}
+\newunicodechar{ᵢ}{\ensuremath{_i}} %
+\newunicodechar{ }{\quad}
+\newunicodechar{†}{\dagger}
+\newunicodechar{ }{\,}
+\newunicodechar{′}{\ensuremath{^\prime}}  %
+\newunicodechar{″}{\ensuremath{^\second}} %
+\newunicodechar{‴}{\ensuremath{^\third}}  %
+\newunicodechar{ⁱ}{^i}
+\newunicodechar{⁵}{\ensuremath{^5}}
+\newunicodechar{⁺}{\ensuremath{^+}} %% #+beamer_header: \newunicodechar{⁺}{^+}
+\newunicodechar{⁻}{\ensuremath{^-}} %%
+\newunicodechar{ⁿ}{^n}
+\newunicodechar{₀}{\ensuremath{_0}} %
+\newunicodechar{₁}{\ensuremath{_1}} % #+beamer_header: \newunicodechar{₁}{_1}
+\newunicodechar{₂}{\ensuremath{_2}} % #+beamer_header: \newunicodechar{₂}{_2}
+\newunicodechar{₃}{\ensuremath{_3}}
+\newunicodechar{₊}{\ensuremath{_+}} %%
+\newunicodechar{₋}{\ensuremath{_-}} %%
+\newunicodechar{ₙ}{_n} %
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}} %
+\newunicodechar{ℒ}{\ensuremath{\mathscr{L}}}
+\newunicodechar{ℕ}{\mathbb{N}} %
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}} %
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}} %
+\newunicodechar{ℳ}{\mathscr{M}}
+\newunicodechar{⅋}{\ensuremath{\parr}} %
+\newunicodechar{←}{\ensuremath{\leftarrow}} %
+\newunicodechar{↑}{\ensuremath{\uparrow}} %
+\newunicodechar{→}{\ensuremath{\rightarrow}} %
+\newunicodechar{↔}{\ensuremath{\leftrightarrow}} %
+\newunicodechar{↖}{\nwarrow} %
+\newunicodechar{↗}{\nearrow} %
+\newunicodechar{↝}{\ensuremath{\leadsto}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{⇆}{\ensuremath{\leftrightarrows}} %
+\newunicodechar{⇐}{\ensuremath{\Leftarrow}} %
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}} %
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}} %
+\newunicodechar{∀}{\ensuremath{\forall}}   %
+\newunicodechar{∂}{\ensuremath{\partial}}
+\newunicodechar{∃}{\ensuremath{\exists}} %
+\newunicodechar{∅}{\ensuremath{\varnothing}} %
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\not\in}} %
+\newunicodechar{∋}{\ensuremath{\ni}}  %
+\newunicodechar{∎}{\ensuremath{\qed}}%#+beamer_header: \newunicodechar{∎}{\ensuremath{\blacksquare}} % end of proof
+\newunicodechar{∏}{\prod}
+\newunicodechar{∑}{\sum}
+\newunicodechar{∗}{\ensuremath{\ast}} %
+\newunicodechar{∘}{\ensuremath{\circ}} %
+\newunicodechar{∙}{\ensuremath{\bullet}} % #+beamer_header: \newunicodechar{∙}{\ensuremath{\cdot}}
+\newunicodechar{⊙}{\ensuremath{\odot}}
+\newunicodechar{∞}{\ensuremath{\infty}} %
+\newunicodechar{∣}{\ensuremath{\mid}} %
+\newunicodechar{∧}{\wedge}%
+\newunicodechar{∨}{\vee}%
+\newunicodechar{∩}{\ensuremath{\cap}} %
+\newunicodechar{∪}{\ensuremath{\cup}} %
+\newunicodechar{∫}{\int}
+\newunicodechar{∷}{::} %
+\newunicodechar{∼}{\ensuremath{\sim}} %
+\newunicodechar{≃}{\ensuremath{\simeq}} %
+\newunicodechar{≔}{\ensuremath{\coloneqq}} %
+\newunicodechar{≅}{\ensuremath{\cong}} %
+\newunicodechar{≈}{\ensuremath{\approx}} %
+\newunicodechar{≜}{\ensuremath{\stackrel{\scriptscriptstyle {\triangle}}{=}}} % #+beamer_header: \newunicodechar{≜}{\triangleq}
+\newunicodechar{≝}{\ensuremath{\stackrel{\scriptscriptstyle {\text{def}}}{=}}}
+\newunicodechar{≟}{\ensuremath{\stackrel {_\text{\textbf{?}}}{\text{\textbf{=}}\negthickspace\negthickspace\text{\textbf{=}}}}} % or {\ensuremath{\stackrel{\scriptscriptstyle ?}{=}}}
+\newunicodechar{≠}{\ensuremath{\neq}}%
+\newunicodechar{≡}{\ensuremath{\equiv}}%
+\newunicodechar{≤}{\ensuremath{\le}} %
+\newunicodechar{≥}{\ensuremath{\ge}} %
+\newunicodechar{⊂}{\ensuremath{\subset}} %
+\newunicodechar{⊃}{\ensuremath{\supset}} %
+\newunicodechar{⊆}{\ensuremath{\subseteq}} %
+\newunicodechar{⊇}{\ensuremath{\supseteq}} %
+\newunicodechar{⊎}{\ensuremath{\uplus}} %
+\newunicodechar{⊑}{\ensuremath{\sqsubseteq}} %
+\newunicodechar{⊒}{\ensuremath{\sqsupseteq}} %
+\newunicodechar{⊓}{\ensuremath{\sqcap}} %
+\newunicodechar{⊔}{\ensuremath{\sqcup}} %
+\newunicodechar{⊕}{\ensuremath{\oplus}} %
+\newunicodechar{⊗}{\ensuremath{\otimes}} %
+\newunicodechar{⊛}{\ensuremath{\circledast}}
+\newunicodechar{⊢}{\ensuremath{\vdash}} %
+\newunicodechar{⊤}{\ensuremath{\top}}
+\newunicodechar{⊥}{\ensuremath{\bot}} % bottom
+\newunicodechar{⊧}{\models} %
+\newunicodechar{⊨}{\models} %
+\newunicodechar{⊩}{\Vdash}
+\newunicodechar{⊸}{\ensuremath{\multimap}} %
+\newunicodechar{⋁}{\ensuremath{\bigvee}}
+\newunicodechar{⋃}{\ensuremath{\bigcup}} %
+\newunicodechar{⋄}{\ensuremath{\diamond}} %
+\newunicodechar{⋅}{\ensuremath{\cdot}}
+\newunicodechar{⋆}{\ensuremath{\star}} %
+\newunicodechar{⋮}{\ensuremath{\vdots}} %
+\newunicodechar{⋯}{\ensuremath{\cdots}} %
+\newunicodechar{─}{---}
+\newunicodechar{■}{\ensuremath{\blacksquare}} % black square
+\newunicodechar{□}{\ensuremath{\square}} %
+\newunicodechar{▴}{\ensuremath{\blacktriangledown}}
+\newunicodechar{▵}{\ensuremath{\triangle}}
+\newunicodechar{▹}{\ensuremath{\triangleright}} %
+\newunicodechar{▾}{\ensuremath{\blacktriangle}}
+\newunicodechar{▿}{\ensuremath{\triangledown}}
+\newunicodechar{◃}{\triangleleft{}}
+\newunicodechar{◅}{\ensuremath{\triangleleft{}}}
+\newunicodechar{◇}{\ensuremath{\diamond}} %
+\newunicodechar{◽}{\ensuremath{\square}}
+\newunicodechar{★}{\ensuremath{\star}}   %
+\newunicodechar{♭}{\ensuremath{\flat}} %
+\newunicodechar{♯}{\ensuremath{\sharp}} %
+\newunicodechar{✓}{\ensuremath{\checkmark}} %
+\newunicodechar{⟂}{\ensuremath{^\bot}} % PERPENDICULAR
+\newunicodechar{⟦}{\ensuremath{\llbracket}}
+\newunicodechar{⟧}{\ensuremath{\rrbracket}}
+\newunicodechar{⦇}{\ensuremath{\llparenthesis}}
+\newunicodechar{⦈}{\ensuremath{\rrparenthesis}}
+\newunicodechar{⟨}{\ensuremath{\langle}} %
+\newunicodechar{⟩}{\ensuremath{\rangle}} %
+\newunicodechar{⌜}{\ensuremath{\ulcorner}} %
+\newunicodechar{⌝}{\ensuremath{\urcorner}} %
+\newunicodechar{⟶}{{\longrightarrow}}
+\newunicodechar{⟷} {\ensuremath{\leftrightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}} %
+\newunicodechar{ⱼ}{_j} %
+\newunicodechar{𝒟}{\ensuremath{\mathcal{D}}} %
+\newunicodechar{𝒢}{\ensuremath{\mathcal{G}}}
+\newunicodechar{𝒦}{\ensuremath{\mathcal{K}}} %
+\newunicodechar{𝒫}{\ensuremath{\mathcal{P}}}
+\newunicodechar{𝔸}{\ensuremath{\mathds{A}}} %
+\newunicodechar{𝔹}{\ensuremath{\mathds{B}}} %
+\newunicodechar{𝟙}{\ensuremath{\mathds{1}}} %
+\newunicodechar{𝔼}{\mathds{E}}
+\newunicodechar{⊬}{\not \vdash}
+\newunicodechar{∝}{\propto}
+\newunicodechar{ᶿ}{^\theta}
+\institute[University of Rochester]{FACTS.lab, University of Rochester}
+\hypersetup{
+ pdfauthor={Julian Grove},
+ pdftitle={Haskell: variables, data types, patterns, and recursion},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 28.2 (Org mode 9.6.6)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+\label{sec:org9fb5694}
+
+\begin{frame}[label={sec:orga52ce46}]{Last time}
+We looked at some basic data types, functions, fixity, and type inference.
+\end{frame}
+
+\begin{frame}[label={sec:org9576599}]{This time}
+We'll look at some of the stuff Haskell was made for.
+\pause
+\begin{itemize}[<+->]
+\item Anonymous functions (i.e., function literals)
+\item Role-your-own data types (i.e., algebraic data types)
+\item Recursion via pattern matching
+\end{itemize}
+\end{frame}
+
+\section{Variables}
+\label{sec:org57238fb}
+\begin{frame}[label={sec:org56df7d7},fragile]{\texttt{let} bindings}
+ A \texttt{let} binding can be used to define a local variable anywhere you want.
+\end{frame}
+
+\begin{frame}[label={sec:org537dab7},fragile]{\texttt{where} clauses}
+ A \texttt{where} clause can be used to define a local variable inside of another
+definition.
+\end{frame}
+
+\begin{frame}[label={sec:orgef068dd},fragile]{Anonymous functions}
+ Functions are first-class in Haskell, so they are treated like other data. \\[0pt]
+\pause \bigskip
+This means that we can write function \emph{literals}. \\[0pt]
+\pause \bigskip
+We do this by binding the variad to make \texttt{Fruit} an instance of the typeclass \texttt{Show}.
+\begin{itemize}
+\item Two ways to do this\ldots{}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgb0b6e26},fragile]{Sum types}
+ \texttt{Fruit} is what is called a \emph{sum type}.
+\pause
+\begin{itemize}[<+->]
+\item It enumerates all values it can have in different branches, delimiting them
+with a \texttt{|}.
+\item In each branch is what is called a \emph{data constructor}.
+\item The name of a data constructor in Haskell must begin with a capital letter.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:org083e2e8},fragile]{N-ary constructors}
+ The \texttt{Fruit} sum type is an odd special case, in that the data constructors
+don't carry an extra data besides their identity. \\[0pt]
+\pause \bigskip
+Something more common might have data constructors carry additional data,
+e.g., one data constructor could carry a \texttt{Bool} and one could carry a \texttt{String}.
+\pause
+\begin{itemize}[<+->]
+\item This can allow us to write functions that take \emph{either} a \texttt{Bool} \emph{or} a \texttt{String} as
+its input, using \emph{pattern matching}.
+\end{itemize}
+\pause \bigskip
+By the way, you might be wondering: if a data constructor can take an
+argument, does that mean it's a function?
+\pause
+\begin{itemize}[<+->]
+\item The answer is ``yes''!
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:org9cfe40e},fragile]{Pattern matching: order matters}
+ Pattern branches get checked in top-to-bottom order.
+\pause
+\begin{itemize}[<+->]
+\item For example\ldots{}
+\item Flipping the branches makes the definition effectively stop at the first
+branch, since \texttt{str} is a wildcard over all possible strings.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgf1269f4},fragile]{Case expressions}
+ You can also use a \emph{case expression} to do pattern matching. \\[0pt]
+\pause \bigskip
+Case expressions do more than just pattern match---they also evaluate the
+expression between the \texttt{case} and the \texttt{of}\ldots{}
+\end{frame}
+
+\begin{frame}[label={sec:org60a6096},fragile]{As patterns}
+ An \emph{as pattern} (written with an \texttt{@} sign) allows you to bind an identifier to
+the an argument which has been deconstructed into a pattern\ldots{}
+\end{frame}
+
+\begin{frame}[label={sec:org6820b80},fragile]{Pattern guards}
+ Pattern guards are useful when you want to further restrict the applicability
+of a branch of a definition to patterns that satisfy some boolean condition.
+\\[0pt]
+\pause \bigskip
+You use a \texttt{|} after the relevant pattern and then state the condition\ldots{}
+\end{frame}
+
+\section{Recursive definitions}
+\label{sec:orgb7c6e4d}
+\begin{frame}[label={sec:org5cfc2b1}]{Lists}
+We talked a little about lists last time. \\[0pt]
+\pause \bigskip
+Lists are deeply baked into Haskell, so we can't look at the source code. \\[0pt]
+\pause \bigskip
+But we can roll our own\ldots{}
+\end{frame}
+
+\begin{frame}[label={sec:org3b3c92a},fragile]{Haskell lists}
+ For convenience, Haskell lets you type, e.g., \texttt{['a', 's', 'd', 'f']} for a list
+literal. \\[0pt]
+\pause \bigskip
+When you see this, you should have in mind the following:
+\begin{center}
+\texttt{('a' : ('s' : ('d' : ('f' : []))))}
+\end{center}
+\pause \bigskip
+Everything is one of two cases; either:
+\pause
+\begin{itemize}[<+->]
+\item any empty list
+\item something cons-ed onto a list
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:org1e8f36f},fragile]{Appending stuff}
+ Let's define our first recursive function: \texttt{append}.
+\end{frame}
+
+\begin{frame}[label={sec:org40a047e},fragile]{\texttt{[a]} to \texttt{List a}}
+ How could we write a recursive function that maps values of type \texttt{List a} to
+values of type \texttt{[a]}?
+\end{frame}
+
+\begin{frame}[label={sec:org4c7cd6b},fragile]{\texttt{map}}
+ Haskell has a built-in function \texttt{map} for mapping functions of type \texttt{a -> b} to
+functions from lists of \texttt{a}'s to lists of \texttt{b}'s.
+\begin{center}
+\texttt{map :: (a -> b) -> [a] -> [b]}
+\end{center}
+How does \texttt{map} work?\ldots{}
+\pause
+\begin{itemize}[<+->]
+\item We need a branch in the definition that applies to the empty list.
+\item We need a branch in the definition that applies to non-empty lists.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgb5db6ae},fragile]{\texttt{filter}}
+ Filter takes a predicate, i.e., a function of from \texttt{a}'s to \texttt{Bool}'s, along with
+a list of \texttt{a}'s, in order to give back a list of the \texttt{a}'s that satisfy the
+predicate.
+\begin{center}
+\texttt{filter :: (a -> Bool) -> [a] -> [a]}
+\end{center}
+How does \texttt{filter} work?\ldots{}
+\pause
+\begin{itemize}[<+->]
+\item We need a branch in the definition that applies to the empty list.
+\item We need a branch in the definition that applies to non-empty lists.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgac1012c},fragile]{\texttt{foldr} and \texttt{foldl}}
+ Haskell has functions \texttt{foldr} and \texttt{foldl} that each take a two-place operation, a
+starting value, and some list, in order to iteratively apply the function to
+the elements of the list, one-by-one.
+\begin{center}
+\texttt{foldr :: (a -> b -> b) -> b -> [a] -> b} \\[0pt]
+\texttt{foldl :: (b -> a -> b) -> b -> [a] -> b}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:org465d58b},fragile]{\texttt{foldr}}
+ \texttt{foldr}, in a way, conceptualizes a list as right-branching. \\[0pt]
+\begin{center}
+\begin{forest}
+[{+} [ 7 ] [{+} [ 8 ] [{+} [ 9 ] [{+} [ 10 ] [ 0 ] ] ] ] ]
+\end{forest}
+\end{center}
+\end{frame}
+
+\begin{frame}[label={sec:orgdace915},fragile]{\texttt{foldl}}
+ \texttt{foldl} conceptualizes it as left-branching. \\[0pt]
+\begin{center}
+\begin{forest}
+[{+} [{+} [{+} [{+} [ 0 ] [ 7 ] ] [ 8 ] ] [ 9 ] ] [ 10 ] ] ] ] ]
+\end{forest}
+\end{center}
+\end{frame}
+\end{document}

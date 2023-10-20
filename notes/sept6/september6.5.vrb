@@ -1,0 +1,9 @@
+\frametitle{Anonymous functions}
+Functions are first-class in Haskell, so they are treated like other data. \\[0pt]
+\pause \bigskip
+This means that we can write function \emph{literals}. \\[0pt]
+\pause \bigskip
+We do this by binding the variad to make \texttt{Fruit} an instance of the typeclass \texttt{Show}.
+\begin{itemize}
+\item Two ways to do this\ldots{}
+\end{itemize}

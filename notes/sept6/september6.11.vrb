@@ -1,0 +1,6 @@
+\frametitle{Pattern guards}
+Pattern guards are useful when you want to further restrict the applicability
+of a branch of a definition to patterns that satisfy some boolean condition.
+\\[0pt]
+\pause \bigskip
+You use a \texttt{|} after the relevant pattern and then state the condition\ldots{}

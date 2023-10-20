@@ -1,0 +1,3 @@
+\frametitle{As patterns}
+An \emph{as pattern} (written with an \texttt{@} sign) allows you to bind an identifier to
+the an argument which has been deconstructed into a pattern\ldots{}

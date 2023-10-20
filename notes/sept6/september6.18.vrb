@@ -1,0 +1,8 @@
+\frametitle{\texttt {foldr} and \texttt {foldl}}
+Haskell has functions \texttt{foldr} and \texttt{foldl} that each take a two-place operation, a
+starting value, and some list, in order to iteratively apply the function to
+the elements of the list, one-by-one.
+\begin{center}
+\texttt{foldr :: (a -> b -> b) -> b -> [a] -> b} \\[0pt]
+\texttt{foldl :: (b -> a -> b) -> b -> [a] -> b}
+\end{center}

@@ -1,0 +1,15 @@
+\frametitle{Haskell lists}
+For convenience, Haskell lets you type, e.g., \texttt{['a', 's', 'd', 'f']} for a list
+literal. \\[0pt]
+\pause \bigskip
+When you see this, you should have in mind the following:
+\begin{center}
+\texttt{('a' : ('s' : ('d' : ('f' : []))))}
+\end{center}
+\pause \bigskip
+Everything is one of two cases; either:
+\pause
+\begin{itemize}[<+->]
+\item any empty list
+\item something cons-ed onto a list
+\end{itemize}

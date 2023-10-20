@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-10-19 Thu 15:23 -->
+<!-- 2023-10-19 Thu 20:13 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Propositional logic: local soundness and propositions as types</title>
@@ -238,25 +238,25 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgb3ea0de">1. Review</a>
+<li><a href="#org5e6114f">1. Review</a>
 <ul>
-<li><a href="#org1df868f">1.1. Local soundness</a>
+<li><a href="#org631771b">1.1. Local soundness</a>
 <ul>
-<li><a href="#orgad36032">1.1.1. Conjunction rules</a></li>
-<li><a href="#org5c952c8">1.1.2. Disjunction rules</a></li>
-<li><a href="#orgeddd8f6">1.1.3. Implication rules</a></li>
+<li><a href="#orgea67390">1.1.1. Conjunction rules</a></li>
+<li><a href="#orgb176452">1.1.2. Disjunction rules</a></li>
+<li><a href="#org1e5ded0">1.1.3. Implication rules</a></li>
 </ul>
 </li>
-<li><a href="#orgc5587cc">1.2. Propositions as types</a></li>
+<li><a href="#org1ddaa01">1.2. Propositions as types</a></li>
 </ul>
 </li>
-<li><a href="#org87fd351">2. Exercise</a></li>
+<li><a href="#org1ecd0a1">2. Exercise</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgb3ea0de" class="outline-2">
-<h2 id="orgb3ea0de"><span class="section-number-2">1.</span> Review</h2>
+<div id="outline-container-org5e6114f" class="outline-2">
+<h2 id="org5e6114f"><span class="section-number-2">1.</span> Review</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 We've now covered the property of <i>local soundness</i> for those connectives of
@@ -266,12 +266,12 @@ correspondence.
 </p>
 </div>
 
-<div id="outline-container-org1df868f" class="outline-3">
-<h3 id="org1df868f"><span class="section-number-3">1.1.</span> Local soundness</h3>
+<div id="outline-container-org631771b" class="outline-3">
+<h3 id="org631771b"><span class="section-number-3">1.1.</span> Local soundness</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 Recall that local completeness is the property of a connective that its
-introduction rules are strong enough for its introduction rules; i.e., no
+elimination rules are strong enough for its introduction rules; i.e., no
 matter how you destruct the connective using the elimination rules, you can
 build it back up again.
 </p>
@@ -291,33 +291,33 @@ The following detour-elimination schemata illustrate local soundness for \(∧\)
 </p>
 </div>
 
-<div id="outline-container-orgad36032" class="outline-4">
-<h4 id="orgad36032"><span class="section-number-4">1.1.1.</span> Conjunction rules</h4>
+<div id="outline-container-orgea67390" class="outline-4">
+<h4 id="orgea67390"><span class="section-number-4">1.1.1.</span> Conjunction rules</h4>
 <div class="outline-text-4" id="text-1-1-1">
 
-<div id="orgf97e966" class="figure">
+<div id="orge58137a" class="figure">
 <p><img src="./ls_and.png" alt="ls_and.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org5c952c8" class="outline-4">
-<h4 id="org5c952c8"><span class="section-number-4">1.1.2.</span> Disjunction rules</h4>
+<div id="outline-container-orgb176452" class="outline-4">
+<h4 id="orgb176452"><span class="section-number-4">1.1.2.</span> Disjunction rules</h4>
 <div class="outline-text-4" id="text-1-1-2">
 
-<div id="org3deeac2" class="figure">
+<div id="orgba0f324" class="figure">
 <p><img src="./ls_or.png" alt="ls_or.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgeddd8f6" class="outline-4">
-<h4 id="orgeddd8f6"><span class="section-number-4">1.1.3.</span> Implication rules</h4>
+<div id="outline-container-org1e5ded0" class="outline-4">
+<h4 id="org1e5ded0"><span class="section-number-4">1.1.3.</span> Implication rules</h4>
 <div class="outline-text-4" id="text-1-1-3">
 
-<div id="org358a4fc" class="figure">
+<div id="org068e8d4" class="figure">
 <p><img src="./ls_arrow.png" alt="ls_arrow.png" />
 </p>
 </div>
@@ -325,8 +325,8 @@ The following detour-elimination schemata illustrate local soundness for \(∧\)
 </div>
 </div>
 
-<div id="outline-container-orgc5587cc" class="outline-3">
-<h3 id="orgc5587cc"><span class="section-number-3">1.2.</span> Propositions as types</h3>
+<div id="outline-container-org1ddaa01" class="outline-3">
+<h3 id="org1ddaa01"><span class="section-number-3">1.2.</span> Propositions as types</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 One neat thing about the system of Intuitionistic Logic we've been studying
@@ -480,13 +480,13 @@ by some proof (i.e., λ-term).
 </div>
 </div>
 
-<div id="outline-container-org87fd351" class="outline-2">
-<h2 id="org87fd351"><span class="section-number-2">2.</span> Exercise</h2>
+<div id="outline-container-org1ecd0a1" class="outline-2">
+<h2 id="org1ecd0a1"><span class="section-number-2">2.</span> Exercise</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Try to define the function <code>normalForm</code>. To start you off, here are the branches
 of the definition corresponding to the simply-typed λ-calculus (a.k.a., the
-<i>implicational fragment</i> of Intuitionistic Logic: 
+<i>implicational fragment</i> of Intuitionistic Logic): 
 </p>
 <div class="org-src-container">
 <pre class="src src-haskell"><span style="color: #fabd2f;">normalForm</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Term</span> &#947; &#966; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; &#966;
@@ -510,7 +510,7 @@ of the definition corresponding to the simply-typed λ-calculus (a.k.a., the
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-10-19 Thu 15:23</p>
+<p class="date">Created: 2023-10-19 Thu 20:13</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

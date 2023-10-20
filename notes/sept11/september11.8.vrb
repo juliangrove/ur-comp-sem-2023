@@ -1,0 +1,5 @@
+\frametitle{Show}
+We have already seen type classes when we've used \texttt{deriving Show} in data type
+declarations. \\[0pt]
+\pause \bigskip
+But we can actually implement \texttt{Show} instances ourselves.

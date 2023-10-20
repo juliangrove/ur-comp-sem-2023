@@ -1,0 +1,92 @@
+#+latex_class:  manuscript
+#+options:      toc:nil
+#+setupfile:    setup.org
+
+#+bibliography: ../../../ur-comp-sem-2023.bib
+#+cite_export: biblatex authoryear-comp
+
+#+latex_class: manuscript
+#+options: toc:nil
+
+#+Author: Julian Grove, Computational Semantics
+#+Title: Formal preliminaries answer key
+
+* Part 1
+  Prove that $A ∩ B ⊆ A$. \\
+  #+latex: ~\\
+  By definition, this holds if everything in $A ∩ B$ is also in $A$. Since any
+  $x ∈ A$ and $x ∈ B$ if $x ∈ A ∩ B$, then $x ∈ A$, as needed.
+
+* Part 2
+  Prove that $A ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C)$. \\
+  #+latex: ~\\
+  @@latex:\noindent@@ Going left to right, we show that if $x ∈ A ∩ (B ∪ C)$,
+  then $x ∈ (A ∩ B) ∪ (A ∩ C)$. Since $x ∈ A$ and $x ∈ B ∪ C$, it must be that
+  $x ∈ B$ or $x ∈ C$. If the former, then $x ∈ A ∩ B$, and hence $x ∈ (A ∩ B ∪ A
+  ∩ C)$. If the latter, then $x ∈ A ∩ C$, and hence $x ∈ (A ∩ B ∪ A ∩ C)$. \\
+  #+latex: ~\\
+  @@latex:\noindent@@ Going right to left, we show that if $x ∈ (A ∩ B) ∪ (A ∩
+  C)$, then $x ∈ A ∩ (B ∪ C)$. There are two cases to consider: either $x ∈ A ∩
+  B$ or $x ∈ A ∩ C$. In the first case $x ∈ A$ and $x ∈ B$; thus $x ∈ B ∪ C$
+  and, hence, $x ∈ A ∩ (B ∪ C)$. In the second case, $x ∈ A$ and $x ∈ C$; thus
+  again $x ∈ B ∪ C$ and, hence, $x ∈ A ∩ (B ∪ C)$.
+
+* Part 3
+  Prove that if $A ⊆ B$ and $B ⊆ C$, then $A ⊆ C$. \\
+  #+latex: ~\\
+  @@latex:\noindent@@ If $A ⊆ B$, then any $x ∈ A$ is such that $x ∈ B$. If $B ⊆
+  C$, then any $y ∈ B$ is such that $y ∈ C$. Since any $x ∈ A$ is such that $x ∈
+  B$, $x$ is such a $y$, and so $x ∈ C$.
+
+* Part 4
+  Prove that if $A ⊆ B$, then $A = A ∩ B$. \\
+  #+latex: ~\\
+  @@latex:\noindent@@ Going left to right, any $x ∈ A$ is such that $x ∈ B$,
+  since $A ⊆ B$. Hence, $x ∈ A ∩ B$ by definition. \\
+  #+latex: ~\\
+  @@latex:\noindent@@ Going right to left, any $x ∈ A ∩ B$ is such that $x ∈ A$,
+  by definition.
+
+* Part 5
+  Let $R$ be a relation on $A$. Define $R^*$ as
+  #+begin_export latex
+  \begin{align*}
+  R^* &= \bigcup_{i ∈ ℕ}Rⁱ
+  \end{align*}
+  #+end_export
+  Prove that for any relation $S$ on $A$ which is transitive and reflexive and
+  such that $R ⊆ S$, $R^* ⊆ S$. \\
+  #+latex: ~\\
+  @@latex:\noindent@@ Since $⟨x, y⟩ ∈ R^*$ just in case $⟨x, y⟩ ∈ Rⁱ$ for some
+  $i ∈ ℕ$, we just need to show $Rⁱ ⊆ S$ for arbitrary $i$. \\
+  #+latex: ~\\
+  @@latex:\noindent@@ First, note that $R^0 ⊆ S$, since $S$ is reflexive. \\
+  #+latex: ~\\
+  @@latex:\noindent@@ Now, assume $Rⁱ ⊆ S$: we want to show that $R^{i + 1} ⊆ S$
+  as well. For any $⟨u, v⟩ ∈ R^{i + 1} = Rⁱ ∘ R$, there must be a $z$ such that
+  $⟨u, z⟩ ∈ Rⁱ$ and $⟨z, v⟩ ∈ R$. Since $S$ contains $Rⁱ$, $⟨u, z⟩ ∈ S$, and
+  since $S$ contains $R$, $⟨z, v⟩ ∈ S$. Because $S$ is transitive, it is
+  therefore also true that $⟨u, v⟩ ∈ S$, as needed. \\
+  #+latex: ~\\
+  @@latex:\noindent@@ Hence, $Rⁱ ⊆ S$ for all $i$ (as needed) by induction on
+  $i$.
+
+* Part 6
+  Let $A = \{a, b, c, d\}$ and $R = \{⟨a, a⟩, ⟨a, b⟩, ⟨b, c⟩, ⟨c, c⟩\}$. Then:
+  - $R^{-1} = \{⟨a, a⟩, ⟨b, a⟩, ⟨c, b⟩, ⟨c, c⟩\}$
+  - $R^2 = \{⟨a, a⟩, ⟨a, b⟩, ⟨b, c⟩, ⟨a, c⟩, ⟨c, c⟩\}$
+  - $R^3 = \{⟨a, a⟩, ⟨a, b⟩, ⟨b, c⟩, ⟨a, c⟩, ⟨c, c⟩\}$
+  - $R^* = \{⟨a, a⟩, ⟨a, b⟩, ⟨b, c⟩, ⟨a, c⟩, ⟨c, c⟩\}$
+  - The least equivalence relation containing $R$:
+    $$\{⟨a, a⟩, ⟨b, b⟩, ⟨a, b⟩, ⟨b, a⟩, ⟨b, c⟩, ⟨c, b⟩, ⟨a, c⟩, ⟨c, a⟩, ⟨c,
+    c⟩\}$$
+
+* Part 7
+  Let $R ⊆ A × B$. Define $f_R ⊆ A × 2^B$ such that $⟨a, X⟩ ∈ f_R$ iff $X = \{b
+  ∈ B \divd ⟨a, b⟩ ∈ R\}$. Show that $f_R$ is a function from $A$ to $2^B$. \\
+  #+latex: ~\\
+  @@latex:\noindent@@ We need to show that for any given $a ∈ A$, $X$ as defined
+  above is unique. Assume both $⟨a, X⟩ ∈ f_R$ and $⟨a, Y⟩ ∈ f_R$. Then $X = \{b
+  ∈ B \divd ⟨a, b⟩ ∈ R\} = Y$, as needed.
+  
+#+print_bibliography:

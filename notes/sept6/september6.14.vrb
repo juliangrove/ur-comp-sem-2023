@@ -1,0 +1,2 @@
+\frametitle{Appending stuff}
+Let's define our first recursive function: \texttt{append}.

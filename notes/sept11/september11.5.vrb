@@ -1,0 +1,6 @@
+\frametitle{\texttt {div}}
+Let's look at the function \texttt{div :: Integer -> Integer -> Integer}. \\[0pt]
+\pause \bigskip
+\texttt{div} is a partial function. \\[0pt]
+\pause \bigskip
+Can we write a function \texttt{safeDiv} which is a total function, using maybe types?

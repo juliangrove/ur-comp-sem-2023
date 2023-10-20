@@ -1,0 +1,420 @@
+% Created 2023-09-06 Wed 18:51
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt,letterpaper,twoside]{article}
+   \usepackage[margin=1.4in]{geometry}
+   \usepackage{etoolbox}
+   \ifundef{\abstract}{}{\patchcmd{\abstract}%
+       {\quotation}{\quotation\noindent\ignorespaces\textbf{Abstract}\hspace{1mm}}{}{}}
+   \renewcommand{\abstractname}{\vspace{-1.4\baselineskip}}
+   \usepackage{lscape}
+   \usepackage{titling}
+   \usepackage{graphicx}
+   \usepackage{amssymb}
+   \usepackage{mathtools}
+   \usepackage{amsthm}
+   \theoremstyle{definition}
+   \newtheorem{thm}{Theorem}
+   \usepackage[inline]{enumitem}
+   \usepackage{xcolor}
+   \pagestyle{plain}
+   \usepackage[T1]{fontenc}
+   \usepackage{libertine}
+   \usepackage[varqu]{zi4}
+   \usepackage[libertine]{newtxmath}
+   %% \linespread{1.2}
+   \usepackage{tipa}
+   %% \usepackage{natbib} % use biblatex instead
+   \usepackage{stmaryrd}
+   \usepackage{dsfont}
+   \usepackage{fancyhdr}
+   \pagestyle{fancy}
+   \usepackage{sectsty}
+   \usepackage{expex}
+   \usepackage{stackrel}
+   \usepackage{stackengine}
+   \usepackage{relsize}
+   \usepackage{fixltx2e}
+   \raggedbottom
+   \allsectionsfont{\normalsize}
+   \usepackage[colorlinks=true,urlcolor=blue!60!black!80,citecolor=blue!60!black!80,linkcolor=black,bookmarks,bookmarksopen,bookmarksdepth=2]{hyperref}
+   \renewcommand\UrlFont{\normalsize}
+   \usepackage[normalem]{ulem}
+   \usepackage{appendix}
+   \fancyfoot{}
+   \fancyhead[LO]{\footnotesize\thetitle}
+   \fancyhead[RE]{\footnotesize\theauthor}
+   \fancyhead[LE,RO]{\footnotesize\thepage}
+   \renewcommand{\headrulewidth}{0pt}
+   \pretitle{\Large\bfseries\noindent}\posttitle{\par\vskip 1em}
+   \newcommand{\affil}{\vspace{-1em}}
+   \preauthor{\normalsize\noindent\lineskip 0.5em}\postauthor{\\\affil\par\vskip 1em}
+   \predate{\normalsize\noindent}\postdate{\par\vskip 1em}
+   \bibliographystyle{li}
+      \usepackage[uniquename=false,dashed=false,date=year,url=false,isbn=false,useprefix=true,style=authoryear-comp]{biblatex}
+\addbibresource{/home/juliangrove/Documents/projects/FACTS.lab/ur-comp-sem-2023.bib}
+\makeatletter
+\def\act@on@bibmacro#1#2{%
+\expandafter#1\csname abx@macro@\detokenize{#2}\endcsname
+}
+\def\patchbibmacro{\act@on@bibmacro\patchcmd}
+\def\pretobibmacro{\act@on@bibmacro\pretocmd}
+\def\apptobibmacro{\act@on@bibmacro\apptocmd}
+\def\showbibmacro{\act@on@bibmacro\show}
+\makeatother
+\patchbibmacro{date+extradate}{%
+\printtext[parens]%
+}{%
+\setunit{\addperiod\space}%
+\printtext%
+}{}{}
+\DeclareFieldFormat[article,inbook,incollection,inproceedings,thesis,unpublished]{title}{#1}
+\AtEveryBibitem{\clearlist{language}\clearfield{note}}
+\renewcommand*{\intitlepunct}{\space}
+\renewbibmacro{in:}{%
+\ifboolexpr{%
+test {\ifentrytype{article}}%
+or
+test {\ifentrytype{inproceedings}}%
+}{}{\printtext{\bibstring{in}\intitlepunct}}}
+\setlength\bibitemsep{1.5\itemsep}
+\usepackage{bussproofs}
+\usepackage[linguistics]{forest}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usetikzlibrary{arrows,arrows.meta,automata,fit,positioning}
+\usepackage{dsfont}
+\forestset{ downroof/.style={ for children={ if n=1{ edge path'={ (.parent first) -- (!u.parent anchor) -- (!ul.parent last) -- cycle }}{no edge} } } }
+\newcommand{\lda}[2]{\lambda#1.#2}
+\newcommand{\ctypeL}[2]{(#1\rightarrow#2)}
+\newcommand{\ctypeR}[2]{#1\rightarrow#2}
+\newcommand{\IF}[1]{\llbracket#1\rrbracket}
+\newcommand{\app}[2]{#1(#2)}
+\newlength\appwidth
+\newcommand{\appS}[2]{\settowidth{\appwidth}{\ }#1\hspace{0.1\appwidth}#2}
+\newcommand{\appC}[2]{\settowidth{\appwidth}{\ }(#1\hspace{0.1\appwidth}#2)}
+\newcommand{\quant}[3]{#1#2:#3}
+\newcommand{\ct}[1]{\textsf{#1}}
+\newcommand{\stacks}[1]{\begin{tabular}{c}#1\end{tabular}}
+\newcommand{\maybe}[1]{#1\textsubscript{$\#$}}
+\def\divd{\ |\ }
+\newcommand{\corners}[1]{\ulcorner#1\urcorner}
+\newcommand{\uparrowed}[1]{\stackon[0pt]{$#1$}{$\uparrow$}}
+\newcommand{\unit}[2]{#2\textsuperscript{\uparrowed{#1}}}
+\newlength\bindwidth
+\newcommand{\bindsymb}[1]{{{\settowidth{\bindwidth}{\ }\mathtt{>\hspace{-1.6\bindwidth}>\hspace{-1.6\bindwidth}=}}_#1}}
+\newcommand{\bind}[2]{#2\textsuperscript{$\bindsymb{#1}$}}
+\newcommand{\maptyp}[1]{\overline{#1}}
+\newcommand\observe{\mathit{observe}}
+\newcommand\reset{\mathit{reset}}
+\newcommand\factor{\mathit{factor}}
+\newcommand\Distr{\mathit{D}}
+\newcommand\mdo{\mathtt{do}}
+\newcommand\parens[1]{\left ( #1 \right)}
+\newcommand\Normal{\mathcal N}
+\usepackage[verbose]{newunicodechar}
+\newunicodechar{¬}{\ensuremath{\neg}} %
+\newunicodechar{¹}{^1}
+\newunicodechar{²}{^2}
+\newunicodechar{³}{^3}
+\newunicodechar{·}{\ensuremath{\cdot}}
+\newunicodechar{×}{\ensuremath{\times}} %
+\newunicodechar{÷}{\ensuremath{\div}} %
+\newunicodechar{ᵅ}{^α}
+\newunicodechar{ᵃ}{^a}
+\newunicodechar{ᵍ}{^g}
+\newunicodechar{ʲ}{^j}
+\newunicodechar{ˡ}{^l}
+\newunicodechar{ʳ}{^r}
+\newunicodechar{ₒ}{_0}
+\newunicodechar{₁}{_1}
+\newunicodechar{₂}{_2}
+\newunicodechar{₃}{_3}
+\newunicodechar{₄}{_4}
+\newunicodechar{ₐ}{_a}
+\newunicodechar{ₑ}{_e}
+\newunicodechar{ₕ}{_h}
+\newunicodechar{ᵢ}{_i}
+\newunicodechar{ₙ}{_n}
+\newunicodechar{ₚ}{_p}
+\newunicodechar{ᵣ}{_r}
+\newunicodechar{ₛ}{_s}
+\newunicodechar{ₜ}{_t}
+\newunicodechar{̷}{\not} %
+\newunicodechar{Γ}{\ensuremath{\Gamma}}   %
+\newunicodechar{Δ}{\ensuremath{\Delta}} %
+\newunicodechar{Η}{\ensuremath{\textrm{H}}} %
+\newunicodechar{Θ}{\ensuremath{\Theta}} %
+\newunicodechar{Λ}{\ensuremath{\Lambda}} %
+\newunicodechar{Ξ}{\ensuremath{\Xi}} %
+\newunicodechar{Π}{\ensuremath{\Pi}}   %
+\newunicodechar{Σ}{\ensuremath{\Sigma}} %
+\newunicodechar{Φ}{\ensuremath{\Phi}} %
+\newunicodechar{Ψ}{\ensuremath{\Psi}} %
+\newunicodechar{Ω}{\ensuremath{\Omega}} %
+\newunicodechar{α}{\ensuremath{\mathnormal{\alpha}}}
+\newunicodechar{β}{\ensuremath{\beta}} %
+\newunicodechar{γ}{\ensuremath{\mathnormal{\gamma}}} %
+\newunicodechar{δ}{\ensuremath{\mathnormal{\delta}}} %
+\newunicodechar{ε}{\ensuremath{\mathnormal{\varepsilon}}} %
+\newunicodechar{ζ}{\ensuremath{\mathnormal{\zeta}}} %
+\newunicodechar{η}{\ensuremath{\mathnormal{\eta}}} %
+\newunicodechar{θ}{\ensuremath{\mathnormal{\theta}}} %
+\newunicodechar{ι}{\ensuremath{\mathnormal{\iota}}} %
+\newunicodechar{κ}{\ensuremath{\mathnormal{\kappa}}} %
+\newunicodechar{λ}{\ensuremath{\mathnormal{\lambda}}} %
+\newunicodechar{μ}{\ensuremath{\mathnormal{\mu}}} %
+\newunicodechar{ν}{\ensuremath{\mathnormal{\mu}}} %
+\newunicodechar{ξ}{\ensuremath{\mathnormal{\xi}}} %
+\newunicodechar{π}{\ensuremath{\mathnormal{\pi}}}
+\newunicodechar{π}{\ensuremath{\mathnormal{\pi}}} %
+\newunicodechar{ρ}{\ensuremath{\mathnormal{\rho}}} %
+\newunicodechar{σ}{\ensuremath{\mathnormal{\sigma}}} %
+\newunicodechar{τ}{\ensuremath{\mathnormal{\tau}}} %
+\newunicodechar{φ}{\ensuremath{\mathnormal{\phi}}} %
+\newunicodechar{χ}{\ensuremath{\mathnormal{\chi}}} %
+\newunicodechar{ψ}{\ensuremath{\mathnormal{\psi}}} %
+\newunicodechar{ω}{\ensuremath{\mathnormal{\omega}}} %
+\newunicodechar{ϕ}{\ensuremath{\mathnormal{\phi}}} %
+\newunicodechar{ϕ}{\ensuremath{\mathnormal{\varphi}}} %
+\newunicodechar{ϵ}{\ensuremath{\mathnormal{\epsilon}}} %
+\newunicodechar{ᵏ}{^k}
+\newunicodechar{ᵢ}{\ensuremath{_i}} %
+\newunicodechar{ }{\quad}
+\newunicodechar{†}{\dagger}
+\newunicodechar{ }{\,}
+\newunicodechar{′}{\ensuremath{^\prime}}  %
+\newunicodechar{″}{\ensuremath{^\second}} %
+\newunicodechar{‴}{\ensuremath{^\third}}  %
+\newunicodechar{ⁱ}{^i}
+\newunicodechar{⁵}{\ensuremath{^5}}
+\newunicodechar{⁺}{\ensuremath{^+}} %% #+latex_header: \newunicodechar{⁺}{^+}
+\newunicodechar{⁻}{\ensuremath{^-}} %%
+\newunicodechar{ⁿ}{^n}
+\newunicodechar{₀}{\ensuremath{_0}} %
+\newunicodechar{₁}{\ensuremath{_1}} % #+latex_header: \newunicodechar{₁}{_1}
+\newunicodechar{₂}{\ensuremath{_2}} % #+latex_header: \newunicodechar{₂}{_2}
+\newunicodechar{₃}{\ensuremath{_3}}
+\newunicodechar{₊}{\ensuremath{_+}} %%
+\newunicodechar{₋}{\ensuremath{_-}} %%
+\newunicodechar{ₙ}{_n} %
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}} %
+\newunicodechar{ℒ}{\ensuremath{\mathscr{L}}}
+\newunicodechar{ℕ}{\mathbb{N}} %
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}} %
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}} %
+\newunicodechar{ℳ}{\mathscr{M}}
+\newunicodechar{⅋}{\ensuremath{\parr}} %
+\newunicodechar{←}{\ensuremath{\leftarrow}} %
+\newunicodechar{↑}{\ensuremath{\uparrow}} %
+\newunicodechar{→}{\ensuremath{\rightarrow}} %
+\newunicodechar{↔}{\ensuremath{\leftrightarrow}} %
+\newunicodechar{↖}{\nwarrow} %
+\newunicodechar{↗}{\nearrow} %
+\newunicodechar{↝}{\ensuremath{\leadsto}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{⇆}{\ensuremath{\leftrightarrows}} %
+\newunicodechar{⇐}{\ensuremath{\Leftarrow}} %
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}} %
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}} %
+\newunicodechar{∀}{\ensuremath{\forall}}   %
+\newunicodechar{∂}{\ensuremath{\partial}}
+\newunicodechar{∃}{\ensuremath{\exists}} %
+\newunicodechar{∅}{\ensuremath{\varnothing}} %
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\not\in}} %
+\newunicodechar{∋}{\ensuremath{\ni}}  %
+\newunicodechar{∎}{\ensuremath{\qed}}%#+latex_header: \newunicodechar{∎}{\ensuremath{\blacksquare}} % end of proof
+\newunicodechar{∏}{\prod}
+\newunicodechar{∑}{\sum}
+\newunicodechar{∗}{\ensuremath{\ast}} %
+\newunicodechar{∘}{\ensuremath{\circ}} %
+\newunicodechar{∙}{\ensuremath{\bullet}} % #+latex_header: \newunicodechar{∙}{\ensuremath{\cdot}}
+\newunicodechar{⊙}{\ensuremath{\odot}}
+\newunicodechar{∞}{\ensuremath{\infty}} %
+\newunicodechar{∣}{\ensuremath{\mid}} %
+\newunicodechar{∧}{\wedge}%
+\newunicodechar{∨}{\vee}%
+\newunicodechar{∩}{\ensuremath{\cap}} %
+\newunicodechar{∪}{\ensuremath{\cup}} %
+\newunicodechar{∫}{\int}
+\newunicodechar{∷}{::} %
+\newunicodechar{∼}{\ensuremath{\sim}} %
+\newunicodechar{≃}{\ensuremath{\simeq}} %
+\newunicodechar{≔}{\ensuremath{\coloneqq}} %
+\newunicodechar{≅}{\ensuremath{\cong}} %
+\newunicodechar{≈}{\ensuremath{\approx}} %
+\newunicodechar{≜}{\ensuremath{\stackrel{\scriptscriptstyle {\triangle}}{=}}} % #+latex_header: \newunicodechar{≜}{\triangleq}
+\newunicodechar{≝}{\ensuremath{\stackrel{\scriptscriptstyle {\text{def}}}{=}}}
+\newunicodechar{≟}{\ensuremath{\stackrel {_\text{\textbf{?}}}{\text{\textbf{=}}\negthickspace\negthickspace\text{\textbf{=}}}}} % or {\ensuremath{\stackrel{\scriptscriptstyle ?}{=}}}
+\newunicodechar{≠}{\ensuremath{\neq}}%
+\newunicodechar{≡}{\ensuremath{\equiv}}%
+\newunicodechar{≤}{\ensuremath{\le}} %
+\newunicodechar{≥}{\ensuremath{\ge}} %
+\newunicodechar{⊂}{\ensuremath{\subset}} %
+\newunicodechar{⊃}{\ensuremath{\supset}} %
+\newunicodechar{⊆}{\ensuremath{\subseteq}} %
+\newunicodechar{⊇}{\ensuremath{\supseteq}} %
+\newunicodechar{⊎}{\ensuremath{\uplus}} %
+\newunicodechar{⊑}{\ensuremath{\sqsubseteq}} %
+\newunicodechar{⊒}{\ensuremath{\sqsupseteq}} %
+\newunicodechar{⊓}{\ensuremath{\sqcap}} %
+\newunicodechar{⊔}{\ensuremath{\sqcup}} %
+\newunicodechar{⊕}{\ensuremath{\oplus}} %
+\newunicodechar{⊗}{\ensuremath{\otimes}} %
+\newunicodechar{⊛}{\ensuremath{\circledast}}
+\newunicodechar{⊢}{\ensuremath{\vdash}} %
+\newunicodechar{⊤}{\ensuremath{\top}}
+\newunicodechar{⊥}{\ensuremath{\bot}} % bottom
+\newunicodechar{⊧}{\models} %
+\newunicodechar{⊨}{\models} %
+\newunicodechar{⊩}{\Vdash}
+\newunicodechar{⊸}{\ensuremath{\multimap}} %
+\newunicodechar{⋁}{\ensuremath{\bigvee}}
+\newunicodechar{⋃}{\ensuremath{\bigcup}} %
+\newunicodechar{⋄}{\ensuremath{\diamond}} %
+\newunicodechar{⋅}{\ensuremath{\cdot}}
+\newunicodechar{⋆}{\ensuremath{\star}} %
+\newunicodechar{⋮}{\ensuremath{\vdots}} %
+\newunicodechar{⋯}{\ensuremath{\cdots}} %
+\newunicodechar{─}{---}
+\newunicodechar{■}{\ensuremath{\blacksquare}} % black square
+\newunicodechar{□}{\ensuremath{\square}} %
+\newunicodechar{▴}{\ensuremath{\blacktriangledown}}
+\newunicodechar{▵}{\ensuremath{\triangle}}
+\newunicodechar{▹}{\ensuremath{\triangleright}} %
+\newunicodechar{▾}{\ensuremath{\blacktriangle}}
+\newunicodechar{▿}{\ensuremath{\triangledown}}
+\newunicodechar{◃}{\triangleleft{}}
+\newunicodechar{◅}{\ensuremath{\triangleleft{}}}
+\newunicodechar{◇}{\ensuremath{\diamond}} %
+\newunicodechar{◽}{\ensuremath{\square}}
+\newunicodechar{★}{\ensuremath{\star}}   %
+\newunicodechar{♭}{\ensuremath{\flat}} %
+\newunicodechar{♯}{\ensuremath{\sharp}} %
+\newunicodechar{✓}{\ensuremath{\checkmark}} %
+\newunicodechar{⟂}{\ensuremath{^\bot}} % PERPENDICULAR
+\newunicodechar{⟦}{\ensuremath{\llbracket}}
+\newunicodechar{⟧}{\ensuremath{\rrbracket}}
+\newunicodechar{⦇}{\ensuremath{\llparenthesis}}
+\newunicodechar{⦈}{\ensuremath{\rrparenthesis}}
+\newunicodechar{⟨}{\ensuremath{\langle}} %
+\newunicodechar{⟩}{\ensuremath{\rangle}} %
+\newunicodechar{⌜}{\ensuremath{\ulcorner}} %
+\newunicodechar{⌝}{\ensuremath{\urcorner}} %
+\newunicodechar{⟶}{{\longrightarrow}}
+\newunicodechar{⟷} {\ensuremath{\leftrightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}} %
+\newunicodechar{ⱼ}{_j} %
+\newunicodechar{𝒟}{\ensuremath{\mathcal{D}}} %
+\newunicodechar{𝒢}{\ensuremath{\mathcal{G}}}
+\newunicodechar{𝒦}{\ensuremath{\mathcal{K}}} %
+\newunicodechar{𝒫}{\ensuremath{\mathcal{P}}}
+\newunicodechar{𝔸}{\ensuremath{\mathds{A}}} %
+\newunicodechar{𝔹}{\ensuremath{\mathds{B}}} %
+\newunicodechar{𝟙}{\ensuremath{\mathds{1}}} %
+\newunicodechar{𝔼}{\mathds{E}}
+\newunicodechar{⊬}{\not \vdash}
+\newunicodechar{∝}{\propto}
+\newunicodechar{ᶿ}{^\theta}
+\author{Julian Grove, Computational Semantics}
+\date{\today}
+\title{Formal preliminaries answer key}
+\hypersetup{
+ pdfauthor={Julian Grove, Computational Semantics},
+ pdftitle={Formal preliminaries answer key},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 28.1 (Org mode 9.5.3)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+
+\section{Part 1}
+\label{sec:orgc7867df}
+Prove that \(A ∩ B ⊆ A\). \\
+~\\
+By definition, this holds if everything in \(A ∩ B\) is also in \(A\). Since any
+\(x ∈ A\) and \(x ∈ B\) if \(x ∈ A ∩ B\), then \(x ∈ A\), as needed.
+
+\section{Part 2}
+\label{sec:org8b775d4}
+Prove that \(A ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C)\). \\
+~\\
+\noindent Going left to right, we show that if \(x ∈ A ∩ (B ∪ C)\),
+then \(x ∈ (A ∩ B) ∪ (A ∩ C)\). Since \(x ∈ A\) and \(x ∈ B ∪ C\), it must be that
+\(x ∈ B\) or \(x ∈ C\). If the former, then \(x ∈ A ∩ B\), and hence \(x ∈ (A ∩ B ∪ A
+  ∩ C)\). If the latter, then \(x ∈ A ∩ C\), and hence \(x ∈ (A ∩ B ∪ A ∩ C)\). \\
+~\\
+\noindent Going right to left, we show that if \(x ∈ (A ∩ B) ∪ (A ∩
+  C)\), then \(x ∈ A ∩ (B ∪ C)\). There are two cases to consider: either \(x ∈ A ∩
+  B\) or \(x ∈ A ∩ C\). In the first case \(x ∈ A\) and \(x ∈ B\); thus \(x ∈ B ∪ C\)
+and, hence, \(x ∈ A ∩ (B ∪ C)\). In the second case, \(x ∈ A\) and \(x ∈ C\); thus
+again \(x ∈ B ∪ C\) and, hence, \(x ∈ A ∩ (B ∪ C)\).
+
+\section{Part 3}
+\label{sec:orge23b032}
+Prove that if \(A ⊆ B\) and \(B ⊆ C\), then \(A ⊆ C\). \\
+~\\
+\noindent If \(A ⊆ B\), then any \(x ∈ A\) is such that \(x ∈ B\). If \(B ⊆
+  C\), then any \(y ∈ B\) is such that \(y ∈ C\). Since any \(x ∈ A\) is such that \(x ∈
+  B\), \(x\) is such a \(y\), and so \(x ∈ C\).
+
+\section{Part 4}
+\label{sec:org6f4d898}
+Prove that if \(A ⊆ B\), then \(A = A ∩ B\). \\
+~\\
+\noindent Going left to right, any \(x ∈ A\) is such that \(x ∈ B\),
+since \(A ⊆ B\). Hence, \(x ∈ A ∩ B\) by definition. \\
+~\\
+\noindent Going right to left, any \(x ∈ A ∩ B\) is such that \(x ∈ A\),
+by definition.
+
+\section{Part 5}
+\label{sec:orgb95c1c2}
+Let \(R\) be a relation on \(A\). Define \(R^*\) as
+\begin{align*}
+R^* &= \bigcup_{i ∈ ℕ}Rⁱ
+\end{align*}
+Prove that for any relation \(S\) on \(A\) which is transitive and reflexive and
+such that \(R ⊆ S\), \(R^* ⊆ S\). \\
+~\\
+\noindent Since \(⟨x, y⟩ ∈ R^*\) just in case \(⟨x, y⟩ ∈ Rⁱ\) for some
+\(i ∈ ℕ\), we just need to show \(Rⁱ ⊆ S\) for arbitrary \(i\). \\
+~\\
+\noindent First, note that \(R^0 ⊆ S\), since \(S\) is reflexive. \\
+~\\
+\noindent Now, assume \(Rⁱ ⊆ S\): we want to show that \(R^{i + 1} ⊆ S\)
+as well. For any \(⟨u, v⟩ ∈ R^{i + 1} = Rⁱ ∘ R\), there must be a \(z\) such that
+\(⟨u, z⟩ ∈ Rⁱ\) and \(⟨z, v⟩ ∈ R\). Since \(S\) contains \(Rⁱ\), \(⟨u, z⟩ ∈ S\), and
+since \(S\) contains \(R\), \(⟨z, v⟩ ∈ S\). Because \(S\) is transitive, it is
+therefore also true that \(⟨u, v⟩ ∈ S\), as needed. \\
+~\\
+\noindent Hence, \(Rⁱ ⊆ S\) for all \(i\) (as needed) by induction on
+\(i\).
+
+\section{Part 6}
+\label{sec:orgf798ac4}
+Let \(A = \{a, b, c, d\}\) and \(R = \{⟨a, a⟩, ⟨a, b⟩, ⟨b, c⟩, ⟨c, c⟩\}\). Then:
+\begin{itemize}
+\item \(R^{-1} = \{⟨a, a⟩, ⟨b, a⟩, ⟨c, b⟩, ⟨c, c⟩\}\)
+\item \(R^2 = \{⟨a, a⟩, ⟨a, b⟩, ⟨b, c⟩, ⟨a, c⟩, ⟨c, c⟩\}\)
+\item \(R^3 = \{⟨a, a⟩, ⟨a, b⟩, ⟨b, c⟩, ⟨a, c⟩, ⟨c, c⟩\}\)
+\item \(R^* = \{⟨a, a⟩, ⟨a, b⟩, ⟨b, c⟩, ⟨a, c⟩, ⟨c, c⟩\}\)
+\item The least equivalence relation containing \(R\):
+$$\{⟨a, a⟩, ⟨b, b⟩, ⟨a, b⟩, ⟨b, a⟩, ⟨b, c⟩, ⟨c, b⟩, ⟨a, c⟩, ⟨c, a⟩, ⟨c,
+    c⟩\}$$
+\end{itemize}
+
+\section{Part 7}
+\label{sec:orgdc6d0a0}
+Let \(R ⊆ A × B\). Define \(f_R ⊆ A × 2^B\) such that \(⟨a, X⟩ ∈ f_R\) iff \(X = \{b
+  ∈ B \divd ⟨a, b⟩ ∈ R\}\). Show that \(f_R\) is a function from \(A\) to \(2^B\). \\
+~\\
+\noindent We need to show that for any given \(a ∈ A\), \(X\) as defined
+above is unique. Assume both \(⟨a, X⟩ ∈ f_R\) and \(⟨a, Y⟩ ∈ f_R\). Then \(X = \{b
+  ∈ B \divd ⟨a, b⟩ ∈ R\} = Y\), as needed.
+
+\printbibliography
+\end{document}

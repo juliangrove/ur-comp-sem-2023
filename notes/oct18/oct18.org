@@ -15,7 +15,7 @@
 
 ** Local soundness
    Recall that local completeness is the property of a connective that its
-   introduction rules are strong enough for its introduction rules; i.e., no
+   elimination rules are strong enough for its introduction rules; i.e., no
    matter how you destruct the connective using the elimination rules, you can
    build it back up again.
 
@@ -169,7 +169,7 @@
 * Exercise
   Try to define the function ~normalForm~. To start you off, here are the branches
   of the definition corresponding to the simply-typed λ-calculus (a.k.a., the
-  /implicational fragment/ of Intuitionistic Logic: 
+  /implicational fragment/ of Intuitionistic Logic): 
   #+begin_src haskell
     normalForm :: Term γ φ -> Term γ φ
     normalForm v@(Var _) = v                -- Variables are already in normal form.

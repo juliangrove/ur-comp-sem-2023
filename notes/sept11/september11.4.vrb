@@ -1,0 +1,12 @@
+\frametitle{Key-value pairs}
+Example: a function for looking up the value associated with a key. \\[0pt]
+\bigskip \pause
+No exception was thrown when I tried to look up \texttt{"the Stone Roses"}\ldots{} the
+function returned a value, \texttt{Nothing}, inhabitting the data type \texttt{Maybe Integer}.
+\\[0pt]
+\bigskip \pause
+One way to think of the \texttt{Maybe a} data type is that it represents an action
+your computer can perform---throwing an error---as data. \\[0pt]
+\bigskip \pause
+This illustrates what in Haskell is a pretty commonly used technique of
+bluring the lines between \emph{effects} and data.

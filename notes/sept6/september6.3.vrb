@@ -1,0 +1,2 @@
+\frametitle{\texttt {let} bindings}
+A \texttt{let} binding can be used to define a local variable anywhere you want.

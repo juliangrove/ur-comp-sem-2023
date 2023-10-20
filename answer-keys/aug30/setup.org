@@ -1,0 +1,288 @@
+#+latex_header: \usepackage[uniquename=false,dashed=false,date=year,url=false,isbn=false,useprefix=true]{biblatex}
+#+latex_header: \makeatletter
+#+latex_header: \def\act@on@bibmacro#1#2{%
+#+latex_header:   \expandafter#1\csname abx@macro@\detokenize{#2}\endcsname
+#+latex_header: }
+#+latex_header: \def\patchbibmacro{\act@on@bibmacro\patchcmd}
+#+latex_header: \def\pretobibmacro{\act@on@bibmacro\pretocmd}
+#+latex_header: \def\apptobibmacro{\act@on@bibmacro\apptocmd}
+#+latex_header: \def\showbibmacro{\act@on@bibmacro\show}
+#+latex_header: \makeatother
+#+latex_header: \patchbibmacro{date+extradate}{%
+#+latex_header: \printtext[parens]%
+#+latex_header: }{%
+#+latex_header: \setunit{\addperiod\space}%
+#+latex_header: \printtext%
+#+latex_header: }{}{}
+#+latex_header: \DeclareFieldFormat[article,inbook,incollection,inproceedings,thesis,unpublished]{title}{#1}
+#+latex_header: \AtEveryBibitem{\clearlist{language}\clearfield{note}}
+#+latex_header: \renewcommand*{\intitlepunct}{\space}
+#+latex_header: \renewbibmacro{in:}{%
+#+latex_header:  \ifboolexpr{%
+#+latex_header:     test {\ifentrytype{article}}%
+#+latex_header:     or
+#+latex_header:     test {\ifentrytype{inproceedings}}%
+#+latex_header:  }{}{\printtext{\bibstring{in}\intitlepunct}}}
+#+latex_header: \setlength\bibitemsep{1.5\itemsep}
+#+latex_header: \usepackage{bussproofs}
+#+latex_header: \usepackage[linguistics]{forest}
+#+latex_header: \usepackage{tabularx}
+#+latex_header: \usepackage{tikz}
+#+latex_header: \usetikzlibrary{arrows,arrows.meta,automata,fit,positioning}
+#+latex_header: \usepackage{dsfont}
+#+latex_header: \forestset{ downroof/.style={ for children={ if n=1{ edge path'={ (.parent first) -- (!u.parent anchor) -- (!ul.parent last) -- cycle }}{no edge} } } }
+#+latex_header: \newcommand{\lda}[2]{\lambda#1.#2}
+#+latex_header: \newcommand{\ctypeL}[2]{(#1\rightarrow#2)}
+#+latex_header: \newcommand{\ctypeR}[2]{#1\rightarrow#2}
+#+latex_header: \newcommand{\IF}[1]{\llbracket#1\rrbracket}
+#+latex_header: \newcommand{\app}[2]{#1(#2)}
+#+latex_header: \newlength\appwidth
+#+latex_header: \newcommand{\appS}[2]{\settowidth{\appwidth}{\ }#1\hspace{0.1\appwidth}#2}
+#+latex_header: \newcommand{\appC}[2]{\settowidth{\appwidth}{\ }(#1\hspace{0.1\appwidth}#2)}
+#+latex_header: \newcommand{\quant}[3]{#1#2:#3}
+#+latex_header: \newcommand{\ct}[1]{\textsf{#1}}
+#+latex_header: \newcommand{\stacks}[1]{\begin{tabular}{c}#1\end{tabular}}
+#+latex_header: \newcommand{\maybe}[1]{#1\textsubscript{$\#$}}
+#+latex_header: \def\divd{\ |\ }
+#+latex_header: \newcommand{\corners}[1]{\ulcorner#1\urcorner}
+#+latex_header: \newcommand{\uparrowed}[1]{\stackon[0pt]{$#1$}{$\uparrow$}}
+#+latex_header: \newcommand{\unit}[2]{#2\textsuperscript{\uparrowed{#1}}}
+#+latex_header: \newlength\bindwidth
+#+latex_header: \newcommand{\bindsymb}[1]{{{\settowidth{\bindwidth}{\ }\mathtt{>\hspace{-1.6\bindwidth}>\hspace{-1.6\bindwidth}=}}_#1}}
+#+latex_header: \newcommand{\bind}[2]{#2\textsuperscript{$\bindsymb{#1}$}}
+#+latex_header: \newcommand{\maptyp}[1]{\overline{#1}}
+#+latex_header: \newcommand\observe{\mathit{observe}}
+#+latex_header: \newcommand\reset{\mathit{reset}}
+#+latex_header: \newcommand\factor{\mathit{factor}}
+#+latex_header: \newcommand\Distr{\mathit{D}}
+#+latex_header: \newcommand\mdo{\mathtt{do}}
+#+latex_header: \newcommand\parens[1]{\left ( #1 \right)}
+#+latex_header: \newcommand\Normal{\mathcal N}
+#+latex_header: \usepackage[verbose]{newunicodechar}
+#+latex_header: \newunicodechar{¬}{\ensuremath{\neg}} % 
+#+latex_header: \newunicodechar{¹}{^1}
+#+latex_header: \newunicodechar{²}{^2}
+#+latex_header: \newunicodechar{³}{^3}
+#+latex_header: \newunicodechar{·}{\ensuremath{\cdot}}
+#+latex_header: \newunicodechar{×}{\ensuremath{\times}} % 
+#+latex_header: \newunicodechar{÷}{\ensuremath{\div}} %
+#+latex_header: \newunicodechar{ᵅ}{^α}
+#+latex_header: \newunicodechar{ᵃ}{^a}
+#+latex_header: \newunicodechar{ᵍ}{^g}
+#+latex_header: \newunicodechar{ʲ}{^j}
+#+latex_header: \newunicodechar{ˡ}{^l}
+#+latex_header: \newunicodechar{ʳ}{^r}
+#+latex_header: \newunicodechar{ₒ}{_0}
+#+latex_header: \newunicodechar{₁}{_1}
+#+latex_header: \newunicodechar{₂}{_2}
+#+latex_header: \newunicodechar{₃}{_3}
+#+latex_header: \newunicodechar{₄}{_4}
+#+latex_header: \newunicodechar{ₐ}{_a}
+#+latex_header: \newunicodechar{ₑ}{_e}
+#+latex_header: \newunicodechar{ₕ}{_h}
+#+latex_header: \newunicodechar{ᵢ}{_i}
+#+latex_header: \newunicodechar{ₙ}{_n}
+#+latex_header: \newunicodechar{ₚ}{_p}
+#+latex_header: \newunicodechar{ᵣ}{_r}
+#+latex_header: \newunicodechar{ₛ}{_s}
+#+latex_header: \newunicodechar{ₜ}{_t}
+#+latex_header: \newunicodechar{̷}{\not} % 
+#+latex_header: \newunicodechar{Γ}{\ensuremath{\Gamma}}   %
+#+latex_header: \newunicodechar{Δ}{\ensuremath{\Delta}} % 
+#+latex_header: \newunicodechar{Η}{\ensuremath{\textrm{H}}} % 
+#+latex_header: \newunicodechar{Θ}{\ensuremath{\Theta}} % 
+#+latex_header: \newunicodechar{Λ}{\ensuremath{\Lambda}} % 
+#+latex_header: \newunicodechar{Ξ}{\ensuremath{\Xi}} % 
+#+latex_header: \newunicodechar{Π}{\ensuremath{\Pi}}   %
+#+latex_header: \newunicodechar{Σ}{\ensuremath{\Sigma}} % 
+#+latex_header: \newunicodechar{Φ}{\ensuremath{\Phi}} % 
+#+latex_header: \newunicodechar{Ψ}{\ensuremath{\Psi}} % 
+#+latex_header: \newunicodechar{Ω}{\ensuremath{\Omega}} % 
+#+latex_header: \newunicodechar{α}{\ensuremath{\mathnormal{\alpha}}}
+#+latex_header: \newunicodechar{β}{\ensuremath{\beta}} % 
+#+latex_header: \newunicodechar{γ}{\ensuremath{\mathnormal{\gamma}}} % 
+#+latex_header: \newunicodechar{δ}{\ensuremath{\mathnormal{\delta}}} % 
+#+latex_header: \newunicodechar{ε}{\ensuremath{\mathnormal{\varepsilon}}} % 
+#+latex_header: \newunicodechar{ζ}{\ensuremath{\mathnormal{\zeta}}} % 
+#+latex_header: \newunicodechar{η}{\ensuremath{\mathnormal{\eta}}} % 
+#+latex_header: \newunicodechar{θ}{\ensuremath{\mathnormal{\theta}}} % 
+#+latex_header: \newunicodechar{ι}{\ensuremath{\mathnormal{\iota}}} % 
+#+latex_header: \newunicodechar{κ}{\ensuremath{\mathnormal{\kappa}}} % 
+#+latex_header: \newunicodechar{λ}{\ensuremath{\mathnormal{\lambda}}} % 
+#+latex_header: \newunicodechar{μ}{\ensuremath{\mathnormal{\mu}}} % 
+#+latex_header: \newunicodechar{ν}{\ensuremath{\mathnormal{\mu}}} % 
+#+latex_header: \newunicodechar{ξ}{\ensuremath{\mathnormal{\xi}}} % 
+#+latex_header: \newunicodechar{π}{\ensuremath{\mathnormal{\pi}}}
+#+latex_header: \newunicodechar{π}{\ensuremath{\mathnormal{\pi}}} % 
+#+latex_header: \newunicodechar{ρ}{\ensuremath{\mathnormal{\rho}}} % 
+#+latex_header: \newunicodechar{σ}{\ensuremath{\mathnormal{\sigma}}} % 
+#+latex_header: \newunicodechar{τ}{\ensuremath{\mathnormal{\tau}}} % 
+#+latex_header: \newunicodechar{φ}{\ensuremath{\mathnormal{\phi}}} % 
+#+latex_header: \newunicodechar{χ}{\ensuremath{\mathnormal{\chi}}} % 
+#+latex_header: \newunicodechar{ψ}{\ensuremath{\mathnormal{\psi}}} % 
+#+latex_header: \newunicodechar{ω}{\ensuremath{\mathnormal{\omega}}} %  
+#+latex_header: \newunicodechar{ϕ}{\ensuremath{\mathnormal{\phi}}} % 
+#+latex_header: \newunicodechar{ϕ}{\ensuremath{\mathnormal{\varphi}}} % 
+#+latex_header: \newunicodechar{ϵ}{\ensuremath{\mathnormal{\epsilon}}} % 
+#+latex_header: \newunicodechar{ᵏ}{^k}
+#+latex_header: \newunicodechar{ᵢ}{\ensuremath{_i}} % 
+#+latex_header: \newunicodechar{ }{\quad}
+#+latex_header: \newunicodechar{†}{\dagger}
+#+latex_header: \newunicodechar{ }{\,}
+#+latex_header: \newunicodechar{′}{\ensuremath{^\prime}}  % 
+#+latex_header: \newunicodechar{″}{\ensuremath{^\second}} % 
+#+latex_header: \newunicodechar{‴}{\ensuremath{^\third}}  % 
+#+latex_header: \newunicodechar{ⁱ}{^i}
+#+latex_header: \newunicodechar{⁵}{\ensuremath{^5}}
+#+latex_header: \newunicodechar{⁺}{\ensuremath{^+}} %% #+latex_header: \newunicodechar{⁺}{^+}
+#+latex_header: \newunicodechar{⁻}{\ensuremath{^-}} %% 
+#+latex_header: \newunicodechar{ⁿ}{^n}
+#+latex_header: \newunicodechar{₀}{\ensuremath{_0}} % 
+#+latex_header: \newunicodechar{₁}{\ensuremath{_1}} % #+latex_header: \newunicodechar{₁}{_1}
+#+latex_header: \newunicodechar{₂}{\ensuremath{_2}} % #+latex_header: \newunicodechar{₂}{_2}
+#+latex_header: \newunicodechar{₃}{\ensuremath{_3}}
+#+latex_header: \newunicodechar{₊}{\ensuremath{_+}} %% 
+#+latex_header: \newunicodechar{₋}{\ensuremath{_-}} %% 
+#+latex_header: \newunicodechar{ₙ}{_n} % 
+#+latex_header: \newunicodechar{ℂ}{\ensuremath{\mathbb{C}}} % 
+#+latex_header: \newunicodechar{ℒ}{\ensuremath{\mathscr{L}}}
+#+latex_header: \newunicodechar{ℕ}{\mathbb{N}} % 
+#+latex_header: \newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+#+latex_header: \newunicodechar{ℝ}{\ensuremath{\mathbb{R}}} % 
+#+latex_header: \newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}} % 
+#+latex_header: \newunicodechar{ℳ}{\mathscr{M}}
+#+latex_header: \newunicodechar{⅋}{\ensuremath{\parr}} % 
+#+latex_header: \newunicodechar{←}{\ensuremath{\leftarrow}} % 
+#+latex_header: \newunicodechar{↑}{\ensuremath{\uparrow}} % 
+#+latex_header: \newunicodechar{→}{\ensuremath{\rightarrow}} %
+#+latex_header: \newunicodechar{↔}{\ensuremath{\leftrightarrow}} % 
+#+latex_header: \newunicodechar{↖}{\nwarrow} %
+#+latex_header: \newunicodechar{↗}{\nearrow} %
+#+latex_header: \newunicodechar{↝}{\ensuremath{\leadsto}}
+#+latex_header: \newunicodechar{↦}{\ensuremath{\mapsto}}
+#+latex_header: \newunicodechar{⇆}{\ensuremath{\leftrightarrows}} % 
+#+latex_header: \newunicodechar{⇐}{\ensuremath{\Leftarrow}} % 
+#+latex_header: \newunicodechar{⇒}{\ensuremath{\Rightarrow}} % 
+#+latex_header: \newunicodechar{⇔}{\ensuremath{\Leftrightarrow}} % 
+#+latex_header: \newunicodechar{∀}{\ensuremath{\forall}}   %
+#+latex_header: \newunicodechar{∂}{\ensuremath{\partial}}
+#+latex_header: \newunicodechar{∃}{\ensuremath{\exists}} % 
+#+latex_header: \newunicodechar{∅}{\ensuremath{\varnothing}} % 
+#+latex_header: \newunicodechar{∈}{\ensuremath{\in}}
+#+latex_header: \newunicodechar{∉}{\ensuremath{\not\in}} % 
+#+latex_header: \newunicodechar{∋}{\ensuremath{\ni}}  % 
+#+latex_header: \newunicodechar{∎}{\ensuremath{\qed}}%#+latex_header: \newunicodechar{∎}{\ensuremath{\blacksquare}} % end of proof
+#+latex_header: \newunicodechar{∏}{\prod}
+#+latex_header: \newunicodechar{∑}{\sum}
+#+latex_header: \newunicodechar{∗}{\ensuremath{\ast}} % 
+#+latex_header: \newunicodechar{∘}{\ensuremath{\circ}} % 
+#+latex_header: \newunicodechar{∙}{\ensuremath{\bullet}} % #+latex_header: \newunicodechar{∙}{\ensuremath{\cdot}}
+#+latex_header: \newunicodechar{⊙}{\ensuremath{\odot}}
+#+latex_header: \newunicodechar{∞}{\ensuremath{\infty}} % 
+#+latex_header: \newunicodechar{∣}{\ensuremath{\mid}} % 
+#+latex_header: \newunicodechar{∧}{\wedge}% 
+#+latex_header: \newunicodechar{∨}{\vee}% 
+#+latex_header: \newunicodechar{∩}{\ensuremath{\cap}} % 
+#+latex_header: \newunicodechar{∪}{\ensuremath{\cup}} % 
+#+latex_header: \newunicodechar{∫}{\int}
+#+latex_header: \newunicodechar{∷}{::} % 
+#+latex_header: \newunicodechar{∼}{\ensuremath{\sim}} % 
+#+latex_header: \newunicodechar{≃}{\ensuremath{\simeq}} %
+#+latex_header: \newunicodechar{≔}{\ensuremath{\coloneqq}} % 
+#+latex_header: \newunicodechar{≅}{\ensuremath{\cong}} % 
+#+latex_header: \newunicodechar{≈}{\ensuremath{\approx}} % 
+#+latex_header: \newunicodechar{≜}{\ensuremath{\stackrel{\scriptscriptstyle {\triangle}}{=}}} % #+latex_header: \newunicodechar{≜}{\triangleq}
+#+latex_header: \newunicodechar{≝}{\ensuremath{\stackrel{\scriptscriptstyle {\text{def}}}{=}}}
+#+latex_header: \newunicodechar{≟}{\ensuremath{\stackrel {_\text{\textbf{?}}}{\text{\textbf{=}}\negthickspace\negthickspace\text{\textbf{=}}}}} % or {\ensuremath{\stackrel{\scriptscriptstyle ?}{=}}}
+#+latex_header: \newunicodechar{≠}{\ensuremath{\neq}}% 
+#+latex_header: \newunicodechar{≡}{\ensuremath{\equiv}}% 
+#+latex_header: \newunicodechar{≤}{\ensuremath{\le}} % 
+#+latex_header: \newunicodechar{≥}{\ensuremath{\ge}} % 
+#+latex_header: \newunicodechar{⊂}{\ensuremath{\subset}} % 
+#+latex_header: \newunicodechar{⊃}{\ensuremath{\supset}} %  
+#+latex_header: \newunicodechar{⊆}{\ensuremath{\subseteq}} %  
+#+latex_header: \newunicodechar{⊇}{\ensuremath{\supseteq}} % 
+#+latex_header: \newunicodechar{⊎}{\ensuremath{\uplus}} %
+#+latex_header: \newunicodechar{⊑}{\ensuremath{\sqsubseteq}} % 
+#+latex_header: \newunicodechar{⊒}{\ensuremath{\sqsupseteq}} % 
+#+latex_header: \newunicodechar{⊓}{\ensuremath{\sqcap}} % 
+#+latex_header: \newunicodechar{⊔}{\ensuremath{\sqcup}} % 
+#+latex_header: \newunicodechar{⊕}{\ensuremath{\oplus}} % 
+#+latex_header: \newunicodechar{⊗}{\ensuremath{\otimes}} % 
+#+latex_header: \newunicodechar{⊛}{\ensuremath{\circledast}}
+#+latex_header: \newunicodechar{⊢}{\ensuremath{\vdash}} % 
+#+latex_header: \newunicodechar{⊤}{\ensuremath{\top}}
+#+latex_header: \newunicodechar{⊥}{\ensuremath{\bot}} % bottom
+#+latex_header: \newunicodechar{⊧}{\models} % 
+#+latex_header: \newunicodechar{⊨}{\models} % 
+#+latex_header: \newunicodechar{⊩}{\Vdash}
+#+latex_header: \newunicodechar{⊸}{\ensuremath{\multimap}} % 
+#+latex_header: \newunicodechar{⋁}{\ensuremath{\bigvee}}
+#+latex_header: \newunicodechar{⋃}{\ensuremath{\bigcup}} % 
+#+latex_header: \newunicodechar{⋄}{\ensuremath{\diamond}} % 
+#+latex_header: \newunicodechar{⋅}{\ensuremath{\cdot}}
+#+latex_header: \newunicodechar{⋆}{\ensuremath{\star}} % 
+#+latex_header: \newunicodechar{⋮}{\ensuremath{\vdots}} % 
+#+latex_header: \newunicodechar{⋯}{\ensuremath{\cdots}} % 
+#+latex_header: \newunicodechar{─}{---}
+#+latex_header: \newunicodechar{■}{\ensuremath{\blacksquare}} % black square
+#+latex_header: \newunicodechar{□}{\ensuremath{\square}} % 
+#+latex_header: \newunicodechar{▴}{\ensuremath{\blacktriangledown}}
+#+latex_header: \newunicodechar{▵}{\ensuremath{\triangle}}
+#+latex_header: \newunicodechar{▹}{\ensuremath{\triangleright}} % 
+#+latex_header: \newunicodechar{▾}{\ensuremath{\blacktriangle}}
+#+latex_header: \newunicodechar{▿}{\ensuremath{\triangledown}}
+#+latex_header: \newunicodechar{◃}{\triangleleft{}}
+#+latex_header: \newunicodechar{◅}{\ensuremath{\triangleleft{}}}
+#+latex_header: \newunicodechar{◇}{\ensuremath{\diamond}} % 
+#+latex_header: \newunicodechar{◽}{\ensuremath{\square}}
+#+latex_header: \newunicodechar{★}{\ensuremath{\star}}   %
+#+latex_header: \newunicodechar{♭}{\ensuremath{\flat}} % 
+#+latex_header: \newunicodechar{♯}{\ensuremath{\sharp}} % 
+#+latex_header: \newunicodechar{✓}{\ensuremath{\checkmark}} % 
+#+latex_header: \newunicodechar{⟂}{\ensuremath{^\bot}} % PERPENDICULAR 
+#+latex_header: \newunicodechar{⟦}{\ensuremath{\llbracket}}
+#+latex_header: \newunicodechar{⟧}{\ensuremath{\rrbracket}}
+#+latex_header: \newunicodechar{⦇}{\ensuremath{\llparenthesis}}
+#+latex_header: \newunicodechar{⦈}{\ensuremath{\rrparenthesis}}
+#+latex_header: \newunicodechar{⟨}{\ensuremath{\langle}} % 
+#+latex_header: \newunicodechar{⟩}{\ensuremath{\rangle}} %
+#+latex_header: \newunicodechar{⌜}{\ensuremath{\ulcorner}} %
+#+latex_header: \newunicodechar{⌝}{\ensuremath{\urcorner}} %
+#+latex_header: \newunicodechar{⟶}{{\longrightarrow}}
+#+latex_header: \newunicodechar{⟷} {\ensuremath{\leftrightarrow}}
+#+latex_header: \newunicodechar{⟹}{\ensuremath{\Longrightarrow}} % 
+#+latex_header: \newunicodechar{ⱼ}{_j} % 
+#+latex_header: \newunicodechar{𝒟}{\ensuremath{\mathcal{D}}} % 
+#+latex_header: \newunicodechar{𝒢}{\ensuremath{\mathcal{G}}}
+#+latex_header: \newunicodechar{𝒦}{\ensuremath{\mathcal{K}}} % 
+#+latex_header: \newunicodechar{𝒫}{\ensuremath{\mathcal{P}}}
+#+latex_header: \newunicodechar{𝔸}{\ensuremath{\mathds{A}}} % 
+#+latex_header: \newunicodechar{𝔹}{\ensuremath{\mathds{B}}} % 
+#+latex_header: \newunicodechar{𝟙}{\ensuremath{\mathds{1}}} % 
+#+latex_header: \newunicodechar{𝔼}{\mathds{E}}
+#+latex_header: \newunicodechar{⊬}{\not \vdash}
+#+latex_header: \newunicodechar{∝}{\propto}
+#+latex_header: \newunicodechar{ᶿ}{^\theta}
+
+#+html_head: <link rel="stylesheet" type="text/css" href="htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="readtheorg.css"/>
+
+#+html_head: <script src="jquery.min.js"></script>
+#+html_head: <script src="bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="readtheorg.js"></script>
+
+#+html_head: <script type="text/x-mathjax-config">
+#+html_head: MathJax.Hub.Config({
+#+html_head:  TeX: {
+#+html_head:    Macros: {
+#+html_head:      divd: "\\ |\\ ",
+#+html_head:      IF: ["[\\![#1]\\!]",1],
+#+html_head:      banana: ["(\\!|#1|\\!)",1],
+#+html_head:      bind: ">\\!\\!>\\!\\!=",
+#+html_head:      defeq: ":\\!=",
+#+html_head:      append: ["#1\\!\\!::\\!\\!#2",2]
+#+html_head:    }
+#+html_head:  }
+#+html_head: });
+#+html_head: </script>

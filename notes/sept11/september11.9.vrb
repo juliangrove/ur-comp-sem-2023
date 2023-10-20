@@ -1,0 +1,4 @@
+\frametitle{Eq}
+Another useful type class is \texttt{Eq}. \\[0pt]
+\pause \bigskip
+Like \texttt{Show} instances, \texttt{Eq} instances can be derived.

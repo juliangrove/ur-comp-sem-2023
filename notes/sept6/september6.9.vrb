@@ -1,0 +1,5 @@
+\frametitle{Case expressions}
+You can also use a \emph{case expression} to do pattern matching. \\[0pt]
+\pause \bigskip
+Case expressions do more than just pattern match---they also evaluate the
+expression between the \texttt{case} and the \texttt{of}\ldots{}

@@ -1,0 +1,3 @@
+\frametitle{\texttt {[a]} to \texttt {List a}}
+How could we write a recursive function that maps values of type \texttt{List a} to
+values of type \texttt{[a]}?

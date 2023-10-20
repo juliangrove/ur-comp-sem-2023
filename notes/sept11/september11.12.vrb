@@ -1,0 +1,8 @@
+\frametitle{Foldable}
+\texttt{foldr} and \texttt{foldl} are actually methods of a type class \texttt{Foldable}.
+\pause
+\begin{itemize}[<+->]
+\item Lists are foldable
+\item Maybe types are foldable. How?
+\item Trees are foldable. How?
+\end{itemize}

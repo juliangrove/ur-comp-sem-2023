@@ -1,0 +1,130 @@
+#+latex_class: slides
+#+setupfile: setup.org
+#+options: H:2 toc:nil
+#+beamer_frame_LEVEL: 1
+#+beamer_theme: metropolis
+
+#+bibliography: ../../ur-comp-sem-2023.bib
+#+cite_export: biblatex authoryear-comp
+
+#+Author: Julian Grove
+#+beamer_header: \institute[University of Rochester]{Computational Semantics}
+#+Title: Haskell: type classes and higher-order polymorphism
+#+Date: September 11, 2023
+
+* Introduction
+** Last time
+   We looked at function literals, pattern matching, and some basic functions on
+   lists.
+
+** This time
+   We'll look at more things which are specific to Haskell:
+   #+beamer: \pause
+   #+attr_beamer: :overlay <+->
+   - Types and type classes
+   - Polymorphism
+   #+beamer: \pause
+   Polymorphism will be a big player in the part of the course when we start
+   looking at functors. (It is a special kind of abstraction.)
+
+* Some more types
+** Maybe
+   A commonly used data type in Haskell is ~Maybe a~.
+   #+beamer: \bigskip \pause
+   ~Maybe a~ is like the data type ~a~ on its own, but with extra information about
+   whether the a computational succeeded for failed.
+
+** Key-value pairs
+   Example: a function for looking up the value associated with a key. \\
+   #+beamer: \bigskip \pause
+   No exception was thrown when I tried to look up ~"the Stone Roses"~... the
+   function returned a value, ~Nothing~, inhabitting the data type ~Maybe Integer~.
+   \\
+   #+beamer: \bigskip \pause
+   One way to think of the ~Maybe a~ data type is that it represents an action
+   your computer can perform---throwing an error---as data. \\
+   #+beamer: \bigskip \pause
+   This illustrates what in Haskell is a pretty commonly used technique of
+   bluring the lines between /effects/ and data.
+
+** ~div~
+   Let's look at the function ~div :: Integer -> Integer -> Integer~. \\
+   #+beamer: \pause \bigskip
+   ~div~ is a partial function. \\
+   #+beamer: \pause \bigskip
+   Can we write a function ~safeDiv~ which is a total function, using maybe types?
+
+** Either
+   A generalization of ~Maybe a~ is the data type ~Either a b~. \\
+   #+beamer: \pause \bigskip
+   ~Left~ means failure; ~Right~ means success.
+   #+beamer: \pause \bigskip
+   Questions:
+   - How might we represent ~Maybe~ data types as ~Either~ data types?
+   - In what sense are maybe types a generalization of either types?
+
+* Type classes and polymorphism
+** Type classes
+   One of the most famous distinguishing features of Haskell. \\
+   #+beamer: \pause \bigskip
+   A type class allows you to provide multiple implementations of what looks
+   like the same function on different types. \\
+   #+beamer: \pause \bigskip
+   These implementations are called /instances/.
+
+** Show
+   We have already seen type classes when we've used ~deriving Show~ in data type
+   declarations. \\
+   #+beamer: \pause \bigskip
+   But we can actually implement ~Show~ instances ourselves.
+
+** Eq
+   Another useful type class is ~Eq~. \\
+   #+beamer: \pause \bigskip
+   Like ~Show~ instances, ~Eq~ instances can be derived.
+
+** Declaring type classes
+   We can declare our own type classes. \\
+   #+beamer: \pause \bigskip
+   For the three computer brands, you might want to know which of its models'
+   keys is are possible reboot keys...
+
+** Kinds of polymorphism   
+   #+beamer: \pause \bigskip
+   Each of the type classes we've looked at provide what is known as /ad hoc
+   polymorphism/.
+   #+beamer: \pause
+   #+attr_beamer: :overlay <+->
+   - Only some data types need provide instances.
+   - Different instances can have fundamentally /different/ definitions.
+   #+beamer: \pause
+   Ad hoc polymorphism is therefore contrasted with /parametric polymorphism/.
+   #+beamer: \pause
+   #+attr_beamer: :overlay <+->
+   - We can't constrain the instantiating data type ahead of time.
+   - Parametric polymorphic functions come in families all of whose members act
+     fundamentally /the same/.
+   - Examples...
+
+** Foldable
+   ~foldr~ and ~foldl~ are actually methods of a type class ~Foldable~.
+   #+beamer: \pause
+   #+attr_beamer: :overlay <+->
+   - Lists are foldable
+   - Maybe types are foldable. How?
+   - Trees are foldable. How?
+
+** Functors
+   Functors provide another class, with a single method ~fmap~.
+   #+beamer: \pause
+   #+attr_beamer: :overlay <+->
+   - Lists are functors.
+   - ~Maybe~ is a functor.
+   - ~Either a~ is a functor.
+   - ~Tree~ is a functor.  
+   
+# ** References
+#    :PROPERTIES:
+#    :beamer_opt: allowframebreaks
+#    :END:
+#    #+print_bibliography:

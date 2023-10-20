@@ -1,0 +1,18 @@
+\frametitle{N-ary constructors}
+The \texttt{Fruit} sum type is an odd special case, in that the data constructors
+don't carry an extra data besides their identity. \\[0pt]
+\pause \bigskip
+Something more common might have data constructors carry additional data,
+e.g., one data constructor could carry a \texttt{Bool} and one could carry a \texttt{String}.
+\pause
+\begin{itemize}[<+->]
+\item This can allow us to write functions that take \emph{either} a \texttt{Bool} \emph{or} a \texttt{String} as
+its input, using \emph{pattern matching}.
+\end{itemize}
+\pause \bigskip
+By the way, you might be wondering: if a data constructor can take an
+argument, does that mean it's a function?
+\pause
+\begin{itemize}[<+->]
+\item The answer is ``yes''!
+\end{itemize}

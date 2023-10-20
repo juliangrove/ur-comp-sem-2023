@@ -1,0 +1,22 @@
+cabal-version:       >=1.10
+name:                comp-sem
+version:             0.1.0.0
+-- synopsis:
+-- description:
+-- bug-reports:
+-- license:
+-- license-file:        LICENSE
+author:              Julian Grove
+maintainer:          julian.grove@gmail.com
+-- copyright:
+-- category:
+build-type:          Simple
+extra-source-files:
+
+library 
+  exposed-modules: Intro
+                 , September6
+  other-modules:
+  hs-source-dirs: src
+  build-depends: base
+  default-language: Haskell2010

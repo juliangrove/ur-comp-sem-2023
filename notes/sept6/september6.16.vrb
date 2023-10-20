@@ -1,0 +1,12 @@
+\frametitle{\texttt {map}}
+Haskell has a built-in function \texttt{map} for mapping functions of type \texttt{a -> b} to
+functions from lists of \texttt{a}'s to lists of \texttt{b}'s.
+\begin{center}
+\texttt{map :: (a -> b) -> [a] -> [b]}
+\end{center}
+How does \texttt{map} work?\ldots{}
+\pause
+\begin{itemize}[<+->]
+\item We need a branch in the definition that applies to the empty list.
+\item We need a branch in the definition that applies to non-empty lists.
+\end{itemize}

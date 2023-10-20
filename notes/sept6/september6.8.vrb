@@ -1,0 +1,8 @@
+\frametitle{Pattern matching: order matters}
+Pattern branches get checked in top-to-bottom order.
+\pause
+\begin{itemize}[<+->]
+\item For example\ldots{}
+\item Flipping the branches makes the definition effectively stop at the first
+branch, since \texttt{str} is a wildcard over all possible strings.
+\end{itemize}

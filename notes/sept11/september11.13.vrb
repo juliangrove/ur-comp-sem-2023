@@ -1,0 +1,9 @@
+\frametitle{Functors}
+Functors provide another class, with a single method \texttt{fmap}.
+\pause
+\begin{itemize}[<+->]
+\item Lists are functors.
+\item \texttt{Maybe} is a functor.
+\item \texttt{Either a} is a functor.
+\item \texttt{Tree} is a functor.
+\end{itemize}

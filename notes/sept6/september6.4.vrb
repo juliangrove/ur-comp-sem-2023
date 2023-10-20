@@ -1,0 +1,3 @@
+\frametitle{\texttt {where} clauses}
+A \texttt{where} clause can be used to define a local variable inside of another
+definition.

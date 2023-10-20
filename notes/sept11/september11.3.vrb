@@ -1,0 +1,5 @@
+\frametitle{Maybe}
+A commonly used data type in Haskell is \texttt{Maybe a}.
+\bigskip \pause
+\texttt{Maybe a} is like the data type \texttt{a} on its own, but with extra information about
+whether the a computational succeeded for failed.

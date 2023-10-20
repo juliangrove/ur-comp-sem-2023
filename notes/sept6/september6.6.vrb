@@ -1,0 +1,9 @@
+\frametitle{Sum types}
+\texttt{Fruit} is what is called a \emph{sum type}.
+\pause
+\begin{itemize}[<+->]
+\item It enumerates all values it can have in different branches, delimiting them
+with a \texttt{|}.
+\item In each branch is what is called a \emph{data constructor}.
+\item The name of a data constructor in Haskell must begin with a capital letter.
+\end{itemize}

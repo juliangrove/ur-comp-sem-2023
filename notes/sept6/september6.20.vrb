@@ -1,0 +1,7 @@
+\frametitle{\texttt {foldl}}
+\texttt{foldl} conceptualizes it as left-branching. \\[0pt]
+\begin{center}
+\begin{forest}
+[{+} [{+} [{+} [{+} [ 0 ] [ 7 ] ] [ 8 ] ] [ 9 ] ] [ 10 ] ] ] ] ]
+\end{forest}
+\end{center}

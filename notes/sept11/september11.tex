@@ -1,0 +1,415 @@
+% Created 2023-09-11 Mon 02:14
+% Intended LaTeX compiler: pdflatex
+\documentclass[presentation]{beamer}
+   \usepackage[T1]{fontenc}
+   \setbeamerfont{frametitle}{size=\large}
+   \setbeamertemplate{footline}{
+   \begin{flushright}
+   \insertframenumber/\inserttotalframenumber\hspace{2mm}\mbox{}
+   \end{flushright}}
+   \usepackage{libertine}
+   \usepackage[varqu]{zi4}
+   \usepackage[libertine]{newtxmath}
+   %%\usepackage[small]{eulervm}
+   %%\usepackage[{libertinust1math}
+   \usepackage[T1]{fontenc}
+   \renewcommand*\familydefault{\sfdefault}
+   \usepackage{tipa}
+   \usepackage{adjustbox}
+   \usepackage{multirow}
+   \usepackage{multicol}
+   \usepackage[backend=bibtex,uniquename=false,dashed=false,date=year,url=false,isbn=false,style=authoryear-comp]{biblatex}
+\addbibresource{/home/juliangrove/Documents/projects/FACTS.lab/ur-comp-sem-2023/ur-comp-sem-2023.bib}
+   \usepackage{expex}
+   \usepackage{stmaryrd}
+   \usepackage{stackrel}
+   \usepackage{stackengine}
+   \usepackage{relsize}
+   \usepackage{amsmath}
+   \usepackage{mathtools}
+   \usepackage{dsfont}
+   \usepackage{fixltx2e}
+   \usepackage{graphicx}
+   \usepackage{xcolor}
+   \usepackage[normalem]{ulem}
+\usetheme{metropolis}
+\author{Julian Grove}
+\date{September 11, 2023}
+\title{Haskell: type classes and higher-order polymorphism}
+\usepackage{tikz}
+\usetikzlibrary{arrows,arrows.meta,automata}
+\usepackage[linguistics]{forest}
+\forestset{ downroof/.style={ for children={ if n=1{ edge path'={ (.parent first) -- (!u.parent anchor) -- (!ul.parent last) -- cycle }}{no edge} } } }
+\definecolor{highlight}{RGB}{7,102,120}
+\definecolor{dim}{RGB}{235,219,178}
+\definecolor{dimmer}{RGB}{150,130,50}
+\newcommand{\ct}[1]{\textsf{#1}}
+\newcommand{\eval}[1]{#1^\lightning}
+\newcommand\observe{\mathit{observe}}
+\newcommand\reset{\mathit{reset}}
+\newcommand\factor{\mathit{factor}}
+\def\divd{\ |\ }
+\newcommand{\maptyp}[1]{\overline{#1}}
+\usepackage[verbose]{newunicodechar}
+\newunicodechar{¬}{\ensuremath{\neg}} %
+\newunicodechar{¹}{^1}
+\newunicodechar{²}{^2}
+\newunicodechar{³}{^3}
+\newunicodechar{·}{\ensuremath{\cdot}}
+\newunicodechar{×}{\ensuremath{\times}} %
+\newunicodechar{÷}{\ensuremath{\div}} %
+\newunicodechar{ᵅ}{^α}
+\newunicodechar{ᵝ}{^β}
+\newunicodechar{ˠ}{^γ}
+\newunicodechar{ᵃ}{^a}
+\newunicodechar{ᵇ}{^b}
+\newunicodechar{ᶜ}{^c}
+\newunicodechar{ᵈ}{^d}
+\newunicodechar{ᵉ}{^e}
+\newunicodechar{ᶠ}{^f}
+\newunicodechar{ᵍ}{^g}
+\newunicodechar{ʰ}{^h}
+\newunicodechar{ⁱ}{^a}
+\newunicodechar{ʲ}{^j}
+\newunicodechar{ᵏ}{^K}
+\newunicodechar{ˡ}{^l}
+\newunicodechar{ᵐ}{^m}
+\newunicodechar{ⁿ}{^n}
+\newunicodechar{ᵒ}{^o}
+\newunicodechar{ᵖ}{^p}
+\newunicodechar{ʳ}{^r}
+\newunicodechar{₁}{_1}
+\newunicodechar{₂}{_2}
+\newunicodechar{₃}{_3}
+\newunicodechar{₄}{_4}
+\newunicodechar{ₐ}{_a}
+\newunicodechar{ₑ}{_e}
+\newunicodechar{ₕ}{_h}
+\newunicodechar{ᵢ}{_i}
+\newunicodechar{ₙ}{_n}
+\newunicodechar{ᵣ}{_r}
+\newunicodechar{ₛ}{_s}
+\newunicodechar{̷}{\not} %
+\newunicodechar{Γ}{\ensuremath{\Gamma}}   %
+\newunicodechar{Δ}{\ensuremath{\Delta}} %
+\newunicodechar{Η}{\ensuremath{\textrm{H}}} %
+\newunicodechar{Θ}{\ensuremath{\Theta}} %
+\newunicodechar{Λ}{\ensuremath{\Lambda}} %
+\newunicodechar{Ξ}{\ensuremath{\Xi}} %
+\newunicodechar{Π}{\ensuremath{\Pi}}   %
+\newunicodechar{Σ}{\ensuremath{\Sigma}} %
+\newunicodechar{Φ}{\ensuremath{\Phi}} %
+\newunicodechar{Ψ}{\ensuremath{\Psi}} %
+\newunicodechar{Ω}{\ensuremath{\Omega}} %
+\newunicodechar{α}{\ensuremath{\mathnormal{\alpha}}}
+\newunicodechar{β}{\ensuremath{\beta}} %
+\newunicodechar{γ}{\ensuremath{\mathnormal{\gamma}}} %
+\newunicodechar{δ}{\ensuremath{\mathnormal{\delta}}} %
+\newunicodechar{ε}{\ensuremath{\mathnormal{\varepsilon}}} %
+\newunicodechar{ζ}{\ensuremath{\mathnormal{\zeta}}} %
+\newunicodechar{η}{\ensuremath{\mathnormal{\eta}}} %
+\newunicodechar{θ}{\ensuremath{\mathnormal{\theta}}} %
+\newunicodechar{ι}{\ensuremath{\mathnormal{\iota}}} %
+\newunicodechar{κ}{\ensuremath{\mathnormal{\kappa}}} %
+\newunicodechar{λ}{\ensuremath{\mathnormal{\lambda}}} %
+\newunicodechar{μ}{\ensuremath{\mathnormal{\mu}}} %
+\newunicodechar{ν}{\ensuremath{\mathnormal{\mu}}} %
+\newunicodechar{ξ}{\ensuremath{\mathnormal{\xi}}} %
+\newunicodechar{π}{\ensuremath{\mathnormal{\pi}}}
+\newunicodechar{π}{\ensuremath{\mathnormal{\pi}}} %
+\newunicodechar{ρ}{\ensuremath{\mathnormal{\rho}}} %
+\newunicodechar{σ}{\ensuremath{\mathnormal{\sigma}}} %
+\newunicodechar{τ}{\ensuremath{\mathnormal{\tau}}} %
+\newunicodechar{φ}{\ensuremath{\mathnormal{\phi}}} %
+\newunicodechar{χ}{\ensuremath{\mathnormal{\chi}}} %
+\newunicodechar{ψ}{\ensuremath{\mathnormal{\psi}}} %
+\newunicodechar{ω}{\ensuremath{\mathnormal{\omega}}} %
+\newunicodechar{ϕ}{\ensuremath{\mathnormal{\phi}}} %
+\newunicodechar{ϕ}{\ensuremath{\mathnormal{\varphi}}} %
+\newunicodechar{ϵ}{\ensuremath{\mathnormal{\epsilon}}} %
+\newunicodechar{ᵏ}{^k}
+\newunicodechar{ᵢ}{\ensuremath{_i}} %
+\newunicodechar{ }{\quad}
+\newunicodechar{†}{\dagger}
+\newunicodechar{ }{\,}
+\newunicodechar{′}{\ensuremath{^\prime}}  %
+\newunicodechar{″}{\ensuremath{^\second}} %
+\newunicodechar{‴}{\ensuremath{^\third}}  %
+\newunicodechar{ⁱ}{^i}
+\newunicodechar{⁵}{\ensuremath{^5}}
+\newunicodechar{⁺}{\ensuremath{^+}} %% #+beamer_header: \newunicodechar{⁺}{^+}
+\newunicodechar{⁻}{\ensuremath{^-}} %%
+\newunicodechar{ⁿ}{^n}
+\newunicodechar{₀}{\ensuremath{_0}} %
+\newunicodechar{₁}{\ensuremath{_1}} % #+beamer_header: \newunicodechar{₁}{_1}
+\newunicodechar{₂}{\ensuremath{_2}} % #+beamer_header: \newunicodechar{₂}{_2}
+\newunicodechar{₃}{\ensuremath{_3}}
+\newunicodechar{₊}{\ensuremath{_+}} %%
+\newunicodechar{₋}{\ensuremath{_-}} %%
+\newunicodechar{ₙ}{_n} %
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}} %
+\newunicodechar{ℒ}{\ensuremath{\mathscr{L}}}
+\newunicodechar{ℕ}{\mathbb{N}} %
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}} %
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}} %
+\newunicodechar{ℳ}{\mathscr{M}}
+\newunicodechar{⅋}{\ensuremath{\parr}} %
+\newunicodechar{←}{\ensuremath{\leftarrow}} %
+\newunicodechar{↑}{\ensuremath{\uparrow}} %
+\newunicodechar{→}{\ensuremath{\rightarrow}} %
+\newunicodechar{↔}{\ensuremath{\leftrightarrow}} %
+\newunicodechar{↖}{\nwarrow} %
+\newunicodechar{↗}{\nearrow} %
+\newunicodechar{↝}{\ensuremath{\leadsto}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{⇆}{\ensuremath{\leftrightarrows}} %
+\newunicodechar{⇐}{\ensuremath{\Leftarrow}} %
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}} %
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}} %
+\newunicodechar{∀}{\ensuremath{\forall}}   %
+\newunicodechar{∂}{\ensuremath{\partial}}
+\newunicodechar{∃}{\ensuremath{\exists}} %
+\newunicodechar{∅}{\ensuremath{\varnothing}} %
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\not\in}} %
+\newunicodechar{∋}{\ensuremath{\ni}}  %
+\newunicodechar{∎}{\ensuremath{\qed}}%#+beamer_header: \newunicodechar{∎}{\ensuremath{\blacksquare}} % end of proof
+\newunicodechar{∏}{\prod}
+\newunicodechar{∑}{\sum}
+\newunicodechar{∗}{\ensuremath{\ast}} %
+\newunicodechar{∘}{\ensuremath{\circ}} %
+\newunicodechar{∙}{\ensuremath{\bullet}} % #+beamer_header: \newunicodechar{∙}{\ensuremath{\cdot}}
+\newunicodechar{⊙}{\ensuremath{\odot}}
+\newunicodechar{∞}{\ensuremath{\infty}} %
+\newunicodechar{∣}{\ensuremath{\mid}} %
+\newunicodechar{∧}{\wedge}%
+\newunicodechar{∨}{\vee}%
+\newunicodechar{∩}{\ensuremath{\cap}} %
+\newunicodechar{∪}{\ensuremath{\cup}} %
+\newunicodechar{∫}{\int}
+\newunicodechar{∷}{::} %
+\newunicodechar{∼}{\ensuremath{\sim}} %
+\newunicodechar{≃}{\ensuremath{\simeq}} %
+\newunicodechar{≔}{\ensuremath{\coloneqq}} %
+\newunicodechar{≅}{\ensuremath{\cong}} %
+\newunicodechar{≈}{\ensuremath{\approx}} %
+\newunicodechar{≜}{\ensuremath{\stackrel{\scriptscriptstyle {\triangle}}{=}}} % #+beamer_header: \newunicodechar{≜}{\triangleq}
+\newunicodechar{≝}{\ensuremath{\stackrel{\scriptscriptstyle {\text{def}}}{=}}}
+\newunicodechar{≟}{\ensuremath{\stackrel {_\text{\textbf{?}}}{\text{\textbf{=}}\negthickspace\negthickspace\text{\textbf{=}}}}} % or {\ensuremath{\stackrel{\scriptscriptstyle ?}{=}}}
+\newunicodechar{≠}{\ensuremath{\neq}}%
+\newunicodechar{≡}{\ensuremath{\equiv}}%
+\newunicodechar{≤}{\ensuremath{\le}} %
+\newunicodechar{≥}{\ensuremath{\ge}} %
+\newunicodechar{⊂}{\ensuremath{\subset}} %
+\newunicodechar{⊃}{\ensuremath{\supset}} %
+\newunicodechar{⊆}{\ensuremath{\subseteq}} %
+\newunicodechar{⊇}{\ensuremath{\supseteq}} %
+\newunicodechar{⊎}{\ensuremath{\uplus}} %
+\newunicodechar{⊑}{\ensuremath{\sqsubseteq}} %
+\newunicodechar{⊒}{\ensuremath{\sqsupseteq}} %
+\newunicodechar{⊓}{\ensuremath{\sqcap}} %
+\newunicodechar{⊔}{\ensuremath{\sqcup}} %
+\newunicodechar{⊕}{\ensuremath{\oplus}} %
+\newunicodechar{⊗}{\ensuremath{\otimes}} %
+\newunicodechar{⊛}{\ensuremath{\circledast}}
+\newunicodechar{⊢}{\ensuremath{\vdash}} %
+\newunicodechar{⊤}{\ensuremath{\top}}
+\newunicodechar{⊥}{\ensuremath{\bot}} % bottom
+\newunicodechar{⊧}{\models} %
+\newunicodechar{⊨}{\models} %
+\newunicodechar{⊩}{\Vdash}
+\newunicodechar{⊸}{\ensuremath{\multimap}} %
+\newunicodechar{⋁}{\ensuremath{\bigvee}}
+\newunicodechar{⋃}{\ensuremath{\bigcup}} %
+\newunicodechar{⋄}{\ensuremath{\diamond}} %
+\newunicodechar{⋅}{\ensuremath{\cdot}}
+\newunicodechar{⋆}{\ensuremath{\star}} %
+\newunicodechar{⋮}{\ensuremath{\vdots}} %
+\newunicodechar{⋯}{\ensuremath{\cdots}} %
+\newunicodechar{─}{---}
+\newunicodechar{■}{\ensuremath{\blacksquare}} % black square
+\newunicodechar{□}{\ensuremath{\square}} %
+\newunicodechar{▴}{\ensuremath{\blacktriangledown}}
+\newunicodechar{▵}{\ensuremath{\triangle}}
+\newunicodechar{▹}{\ensuremath{\triangleright}} %
+\newunicodechar{▾}{\ensuremath{\blacktriangle}}
+\newunicodechar{▿}{\ensuremath{\triangledown}}
+\newunicodechar{◃}{\triangleleft{}}
+\newunicodechar{◅}{\ensuremath{\triangleleft{}}}
+\newunicodechar{◇}{\ensuremath{\diamond}} %
+\newunicodechar{◽}{\ensuremath{\square}}
+\newunicodechar{★}{\ensuremath{\star}}   %
+\newunicodechar{♭}{\ensuremath{\flat}} %
+\newunicodechar{♯}{\ensuremath{\sharp}} %
+\newunicodechar{✓}{\ensuremath{\checkmark}} %
+\newunicodechar{⟂}{\ensuremath{^\bot}} % PERPENDICULAR
+\newunicodechar{⟦}{\ensuremath{\llbracket}}
+\newunicodechar{⟧}{\ensuremath{\rrbracket}}
+\newunicodechar{⦇}{\ensuremath{\llparenthesis}}
+\newunicodechar{⦈}{\ensuremath{\rrparenthesis}}
+\newunicodechar{⟨}{\ensuremath{\langle}} %
+\newunicodechar{⟩}{\ensuremath{\rangle}} %
+\newunicodechar{⌜}{\ensuremath{\ulcorner}} %
+\newunicodechar{⌝}{\ensuremath{\urcorner}} %
+\newunicodechar{⟶}{{\longrightarrow}}
+\newunicodechar{⟷} {\ensuremath{\leftrightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}} %
+\newunicodechar{ⱼ}{_j} %
+\newunicodechar{𝒟}{\ensuremath{\mathcal{D}}} %
+\newunicodechar{𝒢}{\ensuremath{\mathcal{G}}}
+\newunicodechar{𝒦}{\ensuremath{\mathcal{K}}} %
+\newunicodechar{𝒫}{\ensuremath{\mathcal{P}}}
+\newunicodechar{𝔸}{\ensuremath{\mathds{A}}} %
+\newunicodechar{𝔹}{\ensuremath{\mathds{B}}} %
+\newunicodechar{𝟙}{\ensuremath{\mathds{1}}} %
+\newunicodechar{𝔼}{\mathds{E}}
+\newunicodechar{⊬}{\not \vdash}
+\newunicodechar{∝}{\propto}
+\newunicodechar{ᶿ}{^\theta}
+\institute[University of Rochester]{Computational Semantics}
+\hypersetup{
+ pdfauthor={Julian Grove},
+ pdftitle={Haskell: type classes and higher-order polymorphism},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 28.2 (Org mode 9.6.6)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+\label{sec:orgce74336}
+\begin{frame}[label={sec:org3629f2a}]{Last time}
+We looked at function literals, pattern matching, and some basic functions on
+lists.
+\end{frame}
+
+\begin{frame}[label={sec:org6295f20}]{This time}
+We'll look at more things which are specific to Haskell:
+\pause
+\begin{itemize}[<+->]
+\item Types and type classes
+\item Polymorphism
+\end{itemize}
+\pause
+Polymorphism will be a big player in the part of the course when we start
+looking at functors. (It is a special kind of abstraction.)
+\end{frame}
+
+\section{Some more types}
+\label{sec:org0254fbd}
+\begin{frame}[label={sec:orgb2e562a},fragile]{Maybe}
+ A commonly used data type in Haskell is \texttt{Maybe a}.
+\bigskip \pause
+\texttt{Maybe a} is like the data type \texttt{a} on its own, but with extra information about
+whether the a computational succeeded for failed.
+\end{frame}
+
+\begin{frame}[label={sec:orga7fd213},fragile]{Key-value pairs}
+ Example: a function for looking up the value associated with a key. \\[0pt]
+\bigskip \pause
+No exception was thrown when I tried to look up \texttt{"the Stone Roses"}\ldots{} the
+function returned a value, \texttt{Nothing}, inhabitting the data type \texttt{Maybe Integer}.
+\\[0pt]
+\bigskip \pause
+One way to think of the \texttt{Maybe a} data type is that it represents an action
+your computer can perform---throwing an error---as data. \\[0pt]
+\bigskip \pause
+This illustrates what in Haskell is a pretty commonly used technique of
+bluring the lines between \emph{effects} and data.
+\end{frame}
+
+\begin{frame}[label={sec:org881eecf},fragile]{\texttt{div}}
+ Let's look at the function \texttt{div :: Integer -> Integer -> Integer}. \\[0pt]
+\pause \bigskip
+\texttt{div} is a partial function. \\[0pt]
+\pause \bigskip
+Can we write a function \texttt{safeDiv} which is a total function, using maybe types?
+\end{frame}
+
+\begin{frame}[label={sec:orgbd96805},fragile]{Either}
+ A generalization of \texttt{Maybe a} is the data type \texttt{Either a b}. \\[0pt]
+\pause \bigskip
+\texttt{Left} means failure; \texttt{Right} means success.
+\pause \bigskip
+Questions:
+\begin{itemize}
+\item How might we represent \texttt{Maybe} data types as \texttt{Either} data types?
+\item In what sense are maybe types a generalization of either types?
+\end{itemize}
+\end{frame}
+
+\section{Type classes and polymorphism}
+\label{sec:org31e39e8}
+\begin{frame}[label={sec:orgb11dce1}]{Type classes}
+One of the most famous distinguishing features of Haskell. \\[0pt]
+\pause \bigskip
+A type class allows you to provide multiple implementations of what looks
+like the same function on different types. \\[0pt]
+\pause \bigskip
+These implementations are called \emph{instances}.
+\end{frame}
+
+\begin{frame}[label={sec:org3fecfa1},fragile]{Show}
+ We have already seen type classes when we've used \texttt{deriving Show} in data type
+declarations. \\[0pt]
+\pause \bigskip
+But we can actually implement \texttt{Show} instances ourselves.
+\end{frame}
+
+\begin{frame}[label={sec:orgd385b67},fragile]{Eq}
+ Another useful type class is \texttt{Eq}. \\[0pt]
+\pause \bigskip
+Like \texttt{Show} instances, \texttt{Eq} instances can be derived.
+\end{frame}
+
+\begin{frame}[label={sec:org90fb092}]{Declaring type classes}
+We can declare our own type classes. \\[0pt]
+\pause \bigskip
+For the three computer brands, you might want to know which of its models'
+keys is are possible reboot keys\ldots{}
+\end{frame}
+
+\begin{frame}[label={sec:org25a5e06}]{Kinds of polymorphism}
+\pause \bigskip
+Each of the type classes we've looked at provide what is known as \emph{ad hoc
+polymorphism}.
+\pause
+\begin{itemize}[<+->]
+\item Only some data types need provide instances.
+\item Different instances can have fundamentally \emph{different} definitions.
+\end{itemize}
+\pause
+Ad hoc polymorphism is therefore contrasted with \emph{parametric polymorphism}.
+\pause
+\begin{itemize}[<+->]
+\item We can't constrain the instantiating data type ahead of time.
+\item Parametric polymorphic functions come in families all of whose members act
+fundamentally \emph{the same}.
+\item Examples\ldots{}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:org0e50250},fragile]{Foldable}
+ \texttt{foldr} and \texttt{foldl} are actually methods of a type class \texttt{Foldable}.
+\pause
+\begin{itemize}[<+->]
+\item Lists are foldable
+\item Maybe types are foldable. How?
+\item Trees are foldable. How?
+\end{itemize}
+\end{frame}
+
+\begin{frame}[label={sec:orgdcc1182},fragile]{Functors}
+ Functors provide another class, with a single method \texttt{fmap}.
+\pause
+\begin{itemize}[<+->]
+\item Lists are functors.
+\item \texttt{Maybe} is a functor.
+\item \texttt{Either a} is a functor.
+\item \texttt{Tree} is a functor.
+\end{itemize}
+\end{frame}
+\end{document}
