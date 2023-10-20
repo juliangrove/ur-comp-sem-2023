@@ -93,10 +93,12 @@
    #+begin_src haskell
      normalForm :: Term γ φ -> Term γ φ
    #+end_src
-   which takes any ~Term γ φ~ onto its β-normal form (and leave the term
+   which takes any ~Term γ φ~ onto its β-normal form (and leaves the term
    unaffected in case it already is in β-normal form). To do this, we will need
-   ot define a general notion of /substitution/ (just like we did for the untyped
-   λ-calculus). Here, our function ~subst~ will have the following definition:
+   to define a general notion of /substitution/ (just like we did for the untyped
+   λ-calculus). Here, our function ~subst~ will have the following
+   definition:[fn::Recall that you'll need the usual language extensions,
+   including ~ScopedTypeVariables~, for this to compile.]
    #+begin_src haskell
      subst :: forall γ δ ψ. (forall φ. In φ γ -> Term δ φ) -> Term γ ψ -> Term δ ψ
      subst f (Var i) = f i
@@ -122,9 +124,10 @@
    #+end_src
    Note the use of the function ~weaken~ in the definitions of ~subst~ on ~Lam~ and
    ~Case~. It is necessary to weaken the contexts of terms that we substitute
-   underneath the variables bound by the ~Lam~ and ~Case~ constructors, both in
-   order to ensure type-correctness and (hence) to avoid the problem of variable
-   capture. Indeed, ~weaken~ is just one of our reordering operations:
+   underneath the introduction of new bound variables by the ~Lam~ and ~Case~
+   constructors, both in order to ensure type-correctness and (hence) to avoid
+   the problem of variable capture. Indeed, ~weaken~ is just one of our reordering
+   operations:
    #+begin_src haskell
      weaken :: Term γ φ -> Term (Cons ψ γ) φ
      weaken = reorder Next

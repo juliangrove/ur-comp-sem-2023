@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-10-19 Thu 20:13 -->
+<!-- 2023-10-19 Thu 20:26 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Propositional logic: local soundness and propositions as types</title>
@@ -238,25 +238,25 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org5e6114f">1. Review</a>
+<li><a href="#orgda082c4">1. Review</a>
 <ul>
-<li><a href="#org631771b">1.1. Local soundness</a>
+<li><a href="#orgf9be996">1.1. Local soundness</a>
 <ul>
-<li><a href="#orgea67390">1.1.1. Conjunction rules</a></li>
-<li><a href="#orgb176452">1.1.2. Disjunction rules</a></li>
-<li><a href="#org1e5ded0">1.1.3. Implication rules</a></li>
+<li><a href="#orgfa62436">1.1.1. Conjunction rules</a></li>
+<li><a href="#org7726714">1.1.2. Disjunction rules</a></li>
+<li><a href="#org6092952">1.1.3. Implication rules</a></li>
 </ul>
 </li>
-<li><a href="#org1ddaa01">1.2. Propositions as types</a></li>
+<li><a href="#org112e364">1.2. Propositions as types</a></li>
 </ul>
 </li>
-<li><a href="#org1ecd0a1">2. Exercise</a></li>
+<li><a href="#org31ddb30">2. Exercise</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org5e6114f" class="outline-2">
-<h2 id="org5e6114f"><span class="section-number-2">1.</span> Review</h2>
+<div id="outline-container-orgda082c4" class="outline-2">
+<h2 id="orgda082c4"><span class="section-number-2">1.</span> Review</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 We've now covered the property of <i>local soundness</i> for those connectives of
@@ -266,8 +266,8 @@ correspondence.
 </p>
 </div>
 
-<div id="outline-container-org631771b" class="outline-3">
-<h3 id="org631771b"><span class="section-number-3">1.1.</span> Local soundness</h3>
+<div id="outline-container-orgf9be996" class="outline-3">
+<h3 id="orgf9be996"><span class="section-number-3">1.1.</span> Local soundness</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 Recall that local completeness is the property of a connective that its
@@ -291,33 +291,33 @@ The following detour-elimination schemata illustrate local soundness for \(∧\)
 </p>
 </div>
 
-<div id="outline-container-orgea67390" class="outline-4">
-<h4 id="orgea67390"><span class="section-number-4">1.1.1.</span> Conjunction rules</h4>
+<div id="outline-container-orgfa62436" class="outline-4">
+<h4 id="orgfa62436"><span class="section-number-4">1.1.1.</span> Conjunction rules</h4>
 <div class="outline-text-4" id="text-1-1-1">
 
-<div id="orge58137a" class="figure">
+<div id="org52ba2d6" class="figure">
 <p><img src="./ls_and.png" alt="ls_and.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgb176452" class="outline-4">
-<h4 id="orgb176452"><span class="section-number-4">1.1.2.</span> Disjunction rules</h4>
+<div id="outline-container-org7726714" class="outline-4">
+<h4 id="org7726714"><span class="section-number-4">1.1.2.</span> Disjunction rules</h4>
 <div class="outline-text-4" id="text-1-1-2">
 
-<div id="orgba0f324" class="figure">
+<div id="orgc736981" class="figure">
 <p><img src="./ls_or.png" alt="ls_or.png" />
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org1e5ded0" class="outline-4">
-<h4 id="org1e5ded0"><span class="section-number-4">1.1.3.</span> Implication rules</h4>
+<div id="outline-container-org6092952" class="outline-4">
+<h4 id="org6092952"><span class="section-number-4">1.1.3.</span> Implication rules</h4>
 <div class="outline-text-4" id="text-1-1-3">
 
-<div id="org068e8d4" class="figure">
+<div id="org4c2d3f3" class="figure">
 <p><img src="./ls_arrow.png" alt="ls_arrow.png" />
 </p>
 </div>
@@ -325,8 +325,8 @@ The following detour-elimination schemata illustrate local soundness for \(∧\)
 </div>
 </div>
 
-<div id="outline-container-org1ddaa01" class="outline-3">
-<h3 id="org1ddaa01"><span class="section-number-3">1.2.</span> Propositions as types</h3>
+<div id="outline-container-org112e364" class="outline-3">
+<h3 id="org112e364"><span class="section-number-3">1.2.</span> Propositions as types</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 One neat thing about the system of Intuitionistic Logic we've been studying
@@ -393,10 +393,11 @@ What we would like to now do is define a function
 </pre>
 </div>
 <p>
-which takes any <code>Term γ φ</code> onto its β-normal form (and leave the term
+which takes any <code>Term γ φ</code> onto its β-normal form (and leaves the term
 unaffected in case it already is in β-normal form). To do this, we will need
-ot define a general notion of <i>substitution</i> (just like we did for the untyped
-λ-calculus). Here, our function <code>subst</code> will have the following definition:
+to define a general notion of <i>substitution</i> (just like we did for the untyped
+λ-calculus). Here, our function <code>subst</code> will have the following
+definition:<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>
 </p>
 <div class="org-src-container">
 <pre class="src src-haskell"><span style="color: #fabd2f;">subst</span> <span style="color: #83a598;">::</span> <span style="color: #fb4933;">forall</span> &#947; &#948; &#968;<span style="color: #83a598;">.</span> (<span style="color: #fb4933;">forall</span> &#966;<span style="color: #83a598;">.</span> <span style="color: #d3869b;">In</span> &#966; &#947; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#948; &#966;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; &#968; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#948; &#968;
@@ -425,9 +426,10 @@ ot define a general notion of <i>substitution</i> (just like we did for the unty
 <p>
 Note the use of the function <code>weaken</code> in the definitions of <code>subst</code> on <code>Lam</code> and
 <code>Case</code>. It is necessary to weaken the contexts of terms that we substitute
-underneath the variables bound by the <code>Lam</code> and <code>Case</code> constructors, both in
-order to ensure type-correctness and (hence) to avoid the problem of variable
-capture. Indeed, <code>weaken</code> is just one of our reordering operations:
+underneath the introduction of new bound variables by the <code>Lam</code> and <code>Case</code>
+constructors, both in order to ensure type-correctness and (hence) to avoid
+the problem of variable capture. Indeed, <code>weaken</code> is just one of our reordering
+operations:
 </p>
 <div class="org-src-container">
 <pre class="src src-haskell"><span style="color: #fabd2f;">weaken</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Term</span> &#947; &#966; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> (<span style="color: #d3869b;">Cons</span> &#968; &#947;) &#966;
@@ -480,8 +482,8 @@ by some proof (i.e., λ-term).
 </div>
 </div>
 
-<div id="outline-container-org1ecd0a1" class="outline-2">
-<h2 id="org1ecd0a1"><span class="section-number-2">2.</span> Exercise</h2>
+<div id="outline-container-org31ddb30" class="outline-2">
+<h2 id="org31ddb30"><span class="section-number-2">2.</span> Exercise</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Try to define the function <code>normalForm</code>. To start you off, here are the branches
@@ -507,10 +509,19 @@ of the definition corresponding to the simply-typed λ-calculus (a.k.a., the
 </div>
 </div>
 </div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">Recall that you'll need the usual language extensions,
+including <code>ScopedTypeVariables</code>, for this to compile.</p></div></div>
+
+
 </div>
+</div></div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-10-19 Thu 20:13</p>
+<p class="date">Created: 2023-10-19 Thu 20:26</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
