@@ -1,0 +1,154 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: Applicative categorial grammar
+
+* Review
+  We recently introduced applicative categorial grammar, which we are using to
+  (a) give syntactic analyses of a fragment of English, and (b) map the
+  syntactic derivations (or structures) assigned to expressions via such
+  analyses onto semantic representations of some kind. Such representations
+  include, e.g., simply typed λ-terms and/or model-theoretic constructions (like
+  entities and functions, etc.), as we've seen. We will explore more options
+  going forward!
+
+** Encoding applicative categorial grammar
+   To start out, we introduce a set of categories. This set is defined to
+   comprise /base/ categories, like ~NP~, ~N~, and ~S~, as well as complex categories,
+   like ~c1 :\: c2~ and ~c1 :/∶ c2~ (given categories ~c1~ and ~c2~).
+   #+begin_src haskell
+     data Cat = NP | N | S
+ 	      | Cat :\: Cat
+	      | Cat :/: Cat
+   #+end_src
+   Here, ~NP~ is meant to encode the category of noun phrases (e.g., /julian/, /the
+   dog/), ~N~, the category of nouns (e.g., /dog/), and ~S~, the category of full
+   sentences (e.g., /julian saw the dog/). In terms of these categories, we can
+   encode the notion a /word/---that is, an atomic expression---as a constructor
+   that associates a ~String~ with a ~Cat~. (Note that I've renamed the data type
+   encoding categories at the term level from ~Lol c~ to ~IsA c~, in light of
+   Aaron's comment.)
+   #+begin_src haskell
+     data Word (c :: Cat) = Word String (IsA c)
+
+     data IsA (c :: Cat) where
+       IsAnNP :: IsA NP
+       IsAnN :: IsA N
+       IsAnS :: IsA S
+       (::\::) :: IsA c1 -> IsA c2 -> IsA (c1 :\: c2)
+       (::/::) :: IsA c1 -> IsA c2 -> IsA (c1 :/: c2)
+   #+end_src
+   For example, the word /slept/, we can encode as ~Word "slept" (IsAnNP ::\::
+   IsAnS)~, taking into account that /slept/ is a verb phrase. Meanwhile, /julian/,
+   we can encode as ~Word "julian" IsAnNP~, taking into account that /julian/ is a
+   noun phrase. By the way, let's also include ~Show~ instances.
+   #+begin_src haskell
+     instance Show (IsA c) where
+       show IsAnNP = "np"
+       show IsAnN = "n"
+       show IsAnS = "s"
+       show (c1 ::\:: c2) = "(" ++ show c1 ++ "\\" ++ show c2 ++ ")"
+       show (c1 ::/:: c2) = "(" ++ show c1 ++ "/" ++ show c2 ++ ")"
+
+     instance Show (Word c) where
+       show (Word s c) = "(" ++ s ++ " ⊢ " ++ show c ++ ")"
+   #+end_src
+   
+   To put words together, we need a grammar of expressions. Thus we also provide
+   the data type ~Expr c~ (with its associated ~Show~ instance).
+   #+begin_src haskell
+     data Expr (c :: Cat) where
+       Lex :: Word c -> Expr c
+       AppL :: Expr c1 -> Expr (c1 :\: c2) -> Expr c2
+       AppR :: Expr (c2 :/: c1) -> Expr c1 -> Expr c2
+
+     instance Show (Expr c) where
+       show (Lex w) = show w
+       show (AppL e1 e2) = "(" ++ show e1 ++ " ◃ " ++ show e2 ++ ")"
+       show (AppR e1 e2) = "(" ++ show e1 ++ " ▹ " ++ show e2 ++ ")"
+   #+end_src
+   Now we can analyze such sentences as, e.g., /julian slept/ and /julian taught
+   carina/:
+   #+begin_src haskell
+     >>> (AppL (Lex (Word "julian" IsAnNP)) (Lex (Word "slept" (IsAnNP ::\:: IsAnS))))
+     ((julian ⊢ np) ◃ (slept ⊢ (np\s)))
+     >>> (AppL (Lex (Word "julian" IsAnNP)) (AppR (Lex (Word "taught" ((IsAnNP ::\:: IsAnS) ::/:: IsAnNP))) (Lex (Word "carina" IsAnNP))))
+     ((julian ⊢ np) ◃ ((taught ⊢ ((np\s)/np)) ▹ (carina ⊢ np)))
+   #+end_src
+   Absolutely amazing.
+
+** Interpreting English into the simply typed λ-calculus
+   We can interpret such expressions into λ-calculus in terms of a /type
+   homomorphism/ ~SemType~, given atomic types ~E~ and ~T~.
+   #+begin_src haskell
+     type family SemType (c :: Cat) where
+       SemType NP = E
+       SemType S = T
+       SemType N = E :-> T
+       SemType (c1 :\: c2) = SemType c1 :-> SemType c2
+       SemType (c2 :/: c1) = SemType c1 :-> SemType c2
+   #+end_src
+   Thus for example, verb phrases---that is, expressions of category ~NP :\:
+   S~---are given the semantic type ~SemType (NP :\: S)~ = ~SemType NP :-> SemType S~
+   = ~E :-> T~, putting them on a par with nouns, semantically.
+
+   We should additionally begin adding /constants/ to our λ-calculus to encode the
+   meanings of basic English expressions. Thus we define a data type ~Constant~.
+   #+begin_src haskell
+     data Constant (φ :: Type) where
+       Dog :: Constant (E :-> T)
+       Sleep :: Constant (E :-> T)
+       Teach :: Constant (E :-> (E :-> T))
+       C :: Constant E
+       J :: Constant E
+   #+end_src
+   We now also need an additional constructor in our encoding of the λ-calculus,
+   in order to inject constants into the data type.
+   #+begin_src haskell
+     data Term (γ :: Context) (φ :: Type) where
+       Var :: In φ γ -> Term γ φ
+       Lam :: Term (Con φ γ) ψ -> Term γ (φ :-> ψ)
+       App :: Term γ (φ :-> ψ) -> Term γ φ -> Term γ ψ
+       Con :: Constant φ -> Term γ φ
+   #+end_src
+   Note that the contexts in which constants are well typed are arbitrary by
+   design. This property allows us to use them anywhere inside a λ-term.
+
+   We may now write a function ~interpWord~ to interpret words of English into the
+   λ-calculus, along with an associated function ~interpExpr~, which extends the
+   interpretation of words to an interpretation of entire complex expressions.
+   #+begin_src haskell
+     interpWord :: Word c -> Term Empty (SemType c)
+     interpWord (Word IsAnNP "carina") = Con C                       -- ⟦'carina'⟧ = c
+     interpWord (Word IsAnNP "julian") = Con J                       -- ⟦'julian'⟧ = j
+     interpWord (Word IsAnN "dog") = Lam (App (Con Dog) (Var First)) -- ⟦'dog'⟧ = λx.dog(x)
+     interpWord (Word "slept" (IsAnNP ::\:: IsAnS)) =                -- ⟦'slept'⟧ = λx.sleep(x)
+       Lam (App (Con Sleep) (Var First))
+     interpWord (Word "taught" ((IsAnNP ::\:: IsAnS) ::/:: IsAnNP)) = -- ⟦'taught'⟧ = λx, y.teach(x)(y)
+       Lam (Lam (App (App (Con Teach) (Var (Next First))) (Var First)))
+
+
+     interpExpr :: Expr c -> Term Empty (SempType c)
+     interpExpr (Lex w) = interpWord w
+     interpExpr (AppL e1 e2) = App (interpExpr e2) (interpExpr e1)
+     interpExpr (AppR e1 e2) = App (interpExpr e1) (interpExpr e2)
+   #+end_src
+   For example, you can interpret /julian taught carina/ by doing
+   #+begin_src haskell
+     >>> interpExpr (AppL (Lex (Word "julian" IsAnNP)) (AppR (Lex (Word "taught" ((IsAnNP ::\:: IsAnS) ::/:: IsAnNP))) (Lex (Word "carina" IsAnNP))))
+     App (App (Lam (Lam (App (App (Con Teach) (Var (Next First))) (Var First)))) (Con C)) (Con J) -- (λx, y.teach(x)(y)) c j
+   #+end_src
+  Compare to what you get if you also apply ~normalForm~ at the top:
+  #+begin_src haskell
+    >>> normalForm (interpExpr (AppL (Lex (Word "julian" IsAnNP)) (AppR (Lex (Word "taught" ((IsAnNP ::\:: IsAnS) ::/:: IsAnNP))) (Lex (Word "carina" IsAnNP)))))
+    App (App (Con Teach) (Con C)) (Con J) -- teach(c)(j)
+   #+end_src
+  Neat.
+
+** Exercise
+   Extend the above fragment in order to give an analysis (including an
+   interpretation) of the sentence /carina saw the happy dog/.

@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2023-10-28 Sat 15:59 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Applicative categorial grammar</title>
+<meta name="author" content="Julian Grove" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+<script src="../../jquery.min.js"></script>
+<script src="../../bootstrap.min.js"></script>
+<script type="text/javascript" src="../../readtheorg.js"></script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Applicative categorial grammar</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org08a9785">1. Review</a>
+<ul>
+<li><a href="#org7dcea2b">1.1. Encoding applicative categorial grammar</a></li>
+<li><a href="#org4116082">1.2. Interpreting English into the simply typed λ-calculus</a></li>
+<li><a href="#org669fd3e">1.3. Exercise</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org08a9785" class="outline-2">
+<h2 id="org08a9785"><span class="section-number-2">1.</span> Review</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+We recently introduced applicative categorial grammar, which we are using to
+(a) give syntactic analyses of a fragment of English, and (b) map the
+syntactic derivations (or structures) assigned to expressions via such
+analyses onto semantic representations of some kind. Such representations
+include, e.g., simply typed λ-terms and/or model-theoretic constructions (like
+entities and functions, etc.), as we've seen. We will explore more options
+going forward!
+</p>
+</div>
+
+<div id="outline-container-org7dcea2b" class="outline-3">
+<h3 id="org7dcea2b"><span class="section-number-3">1.1.</span> Encoding applicative categorial grammar</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+To start out, we introduce a set of categories. This set is defined to
+comprise <i>base</i> categories, like <code>NP</code>, <code>N</code>, and <code>S</code>, as well as complex categories,
+like <code>c1 :\: c2</code> and <code>c1 :/∶ c2</code> (given categories <code>c1</code> and <code>c2</code>).
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Cat</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">NP</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">N</span> <span style="color: #83a598;">|</span> <span style="color: #d3869b;">S</span>
+         <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Cat</span> <span style="color: #d3869b;">:\:</span> <span style="color: #d3869b;">Cat</span>
+         <span style="color: #83a598;">|</span> <span style="color: #d3869b;">Cat</span> <span style="color: #d3869b;">:/:</span> <span style="color: #d3869b;">Cat</span>
+</pre>
+</div>
+<p>
+Here, <code>NP</code> is meant to encode the category of noun phrases (e.g., <i>julian</i>, <i>the
+dog</i>), <code>N</code>, the category of nouns (e.g., <i>dog</i>), and <code>S</code>, the category of full
+sentences (e.g., <i>julian saw the dog</i>). In terms of these categories, we can
+encode the notion a <i>word</i>&#x2014;that is, an atomic expression&#x2014;as a constructor
+that associates a <code>String</code> with a <code>Cat</code>. (Note that I've renamed the data type
+encoding categories at the term level from <code>Lol c</code> to <code>IsA c</code>, in light of
+Aaron's comment.)
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Word</span> (c <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Cat</span>) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Word</span> <span style="color: #d3869b;">String</span> (<span style="color: #d3869b;">IsA</span> c)
+
+<span style="color: #fb4933;">data</span> <span style="color: #d3869b;">IsA</span> (c <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Cat</span>) <span style="color: #fb4933;">where</span>
+  <span style="color: #d3869b;">IsAnNP</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">IsA</span> <span style="color: #d3869b;">NP</span>
+  <span style="color: #d3869b;">IsAnN</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">IsA</span> <span style="color: #d3869b;">N</span>
+  <span style="color: #d3869b;">IsAnS</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">IsA</span> <span style="color: #d3869b;">S</span>
+  (<span style="color: #d3869b;">::\::</span>) <span style="color: #83a598;">::</span> <span style="color: #d3869b;">IsA</span> c1 <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">IsA</span> c2 <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">IsA</span> (c1 <span style="color: #d3869b;">:\:</span> c2)
+  (<span style="color: #d3869b;">::/::</span>) <span style="color: #83a598;">::</span> <span style="color: #d3869b;">IsA</span> c1 <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">IsA</span> c2 <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">IsA</span> (c1 <span style="color: #d3869b;">:/:</span> c2)
+</pre>
+</div>
+<p>
+For example, the word <i>slept</i>, we can encode as <code>Word "slept" (IsAnNP ::\::
+   IsAnS)</code>, taking into account that <i>slept</i> is a verb phrase. Meanwhile, <i>julian</i>,
+we can encode as <code>Word "julian" IsAnNP</code>, taking into account that <i>julian</i> is a
+noun phrase. By the way, let's also include <code>Show</code> instances.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">instance</span> <span style="color: #d3869b;">Show</span> (<span style="color: #d3869b;">IsA</span> c) <span style="color: #fb4933;">where</span>
+  show <span style="color: #d3869b;">IsAnNP</span> <span style="color: #83a598;">=</span> <span style="color: #b8bb26;">"np"</span>
+  show <span style="color: #d3869b;">IsAnN</span> <span style="color: #83a598;">=</span> <span style="color: #b8bb26;">"n"</span>
+  show <span style="color: #d3869b;">IsAnS</span> <span style="color: #83a598;">=</span> <span style="color: #b8bb26;">"s"</span>
+  show (c1 <span style="color: #d3869b;">::\::</span> c2) <span style="color: #83a598;">=</span> <span style="color: #b8bb26;">"("</span> <span style="color: #83a598;">++</span> show c1 <span style="color: #83a598;">++</span> <span style="color: #b8bb26;">"\\"</span> <span style="color: #83a598;">++</span> show c2 <span style="color: #83a598;">++</span> <span style="color: #b8bb26;">")"</span>
+  show (c1 <span style="color: #d3869b;">::/::</span> c2) <span style="color: #83a598;">=</span> <span style="color: #b8bb26;">"("</span> <span style="color: #83a598;">++</span> show c1 <span style="color: #83a598;">++</span> <span style="color: #b8bb26;">"/"</span> <span style="color: #83a598;">++</span> show c2 <span style="color: #83a598;">++</span> <span style="color: #b8bb26;">")"</span>
+
+<span style="color: #fb4933;">instance</span> <span style="color: #d3869b;">Show</span> (<span style="color: #d3869b;">Word</span> c) <span style="color: #fb4933;">where</span>
+  show (<span style="color: #d3869b;">Word</span> s c) <span style="color: #83a598;">=</span> <span style="color: #b8bb26;">"("</span> <span style="color: #83a598;">++</span> s <span style="color: #83a598;">++</span> <span style="color: #b8bb26;">" &#8866; "</span> <span style="color: #83a598;">++</span> show c <span style="color: #83a598;">++</span> <span style="color: #b8bb26;">")"</span>
+</pre>
+</div>
+
+<p>
+To put words together, we need a grammar of expressions. Thus we also provide
+the data type <code>Expr c</code> (with its associated <code>Show</code> instance).
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Expr</span> (c <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Cat</span>) <span style="color: #fb4933;">where</span>
+  <span style="color: #d3869b;">Lex</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Word</span> c <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Expr</span> c
+  <span style="color: #d3869b;">AppL</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Expr</span> c1 <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Expr</span> (c1 <span style="color: #d3869b;">:\:</span> c2) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Expr</span> c2
+  <span style="color: #d3869b;">AppR</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Expr</span> (c2 <span style="color: #d3869b;">:/:</span> c1) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Expr</span> c1 <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Expr</span> c2
+
+<span style="color: #fb4933;">instance</span> <span style="color: #d3869b;">Show</span> (<span style="color: #d3869b;">Expr</span> c) <span style="color: #fb4933;">where</span>
+  show (<span style="color: #d3869b;">Lex</span> w) <span style="color: #83a598;">=</span> show w
+  show (<span style="color: #d3869b;">AppL</span> e1 e2) <span style="color: #83a598;">=</span> <span style="color: #b8bb26;">"("</span> <span style="color: #83a598;">++</span> show e1 <span style="color: #83a598;">++</span> <span style="color: #b8bb26;">" &#9667; "</span> <span style="color: #83a598;">++</span> show e2 <span style="color: #83a598;">++</span> <span style="color: #b8bb26;">")"</span>
+  show (<span style="color: #d3869b;">AppR</span> e1 e2) <span style="color: #83a598;">=</span> <span style="color: #b8bb26;">"("</span> <span style="color: #83a598;">++</span> show e1 <span style="color: #83a598;">++</span> <span style="color: #b8bb26;">" &#9657; "</span> <span style="color: #83a598;">++</span> show e2 <span style="color: #83a598;">++</span> <span style="color: #b8bb26;">")"</span>
+</pre>
+</div>
+<p>
+Now we can analyze such sentences as, e.g., <i>julian slept</i> and <i>julian taught
+carina</i>:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #83a598;">&gt;&gt;&gt;</span> (<span style="color: #d3869b;">AppL</span> (<span style="color: #d3869b;">Lex</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"julian"</span> <span style="color: #d3869b;">IsAnNP</span>)) (<span style="color: #d3869b;">Lex</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"slept"</span> (<span style="color: #d3869b;">IsAnNP</span> <span style="color: #d3869b;">::\::</span> <span style="color: #d3869b;">IsAnS</span>))))
+((julian <span style="color: #83a598;">&#8866;</span> np) <span style="color: #83a598;">&#9667;</span> (slept <span style="color: #83a598;">&#8866;</span> (np<span style="color: #83a598;">\</span>s)))
+<span style="color: #83a598;">&gt;&gt;&gt;</span> (<span style="color: #d3869b;">AppL</span> (<span style="color: #d3869b;">Lex</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"julian"</span> <span style="color: #d3869b;">IsAnNP</span>)) (<span style="color: #d3869b;">AppR</span> (<span style="color: #d3869b;">Lex</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"taught"</span> ((<span style="color: #d3869b;">IsAnNP</span> <span style="color: #d3869b;">::\::</span> <span style="color: #d3869b;">IsAnS</span>) <span style="color: #d3869b;">::/::</span> <span style="color: #d3869b;">IsAnNP</span>))) (<span style="color: #d3869b;">Lex</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"carina"</span> <span style="color: #d3869b;">IsAnNP</span>))))
+((julian <span style="color: #83a598;">&#8866;</span> np) <span style="color: #83a598;">&#9667;</span> ((taught <span style="color: #83a598;">&#8866;</span> ((np<span style="color: #83a598;">\</span>s)<span style="color: #83a598;">/</span>np)) <span style="color: #83a598;">&#9657;</span> (carina <span style="color: #83a598;">&#8866;</span> np)))
+</pre>
+</div>
+<p>
+Absolutely amazing.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4116082" class="outline-3">
+<h3 id="org4116082"><span class="section-number-3">1.2.</span> Interpreting English into the simply typed λ-calculus</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+We can interpret such expressions into λ-calculus in terms of a <i>type
+homomorphism</i> <code>SemType</code>, given atomic types <code>E</code> and <code>T</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">type</span> <span style="color: #fb4933;">family</span> <span style="color: #d3869b;">SemType</span> (c <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Cat</span>) <span style="color: #fb4933;">where</span>
+  <span style="color: #d3869b;">SemType</span> <span style="color: #d3869b;">NP</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">E</span>
+  <span style="color: #d3869b;">SemType</span> <span style="color: #d3869b;">S</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">T</span>
+  <span style="color: #d3869b;">SemType</span> <span style="color: #d3869b;">N</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">E</span> <span style="color: #d3869b;">:-&gt;</span> <span style="color: #d3869b;">T</span>
+  <span style="color: #d3869b;">SemType</span> (c1 <span style="color: #d3869b;">:\:</span> c2) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">SemType</span> c1 <span style="color: #d3869b;">:-&gt;</span> <span style="color: #d3869b;">SemType</span> c2
+  <span style="color: #d3869b;">SemType</span> (c2 <span style="color: #d3869b;">:/:</span> c1) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">SemType</span> c1 <span style="color: #d3869b;">:-&gt;</span> <span style="color: #d3869b;">SemType</span> c2
+</pre>
+</div>
+<p>
+Thus for example, verb phrases&#x2014;that is, expressions of category <code>NP :\:
+   S</code>&#x2014;are given the semantic type <code>SemType (NP :\: S)</code> = <code>SemType NP :-&gt; SemType S</code>
+= <code>E :-&gt; T</code>, putting them on a par with nouns, semantically.
+</p>
+
+<p>
+We should additionally begin adding <i>constants</i> to our λ-calculus to encode the
+meanings of basic English expressions. Thus we define a data type <code>Constant</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Constant</span> (&#966; <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Type</span>) <span style="color: #fb4933;">where</span>
+  <span style="color: #d3869b;">Dog</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Constant</span> (<span style="color: #d3869b;">E</span> <span style="color: #d3869b;">:-&gt;</span> <span style="color: #d3869b;">T</span>)
+  <span style="color: #d3869b;">Sleep</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Constant</span> (<span style="color: #d3869b;">E</span> <span style="color: #d3869b;">:-&gt;</span> <span style="color: #d3869b;">T</span>)
+  <span style="color: #d3869b;">Teach</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Constant</span> (<span style="color: #d3869b;">E</span> <span style="color: #d3869b;">:-&gt;</span> (<span style="color: #d3869b;">E</span> <span style="color: #d3869b;">:-&gt;</span> <span style="color: #d3869b;">T</span>))
+  <span style="color: #d3869b;">C</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Constant</span> <span style="color: #d3869b;">E</span>
+  <span style="color: #d3869b;">J</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Constant</span> <span style="color: #d3869b;">E</span>
+</pre>
+</div>
+<p>
+We now also need an additional constructor in our encoding of the λ-calculus,
+in order to inject constants into the data type.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Term</span> (&#947; <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Context</span>) (&#966; <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Type</span>) <span style="color: #fb4933;">where</span>
+  <span style="color: #d3869b;">Var</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">In</span> &#966; &#947; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; &#966;
+  <span style="color: #d3869b;">Lam</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Term</span> (<span style="color: #d3869b;">Con</span> &#966; &#947;) &#968; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; (&#966; <span style="color: #d3869b;">:-&gt;</span> &#968;)
+  <span style="color: #d3869b;">App</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Term</span> &#947; (&#966; <span style="color: #d3869b;">:-&gt;</span> &#968;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; &#966; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; &#968;
+  <span style="color: #d3869b;">Con</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Constant</span> &#966; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; &#966;
+</pre>
+</div>
+<p>
+Note that the contexts in which constants are well typed are arbitrary by
+design. This property allows us to use them anywhere inside a λ-term.
+</p>
+
+<p>
+We may now write a function <code>interpWord</code> to interpret words of English into the
+λ-calculus, along with an associated function <code>interpExpr</code>, which extends the
+interpretation of words to an interpretation of entire complex expressions.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">interpWord</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Word</span> c <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> <span style="color: #d3869b;">Empty</span> (<span style="color: #d3869b;">SemType</span> c)
+<span style="color: #fabd2f;">interpWord</span> (<span style="color: #d3869b;">Word</span> <span style="color: #d3869b;">IsAnNP</span> <span style="color: #b8bb26;">"carina"</span>) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">C</span>                       <span style="color: #928374;">-- </span><span style="color: #928374;">&#10214;'carina'&#10215; = c</span>
+<span style="color: #fabd2f;">interpWord</span> (<span style="color: #d3869b;">Word</span> <span style="color: #d3869b;">IsAnNP</span> <span style="color: #b8bb26;">"julian"</span>) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">J</span>                       <span style="color: #928374;">-- </span><span style="color: #928374;">&#10214;'julian'&#10215; = j</span>
+<span style="color: #fabd2f;">interpWord</span> (<span style="color: #d3869b;">Word</span> <span style="color: #d3869b;">IsAnN</span> <span style="color: #b8bb26;">"dog"</span>) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">Dog</span>) (<span style="color: #d3869b;">Var</span> <span style="color: #d3869b;">First</span>)) <span style="color: #928374;">-- </span><span style="color: #928374;">&#10214;'dog'&#10215; = &#955;x.dog(x)</span>
+<span style="color: #fabd2f;">interpWord</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"slept"</span> (<span style="color: #d3869b;">IsAnNP</span> <span style="color: #d3869b;">::\::</span> <span style="color: #d3869b;">IsAnS</span>)) <span style="color: #83a598;">=</span>                <span style="color: #928374;">-- </span><span style="color: #928374;">&#10214;'slept'&#10215; = &#955;x.sleep(x)</span>
+  <span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">Sleep</span>) (<span style="color: #d3869b;">Var</span> <span style="color: #d3869b;">First</span>))
+<span style="color: #fabd2f;">interpWord</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"taught"</span> ((<span style="color: #d3869b;">IsAnNP</span> <span style="color: #d3869b;">::\::</span> <span style="color: #d3869b;">IsAnS</span>) <span style="color: #d3869b;">::/::</span> <span style="color: #d3869b;">IsAnNP</span>)) <span style="color: #83a598;">=</span> <span style="color: #928374;">-- </span><span style="color: #928374;">&#10214;'taught'&#10215; = &#955;x, y.teach(x)(y)</span>
+  <span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">Teach</span>) (<span style="color: #d3869b;">Var</span> (<span style="color: #d3869b;">Next</span> <span style="color: #d3869b;">First</span>))) (<span style="color: #d3869b;">Var</span> <span style="color: #d3869b;">First</span>)))
+
+
+<span style="color: #fabd2f;">interpExpr</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Expr</span> c <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> <span style="color: #d3869b;">Empty</span> (<span style="color: #d3869b;">SempType</span> c)
+<span style="color: #fabd2f;">interpExpr</span> (<span style="color: #d3869b;">Lex</span> w) <span style="color: #83a598;">=</span> interpWord w
+<span style="color: #fabd2f;">interpExpr</span> (<span style="color: #d3869b;">AppL</span> e1 e2) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">App</span> (interpExpr e2) (interpExpr e1)
+<span style="color: #fabd2f;">interpExpr</span> (<span style="color: #d3869b;">AppR</span> e1 e2) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">App</span> (interpExpr e1) (interpExpr e2)
+</pre>
+</div>
+<p>
+For example, you can interpret <i>julian taught carina</i> by doing
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #83a598;">&gt;&gt;&gt;</span> interpExpr (<span style="color: #d3869b;">AppL</span> (<span style="color: #d3869b;">Lex</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"julian"</span> <span style="color: #d3869b;">IsAnNP</span>)) (<span style="color: #d3869b;">AppR</span> (<span style="color: #d3869b;">Lex</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"taught"</span> ((<span style="color: #d3869b;">IsAnNP</span> <span style="color: #d3869b;">::\::</span> <span style="color: #d3869b;">IsAnS</span>) <span style="color: #d3869b;">::/::</span> <span style="color: #d3869b;">IsAnNP</span>))) (<span style="color: #d3869b;">Lex</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"carina"</span> <span style="color: #d3869b;">IsAnNP</span>))))
+<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">Teach</span>) (<span style="color: #d3869b;">Var</span> (<span style="color: #d3869b;">Next</span> <span style="color: #d3869b;">First</span>))) (<span style="color: #d3869b;">Var</span> <span style="color: #d3869b;">First</span>)))) (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">C</span>)) (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">J</span>) <span style="color: #928374;">-- </span><span style="color: #928374;">(&#955;x, y.teach(x)(y)) c j</span>
+</pre>
+</div>
+<p>
+Compare to what you get if you also apply <code>normalForm</code> at the top:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #83a598;">&gt;&gt;&gt;</span> normalForm (interpExpr (<span style="color: #d3869b;">AppL</span> (<span style="color: #d3869b;">Lex</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"julian"</span> <span style="color: #d3869b;">IsAnNP</span>)) (<span style="color: #d3869b;">AppR</span> (<span style="color: #d3869b;">Lex</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"taught"</span> ((<span style="color: #d3869b;">IsAnNP</span> <span style="color: #d3869b;">::\::</span> <span style="color: #d3869b;">IsAnS</span>) <span style="color: #d3869b;">::/::</span> <span style="color: #d3869b;">IsAnNP</span>))) (<span style="color: #d3869b;">Lex</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"carina"</span> <span style="color: #d3869b;">IsAnNP</span>)))))
+<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">Teach</span>) (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">C</span>)) (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">J</span>) <span style="color: #928374;">-- </span><span style="color: #928374;">teach(c)(j)</span>
+</pre>
+</div>
+<p>
+Neat.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org669fd3e" class="outline-3">
+<h3 id="org669fd3e"><span class="section-number-3">1.3.</span> Exercise</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+Extend the above fragment in order to give an analysis (including an
+interpretation) of the sentence <i>carina saw the happy dog</i>.
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Julian Grove</p>
+<p class="date">Created: 2023-10-28 Sat 15:59</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
