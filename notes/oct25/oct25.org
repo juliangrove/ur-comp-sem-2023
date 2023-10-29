@@ -1,0 +1,14 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: "Model-theoretic" fragments
+
+* Model-theoretic interpretations
+  Another way we can assign interpretations to English expressions is
+  /model-theoretically/; that is, by encoding a model that intuitively represents
+  some state of affairs and then mapping expressions onto constructions defined
+  in various ways in terms of this model.

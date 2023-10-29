@@ -123,16 +123,16 @@
    interpretation of words to an interpretation of entire complex expressions.
    #+begin_src haskell
      interpWord :: Word c -> Term Empty (SemType c)
-     interpWord (Word IsAnNP "carina") = Con C                       -- ⟦'carina'⟧ = c
-     interpWord (Word IsAnNP "julian") = Con J                       -- ⟦'julian'⟧ = j
-     interpWord (Word IsAnN "dog") = Lam (App (Con Dog) (Var First)) -- ⟦'dog'⟧ = λx.dog(x)
+     interpWord (Word "carina" IsAnNP) = Con C                       -- ⟦'carina'⟧ = c
+     interpWord (Word "julian" IsAnNP) = Con J                       -- ⟦'julian'⟧ = j
+     interpWord (Word "dog" IsAnN) = Lam (App (Con Dog) (Var First)) -- ⟦'dog'⟧ = λx.dog(x)
      interpWord (Word "slept" (IsAnNP ::\:: IsAnS)) =                -- ⟦'slept'⟧ = λx.sleep(x)
        Lam (App (Con Sleep) (Var First))
      interpWord (Word "taught" ((IsAnNP ::\:: IsAnS) ::/:: IsAnNP)) = -- ⟦'taught'⟧ = λx, y.teach(x)(y)
        Lam (Lam (App (App (Con Teach) (Var (Next First))) (Var First)))
 
 
-     interpExpr :: Expr c -> Term Empty (SempType c)
+     interpExpr :: Expr c -> Term Empty (SemType c)
      interpExpr (Lex w) = interpWord w
      interpExpr (AppL e1 e2) = App (interpExpr e2) (interpExpr e1)
      interpExpr (AppR e1 e2) = App (interpExpr e1) (interpExpr e2)

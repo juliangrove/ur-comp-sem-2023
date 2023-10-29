@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-10-28 Sat 15:59 -->
+<!-- 2023-10-28 Sat 21:07 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Applicative categorial grammar</title>
@@ -206,19 +206,19 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org08a9785">1. Review</a>
+<li><a href="#org5e7474f">1. Review</a>
 <ul>
-<li><a href="#org7dcea2b">1.1. Encoding applicative categorial grammar</a></li>
-<li><a href="#org4116082">1.2. Interpreting English into the simply typed λ-calculus</a></li>
-<li><a href="#org669fd3e">1.3. Exercise</a></li>
+<li><a href="#org35e0fc0">1.1. Encoding applicative categorial grammar</a></li>
+<li><a href="#org2cb86e5">1.2. Interpreting English into the simply typed λ-calculus</a></li>
+<li><a href="#org87e96d7">1.3. Exercise</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org08a9785" class="outline-2">
-<h2 id="org08a9785"><span class="section-number-2">1.</span> Review</h2>
+<div id="outline-container-org5e7474f" class="outline-2">
+<h2 id="org5e7474f"><span class="section-number-2">1.</span> Review</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 We recently introduced applicative categorial grammar, which we are using to
@@ -231,8 +231,8 @@ going forward!
 </p>
 </div>
 
-<div id="outline-container-org7dcea2b" class="outline-3">
-<h3 id="org7dcea2b"><span class="section-number-3">1.1.</span> Encoding applicative categorial grammar</h3>
+<div id="outline-container-org35e0fc0" class="outline-3">
+<h3 id="org35e0fc0"><span class="section-number-3">1.1.</span> Encoding applicative categorial grammar</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 To start out, we introduce a set of categories. This set is defined to
@@ -317,8 +317,8 @@ Absolutely amazing.
 </div>
 </div>
 
-<div id="outline-container-org4116082" class="outline-3">
-<h3 id="org4116082"><span class="section-number-3">1.2.</span> Interpreting English into the simply typed λ-calculus</h3>
+<div id="outline-container-org2cb86e5" class="outline-3">
+<h3 id="org2cb86e5"><span class="section-number-3">1.2.</span> Interpreting English into the simply typed λ-calculus</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 We can interpret such expressions into λ-calculus in terms of a <i>type
@@ -376,16 +376,16 @@ interpretation of words to an interpretation of entire complex expressions.
 </p>
 <div class="org-src-container">
 <pre class="src src-haskell"><span style="color: #fabd2f;">interpWord</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Word</span> c <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> <span style="color: #d3869b;">Empty</span> (<span style="color: #d3869b;">SemType</span> c)
-<span style="color: #fabd2f;">interpWord</span> (<span style="color: #d3869b;">Word</span> <span style="color: #d3869b;">IsAnNP</span> <span style="color: #b8bb26;">"carina"</span>) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">C</span>                       <span style="color: #928374;">-- </span><span style="color: #928374;">&#10214;'carina'&#10215; = c</span>
-<span style="color: #fabd2f;">interpWord</span> (<span style="color: #d3869b;">Word</span> <span style="color: #d3869b;">IsAnNP</span> <span style="color: #b8bb26;">"julian"</span>) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">J</span>                       <span style="color: #928374;">-- </span><span style="color: #928374;">&#10214;'julian'&#10215; = j</span>
-<span style="color: #fabd2f;">interpWord</span> (<span style="color: #d3869b;">Word</span> <span style="color: #d3869b;">IsAnN</span> <span style="color: #b8bb26;">"dog"</span>) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">Dog</span>) (<span style="color: #d3869b;">Var</span> <span style="color: #d3869b;">First</span>)) <span style="color: #928374;">-- </span><span style="color: #928374;">&#10214;'dog'&#10215; = &#955;x.dog(x)</span>
+<span style="color: #fabd2f;">interpWord</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"carina"</span> <span style="color: #d3869b;">IsAnNP</span>) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">C</span>                       <span style="color: #928374;">-- </span><span style="color: #928374;">&#10214;'carina'&#10215; = c</span>
+<span style="color: #fabd2f;">interpWord</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"julian"</span> <span style="color: #d3869b;">IsAnNP</span>) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">J</span>                       <span style="color: #928374;">-- </span><span style="color: #928374;">&#10214;'julian'&#10215; = j</span>
+<span style="color: #fabd2f;">interpWord</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"dog"</span> <span style="color: #d3869b;">IsAnN</span>) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">Dog</span>) (<span style="color: #d3869b;">Var</span> <span style="color: #d3869b;">First</span>)) <span style="color: #928374;">-- </span><span style="color: #928374;">&#10214;'dog'&#10215; = &#955;x.dog(x)</span>
 <span style="color: #fabd2f;">interpWord</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"slept"</span> (<span style="color: #d3869b;">IsAnNP</span> <span style="color: #d3869b;">::\::</span> <span style="color: #d3869b;">IsAnS</span>)) <span style="color: #83a598;">=</span>                <span style="color: #928374;">-- </span><span style="color: #928374;">&#10214;'slept'&#10215; = &#955;x.sleep(x)</span>
   <span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">Sleep</span>) (<span style="color: #d3869b;">Var</span> <span style="color: #d3869b;">First</span>))
 <span style="color: #fabd2f;">interpWord</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"taught"</span> ((<span style="color: #d3869b;">IsAnNP</span> <span style="color: #d3869b;">::\::</span> <span style="color: #d3869b;">IsAnS</span>) <span style="color: #d3869b;">::/::</span> <span style="color: #d3869b;">IsAnNP</span>)) <span style="color: #83a598;">=</span> <span style="color: #928374;">-- </span><span style="color: #928374;">&#10214;'taught'&#10215; = &#955;x, y.teach(x)(y)</span>
   <span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">Teach</span>) (<span style="color: #d3869b;">Var</span> (<span style="color: #d3869b;">Next</span> <span style="color: #d3869b;">First</span>))) (<span style="color: #d3869b;">Var</span> <span style="color: #d3869b;">First</span>)))
 
 
-<span style="color: #fabd2f;">interpExpr</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Expr</span> c <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> <span style="color: #d3869b;">Empty</span> (<span style="color: #d3869b;">SempType</span> c)
+<span style="color: #fabd2f;">interpExpr</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Expr</span> c <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> <span style="color: #d3869b;">Empty</span> (<span style="color: #d3869b;">SemType</span> c)
 <span style="color: #fabd2f;">interpExpr</span> (<span style="color: #d3869b;">Lex</span> w) <span style="color: #83a598;">=</span> interpWord w
 <span style="color: #fabd2f;">interpExpr</span> (<span style="color: #d3869b;">AppL</span> e1 e2) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">App</span> (interpExpr e2) (interpExpr e1)
 <span style="color: #fabd2f;">interpExpr</span> (<span style="color: #d3869b;">AppR</span> e1 e2) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">App</span> (interpExpr e1) (interpExpr e2)
@@ -413,8 +413,8 @@ Neat.
 </div>
 </div>
 
-<div id="outline-container-org669fd3e" class="outline-3">
-<h3 id="org669fd3e"><span class="section-number-3">1.3.</span> Exercise</h3>
+<div id="outline-container-org87e96d7" class="outline-3">
+<h3 id="org87e96d7"><span class="section-number-3">1.3.</span> Exercise</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 Extend the above fragment in order to give an analysis (including an
@@ -426,7 +426,7 @@ interpretation) of the sentence <i>carina saw the happy dog</i>.
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-10-28 Sat 15:59</p>
+<p class="date">Created: 2023-10-28 Sat 21:07</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
