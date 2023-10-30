@@ -85,8 +85,8 @@
        SemType NP = E
        SemType N = E :-> T
        SemType S = T
-       SemType (c1 :\: c2) = SemType c1 -> SemType c2
-       SemType (c2 :/: c1) = SemType c1 -> SemType c2
+       SemType (c1 :\: c2) = SemType c1 :-> SemType c2
+       SemType (c2 :/: c1) = SemType c1 :-> SemType c2
    #+end_src
    In order to respect this map between types, we may define ~interpExpr~ as
    #+begin_src haskell
