@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-10-28 Sat 17:14 -->
+<!-- 2023-10-30 Mon 15:06 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>"Model-theoretic" fragments</title>
@@ -198,6 +198,38 @@
 <script src="../../jquery.min.js"></script>
 <script src="../../bootstrap.min.js"></script>
 <script type="text/javascript" src="../../readtheorg.js"></script>
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
 </head>
 <body>
 <div id="content" class="content">
@@ -206,13 +238,19 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgc310c3d">1. Model-theoretic interpretations</a></li>
+<li><a href="#org6db2524">1. Direct and indirect interpretations</a>
+<ul>
+<li><a href="#org811bf8b">1.1. The indirect interpretation</a></li>
+<li><a href="#orga955c71">1.2. The direct interpretation</a></li>
+</ul>
+</li>
+<li><a href="#org00442f0">2. Exercise</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgc310c3d" class="outline-2">
-<h2 id="orgc310c3d"><span class="section-number-2">1.</span> Model-theoretic interpretations</h2>
+<div id="outline-container-org6db2524" class="outline-2">
+<h2 id="org6db2524"><span class="section-number-2">1.</span> Direct and indirect interpretations</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Another way we can assign interpretations to English expressions is
@@ -220,12 +258,183 @@ Another way we can assign interpretations to English expressions is
 some state of affairs and then mapping expressions onto constructions defined
 in various ways in terms of this model.
 </p>
+
+<p>
+There are two ways we might try to do this. The first way is to map English
+expressions onto model-theoretic objects <i>directly</i>; that is, without funneling
+the interpretation through some sort of intermediate language, such as the
+λ-calculus. The second way is to actually first map English expressions onto
+such an intermediate language, and then to map <i>this</i> language onto
+model-theoretic objects.
+</p>
+
+<p>
+Importantly, when we take the second route, we should ensure that we're
+preserving some useful notion of <i>equivalence</i> between expressions in the
+intermediate language. When we work with simply typed λ-terms, the equivalence
+we care about is \(≡_{βη}\); effectively, terms \(t\) and \(u\) are equivalent just
+in case there is a term \(v\), such that \(t →_{βη}^* v\) and \(u →_{βη}^* v\). Thus
+when we interpret λ-terms into a model via some interpretation function \(⟦·⟧\),
+we want it to be the case that \(⟦t⟧ = ⟦u⟧\) whenever \(t ≡_{βη} u\). (Here, we
+can take \(⟦t⟧ = ⟦u⟧\) to mean that \(⟦t⟧\) and \(⟦u⟧\) are the same model-theoretic
+object, which, for us, just is some Haskell value.) The way we ensure this
+equivalence is by treating \(⟦·⟧\) as a <i>homomorphism</i>; specifically, if we think
+of our Haskell values themselves as providing another space of λ-terms, this
+homomorphism is a homomorphism between λ-terms (a.k.a., a λ-homomorphism). All
+this means, at the term level, is that it satisfies the following equations
+(where \(x\) is any variable):
+\[⟦x⟧ = x\]
+\[⟦t(u)⟧ = ⟦t⟧(⟦u⟧)\]
+\[⟦λx.t⟧ = λx.⟦t⟧\]
+Since in Haskell, we encode variables by giving them names (e.g., <code>x</code>, <code>y</code>, etc.),
+we can't encode such a homomorphism straightforwardly, but we need to use an
+<i>assignment</i>&#x2014;that is, a function from λ-calculus variables to Haskell values
+of an appropriate type&#x2014;to effectively serve as a map from such variables to
+the correct variable <i>names</i> in Haskell.
+</p>
+</div>
+
+<div id="outline-container-org811bf8b" class="outline-3">
+<h3 id="org811bf8b"><span class="section-number-3">1.1.</span> The indirect interpretation</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+To implement this idea, we can provide a function <code>interpTerm</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">interpTerm</span> <span style="color: #83a598;">::</span> (<span style="color: #fb4933;">forall</span> &#966;<span style="color: #83a598;">.</span><span style="color: #d3869b;">In</span> &#966; &#947; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Domain</span> &#966;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; &#968; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Domain</span> &#968;
+<span style="color: #fabd2f;">interpTerm</span> <span style="color: #fb4933;">_</span> (<span style="color: #d3869b;">Con</span> c) <span style="color: #83a598;">=</span> interpCon c
+<span style="color: #fabd2f;">interpTerm</span> g (<span style="color: #d3869b;">Var</span> v) <span style="color: #83a598;">=</span> g v
+<span style="color: #fabd2f;">interpTerm</span> g (<span style="color: #d3869b;">App</span> t u) <span style="color: #83a598;">=</span> interpTerm g t (interpTerm g u)
+<span style="color: #fabd2f;">interpTerm</span> g (<span style="color: #d3869b;">Lam</span> t) <span style="color: #83a598;">=</span> <span style="color: #83a598;">\</span>x <span style="color: #83a598;">-&gt;</span> interpTerm (<span style="color: #83a598;">\</span>i <span style="color: #83a598;">-&gt;</span> <span style="color: #fb4933;">case</span> i <span style="color: #fb4933;">of</span> <span style="color: #d3869b;">First</span> <span style="color: #83a598;">-&gt;</span> x; <span style="color: #d3869b;">Next</span> j <span style="color: #83a598;">-&gt;</span> g j) t
+</pre>
+</div>
+<p>
+Note the way in which the assignment is modified the fourth branch of this
+definition. Given an abstraction <code>Lam t</code>, <code>interpTerm</code> returns an abstraction <i>in
+Haskell</i> which binds the variable whose name is <code>x</code>. But, now we require that
+the variable in <code>t</code> bound by <code>Lam</code> be mapped to the variable named <code>x</code>. It is the
+assignment which allows us to perform this type of bookkeeping.
+</p>
+
+<p>
+The most straightforward way of understanding the difference between the
+indirect interpretation scheme and the direct one is by observing the types of
+the interpretation functions. The indirect route maps a <code>Term Empty φ</code> onto a
+<code>Domain φ</code> via the function
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">interpClosedTerm</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Term</span> <span style="color: #d3869b;">Empty</span> &#966; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Domain</span> &#966;
+<span style="color: #fabd2f;">interpClosedTerm</span> <span style="color: #83a598;">=</span> interpTerm (<span style="color: #83a598;">\</span><span style="color: #fb4933;">case</span>)
+</pre>
+</div>
+<p>
+where <code>Domain φ</code> is defined as
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">type</span> <span style="color: #fb4933;">family</span> <span style="color: #d3869b;">Domain</span> (&#966; <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Type</span>) <span style="color: #fb4933;">where</span>
+  <span style="color: #d3869b;">Domain</span> <span style="color: #d3869b;">E</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Entity</span>
+  <span style="color: #d3869b;">Domain</span> <span style="color: #d3869b;">T</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Bool</span>
+  <span style="color: #d3869b;">Domain</span> (&#966; <span style="color: #d3869b;">:-&gt;</span> &#968;) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Domain</span> &#966; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Domain</span> &#968;
+</pre>
+</div>
+<p>
+Meanwhile, <i>another</i> interpretation function, <code>interpExpr</code>, maps English
+expressions onto simply typed λ-terms; thus its type is
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">interpExpr</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Expr</span> c <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> <span style="color: #d3869b;">Empty</span> (<span style="color: #d3869b;">SemType</span> c)
+</pre>
+</div>
+<p>
+where <code>SemType c</code> (i.e., the semantic type of an expression of category <code>c</code>) is
+defined to be
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">type</span> <span style="color: #fb4933;">family</span> <span style="color: #d3869b;">SemType</span> (c <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Cat</span>) <span style="color: #fb4933;">where</span>
+  <span style="color: #d3869b;">SemType</span> <span style="color: #d3869b;">NP</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">E</span>
+  <span style="color: #d3869b;">SemType</span> <span style="color: #d3869b;">N</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">E</span> <span style="color: #d3869b;">:-&gt;</span> <span style="color: #d3869b;">T</span>
+  <span style="color: #d3869b;">SemType</span> <span style="color: #d3869b;">S</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">T</span>
+  <span style="color: #d3869b;">SemType</span> (c1 <span style="color: #d3869b;">:\:</span> c2) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">SemType</span> c1 <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">SemType</span> c2
+  <span style="color: #d3869b;">SemType</span> (c2 <span style="color: #d3869b;">:/:</span> c1) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">SemType</span> c1 <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">SemType</span> c2
+</pre>
+</div>
+<p>
+In order to respect this map between types, we may define <code>interpExpr</code> as
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">interpExpr</span> (<span style="color: #d3869b;">Lex</span> w) <span style="color: #83a598;">=</span> interpWord w
+<span style="color: #fabd2f;">interpExpr</span> (<span style="color: #d3869b;">AppL</span> e1 e2) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">App</span> (interpExpr e2) (interpExpr e1)
+<span style="color: #fabd2f;">interpExpr</span> (<span style="color: #d3869b;">AppR</span> e1 e2) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">App</span> (interpExpr e1) (interpExpr e2)
+</pre>
+</div>
+<p>
+where <code>interpWord</code> itself should have the type
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">interpWord</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Word</span> c <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> <span style="color: #d3869b;">Empty</span> (<span style="color: #d3869b;">SemType</span> c)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orga955c71" class="outline-3">
+<h3 id="orga955c71"><span class="section-number-3">1.2.</span> The direct interpretation</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+In contrast, we could define our interpretation of English expressions
+<i>directly</i> by providing a function
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">directInterpExpr</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Expr</span> c <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Domain</span> (<span style="color: #d3869b;">SemType</span> c)
+<span style="color: #fabd2f;">directInterpExpr</span> (<span style="color: #d3869b;">Lex</span> w) <span style="color: #83a598;">=</span> directInterpWord w
+<span style="color: #fabd2f;">directInterpExpr</span> (<span style="color: #d3869b;">AppL</span> e1 e2) <span style="color: #83a598;">=</span> directInterpExpr e2 (directInterpExpr e1)
+<span style="color: #fabd2f;">directInterpExpr</span> (<span style="color: #d3869b;">AppR</span> e1 e2) <span style="color: #83a598;">=</span> directInterpExpr e1 (directInterpExpr e2)
+</pre>
+</div>
+<p>
+which relies on some interpretation function
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">directInterpWord</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Word</span> c <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Domain</span> (<span style="color: #d3869b;">SemType</span> c)
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org00442f0" class="outline-2">
+<h2 id="org00442f0"><span class="section-number-2">2.</span> Exercise</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Assume the following:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">directInterpWord</span> <span style="color: #83a598;">=</span> interpTerm <span style="color: #83a598;">.</span> interpWord
+</pre>
+</div>
+<p>
+That is, <code>directInterpWord</code> is obtained by first applying <code>interpWord</code> to an
+English expression and then applying <code>interpTerm</code> to the resulting closed
+λ-term (it is their composition).
+</p>
+
+<p>
+Show that the following alternative definition of <code>directInterpExpr</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">directInterpExpr</span> <span style="color: #83a598;">=</span> interpTerm <span style="color: #83a598;">.</span> interpExpr
+</pre>
+</div>
+<p>
+is equivalent to the one provided above. (Do this by using induction on
+expressions of English!)
+</p>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-10-28 Sat 17:14</p>
+<p class="date">Created: 2023-10-30 Mon 15:06</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

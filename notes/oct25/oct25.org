@@ -7,8 +7,124 @@
 #+Author: Julian Grove
 #+Title: "Model-theoretic" fragments
 
-* Model-theoretic interpretations
+* Direct and indirect interpretations
   Another way we can assign interpretations to English expressions is
   /model-theoretically/; that is, by encoding a model that intuitively represents
   some state of affairs and then mapping expressions onto constructions defined
   in various ways in terms of this model.
+
+  There are two ways we might try to do this. The first way is to map English
+  expressions onto model-theoretic objects /directly/; that is, without funneling
+  the interpretation through some sort of intermediate language, such as the
+  λ-calculus. The second way is to actually first map English expressions onto
+  such an intermediate language, and then to map /this/ language onto
+  model-theoretic objects.
+
+  Importantly, when we take the second route, we should ensure that we're
+  preserving some useful notion of /equivalence/ between expressions in the
+  intermediate language. When we work with simply typed λ-terms, the equivalence
+  we care about is $≡_{βη}$; effectively, terms $t$ and $u$ are equivalent just
+  in case there is a term $v$, such that $t →_{βη}^* v$ and $u →_{βη}^* v$. Thus
+  when we interpret λ-terms into a model via some interpretation function $⟦·⟧$,
+  we want it to be the case that $⟦t⟧ = ⟦u⟧$ whenever $t ≡_{βη} u$. (Here, we
+  can take $⟦t⟧ = ⟦u⟧$ to mean that $⟦t⟧$ and $⟦u⟧$ are the same model-theoretic
+  object, which, for us, just is some Haskell value.) The way we ensure this
+  equivalence is by treating $⟦·⟧$ as a /homomorphism/; specifically, if we think
+  of our Haskell values themselves as providing another space of λ-terms, this
+  homomorphism is a homomorphism between λ-terms (a.k.a., a λ-homomorphism). All
+  this means, at the term level, is that it satisfies the following equations
+  (where $x$ is any variable):
+  $$⟦x⟧ = x$$
+  $$⟦t(u)⟧ = ⟦t⟧(⟦u⟧)$$
+  $$⟦λx.t⟧ = λx.⟦t⟧$$
+  Since in Haskell, we encode variables by giving them names (e.g., ~x~, ~y~, etc.),
+  we can't encode such a homomorphism straightforwardly, but we need to use an
+  /assignment/---that is, a function from λ-calculus variables to Haskell values
+  of an appropriate type---to effectively serve as a map from such variables to
+  the correct variable /names/ in Haskell.
+
+** The indirect interpretation
+   To implement this idea, we can provide a function ~interpTerm~.
+   #+begin_src haskell
+     interpTerm :: (forall φ.In φ γ -> Domain φ) -> Term γ ψ -> Domain ψ
+     interpTerm _ (Con c) = interpCon c
+     interpTerm g (Var v) = g v
+     interpTerm g (App t u) = interpTerm g t (interpTerm g u)
+     interpTerm g (Lam t) = \x -> interpTerm (\i -> case i of First -> x; Next j -> g j) t
+   #+end_src
+   Note the way in which the assignment is modified the fourth branch of this
+   definition. Given an abstraction ~Lam t~, ~interpTerm~ returns an abstraction /in
+   Haskell/ which binds the variable whose name is ~x~. But, now we require that
+   the variable in ~t~ bound by ~Lam~ be mapped to the variable named ~x~. It is the
+   assignment which allows us to perform this type of bookkeeping.
+   
+   The most straightforward way of understanding the difference between the
+   indirect interpretation scheme and the direct one is by observing the types of
+   the interpretation functions. The indirect route maps a ~Term Empty φ~ onto a
+   ~Domain φ~ via the function
+   #+begin_src haskell
+     interpClosedTerm :: Term Empty φ -> Domain φ
+     interpClosedTerm = interpTerm (\case)
+   #+end_src
+   where ~Domain φ~ is defined as
+   #+begin_src haskell
+     type family Domain (φ :: Type) where
+       Domain E = Entity
+       Domain T = Bool
+       Domain (φ :-> ψ) = Domain φ -> Domain ψ
+   #+end_src
+   Meanwhile, /another/ interpretation function, ~interpExpr~, maps English
+   expressions onto simply typed λ-terms; thus its type is
+   #+begin_src haskell
+     interpExpr :: Expr c -> Term Empty (SemType c)
+   #+end_src
+   where ~SemType c~ (i.e., the semantic type of an expression of category ~c~) is
+   defined to be
+   #+begin_src haskell
+     type family SemType (c :: Cat) where
+       SemType NP = E
+       SemType N = E :-> T
+       SemType S = T
+       SemType (c1 :\: c2) = SemType c1 -> SemType c2
+       SemType (c2 :/: c1) = SemType c1 -> SemType c2
+   #+end_src
+   In order to respect this map between types, we may define ~interpExpr~ as
+   #+begin_src haskell
+     interpExpr (Lex w) = interpWord w
+     interpExpr (AppL e1 e2) = App (interpExpr e2) (interpExpr e1)
+     interpExpr (AppR e1 e2) = App (interpExpr e1) (interpExpr e2)
+   #+end_src
+   where ~interpWord~ itself should have the type
+   #+begin_src haskell
+     interpWord :: Word c -> Term Empty (SemType c)
+   #+end_src
+
+** The direct interpretation  
+   In contrast, we could define our interpretation of English expressions
+   /directly/ by providing a function
+   #+begin_src haskell
+     directInterpExpr :: Expr c -> Domain (SemType c)
+     directInterpExpr (Lex w) = directInterpWord w
+     directInterpExpr (AppL e1 e2) = directInterpExpr e2 (directInterpExpr e1)
+     directInterpExpr (AppR e1 e2) = directInterpExpr e1 (directInterpExpr e2)
+   #+end_src
+   which relies on some interpretation function
+   #+begin_src haskell
+     directInterpWord :: Word c -> Domain (SemType c)
+   #+end_src
+
+* Exercise
+  Assume the following:
+  #+begin_src haskell
+    directInterpWord = interpTerm . interpWord
+  #+end_src
+  That is, ~directInterpWord~ is obtained by first applying ~interpWord~ to an
+  English expression and then applying ~interpTerm~ to the resulting closed
+  λ-term (it is their composition).
+
+  Show that the following alternative definition of ~directInterpExpr~
+  #+begin_src haskell
+    directInterpExpr = interpTerm . interpExpr
+  #+end_src
+  is equivalent to the one provided above. (Do this by using induction on
+  expressions of English!)
