@@ -28,7 +28,7 @@
   when we interpret λ-terms into a model via some interpretation function $⟦·⟧$,
   we want it to be the case that $⟦t⟧ = ⟦u⟧$ whenever $t ≡_{βη} u$. (Here, we
   can take $⟦t⟧ = ⟦u⟧$ to mean that $⟦t⟧$ and $⟦u⟧$ are the same model-theoretic
-  object, which, for us, just is some Haskell value.) The way we ensure this
+  object, which, for us, just is some Haskell value.) One way to ensure this
   equivalence is by treating $⟦·⟧$ as a /homomorphism/; specifically, if we think
   of our Haskell values themselves as providing another space of λ-terms, this
   homomorphism is a homomorphism between λ-terms (a.k.a., a λ-homomorphism). All

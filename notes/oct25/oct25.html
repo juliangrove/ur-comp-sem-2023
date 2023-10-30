@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-10-30 Mon 15:06 -->
+<!-- 2023-10-30 Mon 15:35 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>"Model-theoretic" fragments</title>
@@ -238,19 +238,19 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org6db2524">1. Direct and indirect interpretations</a>
+<li><a href="#orga19f626">1. Direct and indirect interpretations</a>
 <ul>
-<li><a href="#org811bf8b">1.1. The indirect interpretation</a></li>
-<li><a href="#orga955c71">1.2. The direct interpretation</a></li>
+<li><a href="#orgbcfaffb">1.1. The indirect interpretation</a></li>
+<li><a href="#org6f98f93">1.2. The direct interpretation</a></li>
 </ul>
 </li>
-<li><a href="#org00442f0">2. Exercise</a></li>
+<li><a href="#org09518d8">2. Exercise</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org6db2524" class="outline-2">
-<h2 id="org6db2524"><span class="section-number-2">1.</span> Direct and indirect interpretations</h2>
+<div id="outline-container-orga19f626" class="outline-2">
+<h2 id="orga19f626"><span class="section-number-2">1.</span> Direct and indirect interpretations</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Another way we can assign interpretations to English expressions is
@@ -277,7 +277,7 @@ in case there is a term \(v\), such that \(t →_{βη}^* v\) and \(u →_{βη}
 when we interpret λ-terms into a model via some interpretation function \(⟦·⟧\),
 we want it to be the case that \(⟦t⟧ = ⟦u⟧\) whenever \(t ≡_{βη} u\). (Here, we
 can take \(⟦t⟧ = ⟦u⟧\) to mean that \(⟦t⟧\) and \(⟦u⟧\) are the same model-theoretic
-object, which, for us, just is some Haskell value.) The way we ensure this
+object, which, for us, just is some Haskell value.) One way to ensure this
 equivalence is by treating \(⟦·⟧\) as a <i>homomorphism</i>; specifically, if we think
 of our Haskell values themselves as providing another space of λ-terms, this
 homomorphism is a homomorphism between λ-terms (a.k.a., a λ-homomorphism). All
@@ -294,8 +294,8 @@ the correct variable <i>names</i> in Haskell.
 </p>
 </div>
 
-<div id="outline-container-org811bf8b" class="outline-3">
-<h3 id="org811bf8b"><span class="section-number-3">1.1.</span> The indirect interpretation</h3>
+<div id="outline-container-orgbcfaffb" class="outline-3">
+<h3 id="orgbcfaffb"><span class="section-number-3">1.1.</span> The indirect interpretation</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 To implement this idea, we can provide a function <code>interpTerm</code>.
@@ -377,8 +377,8 @@ where <code>interpWord</code> itself should have the type
 </div>
 </div>
 
-<div id="outline-container-orga955c71" class="outline-3">
-<h3 id="orga955c71"><span class="section-number-3">1.2.</span> The direct interpretation</h3>
+<div id="outline-container-org6f98f93" class="outline-3">
+<h3 id="org6f98f93"><span class="section-number-3">1.2.</span> The direct interpretation</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 In contrast, we could define our interpretation of English expressions
@@ -402,8 +402,8 @@ which relies on some interpretation function
 </div>
 </div>
 
-<div id="outline-container-org00442f0" class="outline-2">
-<h2 id="org00442f0"><span class="section-number-2">2.</span> Exercise</h2>
+<div id="outline-container-org09518d8" class="outline-2">
+<h2 id="org09518d8"><span class="section-number-2">2.</span> Exercise</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Assume the following:
@@ -434,7 +434,7 @@ expressions of English!)
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-10-30 Mon 15:06</p>
+<p class="date">Created: 2023-10-30 Mon 15:35</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
