@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-10-30 Mon 15:35 -->
+<!-- 2023-10-30 Mon 16:43 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>"Model-theoretic" fragments</title>
@@ -238,19 +238,19 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orga19f626">1. Direct and indirect interpretations</a>
+<li><a href="#orgd1c5e48">1. Direct and indirect interpretations</a>
 <ul>
-<li><a href="#orgbcfaffb">1.1. The indirect interpretation</a></li>
-<li><a href="#org6f98f93">1.2. The direct interpretation</a></li>
+<li><a href="#org237e6a7">1.1. The indirect interpretation</a></li>
+<li><a href="#org366e376">1.2. The direct interpretation</a></li>
 </ul>
 </li>
-<li><a href="#org09518d8">2. Exercise</a></li>
+<li><a href="#org4b575d9">2. Exercise</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orga19f626" class="outline-2">
-<h2 id="orga19f626"><span class="section-number-2">1.</span> Direct and indirect interpretations</h2>
+<div id="outline-container-orgd1c5e48" class="outline-2">
+<h2 id="orgd1c5e48"><span class="section-number-2">1.</span> Direct and indirect interpretations</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Another way we can assign interpretations to English expressions is
@@ -294,8 +294,8 @@ the correct variable <i>names</i> in Haskell.
 </p>
 </div>
 
-<div id="outline-container-orgbcfaffb" class="outline-3">
-<h3 id="orgbcfaffb"><span class="section-number-3">1.1.</span> The indirect interpretation</h3>
+<div id="outline-container-org237e6a7" class="outline-3">
+<h3 id="org237e6a7"><span class="section-number-3">1.1.</span> The indirect interpretation</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 To implement this idea, we can provide a function <code>interpTerm</code>.
@@ -309,7 +309,7 @@ To implement this idea, we can provide a function <code>interpTerm</code>.
 </pre>
 </div>
 <p>
-Note the way in which the assignment is modified the fourth branch of this
+Note the way in which the assignment is modified in the fourth branch of this
 definition. Given an abstraction <code>Lam t</code>, <code>interpTerm</code> returns an abstraction <i>in
 Haskell</i> which binds the variable whose name is <code>x</code>. But, now we require that
 the variable in <code>t</code> bound by <code>Lam</code> be mapped to the variable named <code>x</code>. It is the
@@ -377,8 +377,8 @@ where <code>interpWord</code> itself should have the type
 </div>
 </div>
 
-<div id="outline-container-org6f98f93" class="outline-3">
-<h3 id="org6f98f93"><span class="section-number-3">1.2.</span> The direct interpretation</h3>
+<div id="outline-container-org366e376" class="outline-3">
+<h3 id="org366e376"><span class="section-number-3">1.2.</span> The direct interpretation</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 In contrast, we could define our interpretation of English expressions
@@ -402,8 +402,8 @@ which relies on some interpretation function
 </div>
 </div>
 
-<div id="outline-container-org09518d8" class="outline-2">
-<h2 id="org09518d8"><span class="section-number-2">2.</span> Exercise</h2>
+<div id="outline-container-org4b575d9" class="outline-2">
+<h2 id="org4b575d9"><span class="section-number-2">2.</span> Exercise</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Assume the following:
@@ -434,7 +434,7 @@ expressions of English!)
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-10-30 Mon 15:35</p>
+<p class="date">Created: 2023-10-30 Mon 16:43</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

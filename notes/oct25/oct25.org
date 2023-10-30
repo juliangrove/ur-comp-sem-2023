@@ -52,7 +52,7 @@
      interpTerm g (App t u) = interpTerm g t (interpTerm g u)
      interpTerm g (Lam t) = \x -> interpTerm (\i -> case i of First -> x; Next j -> g j) t
    #+end_src
-   Note the way in which the assignment is modified the fourth branch of this
+   Note the way in which the assignment is modified in the fourth branch of this
    definition. Given an abstraction ~Lam t~, ~interpTerm~ returns an abstraction /in
    Haskell/ which binds the variable whose name is ~x~. But, now we require that
    the variable in ~t~ bound by ~Lam~ be mapped to the variable named ~x~. It is the
