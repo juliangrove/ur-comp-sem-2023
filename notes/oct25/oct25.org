@@ -116,15 +116,15 @@
 * Exercise
   Assume the following:
   #+begin_src haskell
-    directInterpWord = interpTerm . interpWord
+    directInterpWord = interpClosedTerm . interpWord
   #+end_src
   That is, ~directInterpWord~ is obtained by first applying ~interpWord~ to an
-  English expression and then applying ~interpTerm~ to the resulting closed
+  English expression and then applying ~interpClosedTerm~ to the resulting closed
   λ-term (it is their composition).
 
   Show that the following alternative definition of ~directInterpExpr~
   #+begin_src haskell
-    directInterpExpr = interpTerm . interpExpr
+    directInterpExpr = interpClosedTerm . interpExpr
   #+end_src
   is equivalent to the one provided above. (Do this by using induction on
   expressions of English!)

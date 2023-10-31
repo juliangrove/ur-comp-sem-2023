@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-10-30 Mon 16:56 -->
+<!-- 2023-10-31 Tue 00:19 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>"Model-theoretic" fragments</title>
@@ -238,19 +238,19 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org5a87222">1. Direct and indirect interpretations</a>
+<li><a href="#org7aed1fc">1. Direct and indirect interpretations</a>
 <ul>
-<li><a href="#org435bf08">1.1. The indirect interpretation</a></li>
-<li><a href="#org8d5b234">1.2. The direct interpretation</a></li>
+<li><a href="#org9ad32df">1.1. The indirect interpretation</a></li>
+<li><a href="#orgb7b7a42">1.2. The direct interpretation</a></li>
 </ul>
 </li>
-<li><a href="#orgb93e7c0">2. Exercise</a></li>
+<li><a href="#orgc7a7ca9">2. Exercise</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org5a87222" class="outline-2">
-<h2 id="org5a87222"><span class="section-number-2">1.</span> Direct and indirect interpretations</h2>
+<div id="outline-container-org7aed1fc" class="outline-2">
+<h2 id="org7aed1fc"><span class="section-number-2">1.</span> Direct and indirect interpretations</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Another way we can assign interpretations to English expressions is
@@ -294,8 +294,8 @@ the correct variable <i>names</i> in Haskell.
 </p>
 </div>
 
-<div id="outline-container-org435bf08" class="outline-3">
-<h3 id="org435bf08"><span class="section-number-3">1.1.</span> The indirect interpretation</h3>
+<div id="outline-container-org9ad32df" class="outline-3">
+<h3 id="org9ad32df"><span class="section-number-3">1.1.</span> The indirect interpretation</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 To implement this idea, we can provide a function <code>interpTerm</code>.
@@ -377,8 +377,8 @@ where <code>interpWord</code> itself should have the type
 </div>
 </div>
 
-<div id="outline-container-org8d5b234" class="outline-3">
-<h3 id="org8d5b234"><span class="section-number-3">1.2.</span> The direct interpretation</h3>
+<div id="outline-container-orgb7b7a42" class="outline-3">
+<h3 id="orgb7b7a42"><span class="section-number-3">1.2.</span> The direct interpretation</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 In contrast, we could define our interpretation of English expressions
@@ -402,19 +402,19 @@ which relies on some interpretation function
 </div>
 </div>
 
-<div id="outline-container-orgb93e7c0" class="outline-2">
-<h2 id="orgb93e7c0"><span class="section-number-2">2.</span> Exercise</h2>
+<div id="outline-container-orgc7a7ca9" class="outline-2">
+<h2 id="orgc7a7ca9"><span class="section-number-2">2.</span> Exercise</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Assume the following:
 </p>
 <div class="org-src-container">
-<pre class="src src-haskell"><span style="color: #fabd2f;">directInterpWord</span> <span style="color: #83a598;">=</span> interpTerm <span style="color: #83a598;">.</span> interpWord
+<pre class="src src-haskell"><span style="color: #fabd2f;">directInterpWord</span> <span style="color: #83a598;">=</span> interpClosedTerm <span style="color: #83a598;">.</span> interpWord
 </pre>
 </div>
 <p>
 That is, <code>directInterpWord</code> is obtained by first applying <code>interpWord</code> to an
-English expression and then applying <code>interpTerm</code> to the resulting closed
+English expression and then applying <code>interpClosedTerm</code> to the resulting closed
 λ-term (it is their composition).
 </p>
 
@@ -422,7 +422,7 @@ English expression and then applying <code>interpTerm</code> to the resulting cl
 Show that the following alternative definition of <code>directInterpExpr</code>
 </p>
 <div class="org-src-container">
-<pre class="src src-haskell"><span style="color: #fabd2f;">directInterpExpr</span> <span style="color: #83a598;">=</span> interpTerm <span style="color: #83a598;">.</span> interpExpr
+<pre class="src src-haskell"><span style="color: #fabd2f;">directInterpExpr</span> <span style="color: #83a598;">=</span> interpClosedTerm <span style="color: #83a598;">.</span> interpExpr
 </pre>
 </div>
 <p>
@@ -434,7 +434,7 @@ expressions of English!)
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-10-30 Mon 16:56</p>
+<p class="date">Created: 2023-10-31 Tue 00:19</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
