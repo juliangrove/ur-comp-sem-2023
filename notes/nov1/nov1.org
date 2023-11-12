@@ -1,0 +1,208 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: Implementing first-order logic and tableau rules
+
+* First-order logic
+  We start by declaring data types for /terms/; i.e., variables and names.
+  #+begin_src haskell
+    data Var = Var Int deriving (Eq, Ord, Show)
+    data Name = Name Int deriving (Eq, Ord, Show)
+  #+end_src
+  Note the derived [[https://hackage.haskell.org/package/base-4.19.0.0/docs/Data-Ord.html][~Ord~]] instances. We'll make use of these later on: we'll use
+  the instance for ~Var~ to obtain fresh variables when doing substitution on FOL
+  formulae, and we'll use the instance for ~Name~ to obtain fresh names when we
+  implement the γ and δ tableau rules.
+
+  A more general data type ~Term~ encodes those expressions that can occur as
+  arguments to an FOL predicate.
+  #+begin_src haskell
+    data Term = V Var | N Name deriving (Eq, Show)
+  #+end_src
+  
+  We can encode the full set of formulae as:
+  #+begin_src haskell
+    data Form = P Integer [Term]
+	      | And Form Form
+	      | Or Form Form
+	      | Not Form
+	      | Forall Var Form
+	      | Exists Var Form deriving (Show)
+  #+end_src
+  Note that the arguments of a predicate are encoded simply as a list; e.g.,
+  $P_1(v_2)$, we encode as ~P 1 [V (Var 0)]~; $P_2(v_0, n_1)$, we encode as ~P 2 [V
+  (Var 0), N (Name 1)]~; $P_0$ (the atomic proposition which takes no arguments),
+  we encode as ~P 0 []~; etc.
+
+  To define /equality/ on propositions, we really only care about α-equivalence;
+  i.e., we don't care about exact equality, but equality up to the renaming of
+  bound variables. We can define this notion of equality as follows, in terms of
+  an ~Eq~ instance:
+  #+begin_src haskell
+    instance Eq Form where
+      P i ts0 == P j ts1 = i == j && ts0 == t1
+      And f0 f1 == And f2 f3 = f0 == f2 && f1 == f3
+      Or f0 f1 == Or f2 f3 = f0 == f2 && f1 == f3
+      Not f0 == Not f1 = f0 == f1
+      Forall v0 f0 == Forall v1 f1 = f0new == f1new
+	where vnew = freshV (fv f0 ++ fv f1)
+	      f0new = subst v0 (V vnew) f0
+	      f1new = subst v1 (V vnew) f1
+      Exists v0 f0 == Exists v1 f1 = f0new == f1new
+	where vnew = freshV (fv f0 ++ fv f1)
+	      f0new = subst v0 (V vnew) f0
+	      f1new = subst v1 (V vnew) f1
+  #+end_src
+  To define notions like /fresh variable/, we can declare a class ~Attributes~
+  containing methods for representing attributes of an expression in which we
+  might be interested. For our purposes, we care about extracting the free
+  variables and the names contained within some expression. We may then use
+  these attributes to obtain fresh variables and fresh names. 
+  #+begin_src haskell
+    class Attributes e where
+      fv :: e -> [Var]
+      ns :: e -> [Name]
+
+    freshV :: [Var] -> Var
+    freshV [] = Var 0
+    freshV l = Var (n + 1)
+      where Var n = maximum l
+
+    freshN :: [Name] -> Name
+    freshN [] = Name 0
+    freshN l = Name (n + 1)
+      where Name n = maximum l
+  #+end_src
+  We can implement this class as separate instances for ~Term~ and ~Form~.
+  #+begin_src haskell
+    instance Attributes Term where
+      fv (V v) = [v]
+      fv (N _) = []
+      ns (V _) = []
+      ns (N n) = [n]
+
+    instance Attributes Form where
+      fv (P _ ts) = concatMap fv ts
+      fv (And f0 f1) = fv f0 ++ fv f1
+      fv (Or f0 f1) = fv f0 ++ fv f1
+      fv (Not f) = fv f
+      fv (Forall v f) = filter (/= v) (fv f)
+      fv (Exists v f) = filter (/= v) (fv f)
+
+      ns (P _ ts) = concatMap ns ts
+      ns (And f0 f1) = ns f0 ++ ns f1
+      ns (Or f0 f1) = ns f0 ++ ns f1
+      ns (Not f) = ns f
+      ns (Forall v f) = ns f
+      ns (Exists v f) = ns f
+  #+end_src
+
+  Now that we have all the necessary ingredients, we can implement our
+  definition of substitution (starting with substitution on terms, followed by
+  subtitution on formulae)!
+  #+begin_src haskell
+    substTerm :: Var -> Term -> Term -> Term
+    substTerm v0 t (V v1) = if v0 == v1 then t else (V v1)
+    substTerm v0 t n@(N _) = n
+
+    subst :: Var -> Term -> Form -> Form
+    subst v0 t (Pred i ts) = Pred i (map (substTerm v0 t) ts)
+    subst v0 t (And f0 f1) = And (subst v0 t f0) (subst v0 t f1)
+    subst v0 t (Or f0 f1) = Or (subst v0 t f0) (subst v0 t f1)
+    subst v0 t (Not f) = Not (subst v t f)
+    subst v0 t f@(Forall v1 f1) | v1 == v0 = f
+    subst v0 t@(N _) (Forall v1 f) = Forall v1 (subst v0 t f)
+    subst v0 t@(Var v1) (Forall v2 f) | v2 == v1 = Forall vnew (subst v0 t fnew)
+      where vnew = fresh (v1 : fv f)
+	    fnew = subst v2 (V vnew) f
+    subst v0 t@(Var v1) (Exists v2 f) | v2 /= v1 = Exists v2 (subst v0 t f)
+    subst v0 t f@(Exists v1 f1) | v1 == v0 = f
+    subst v0 t@(N _) (Exists v1 f) = Exists v1 (subst v0 t f)
+    subst v0 t@(Var v1) (Exists v2 f) | v2 == v1 = Exists vnew (subst v0 t fnew)
+      where vnew = fresh (v1 : fv f)
+	    fnew = subst v2 (V vnew) f
+    subst v0 t@(Var v1) (Exists v2 f) | v2 /= v1 = Exists v2 (subst v0 t f)
+  #+end_src
+  
+* Rules
+  Here we implement the [[../oct30/oct30.html#org2214139][rules]] associated with analytic tableaux. Each
+  propositional rule will have type
+  #+begin_src haskell
+    type PropRule = SignedForm -> [Branch]
+  #+end_src
+  where ~SignedForm~ and ~Branch~ are
+  #+begin_src haskell
+    type SignedForm = (Form, Bool)
+    type Branch = [SignedForm]
+  #+end_src
+  That is, each rule allows a node of a tableau to branch in some way. Moreover,
+  because multiple branches might end up extending from the relevant node, we
+  allow each rule to produce a /list/ of branches.
+
+  γ and δ rules have the type
+  #+begin_src haskell
+    type Rule = Path -> PropRule
+  #+end_src
+  where ~Path~ (i.e., an entire path from the root to the relevant terminal node)
+  is the same as ~Branch~, i.e.,
+  #+begin_src haskell
+    type Path = [SignedForm]
+  #+end_src
+  γ and δ rules have this type because, as quantifier rules, they need access to
+  the entire path on which they occur, in order to determine which names are
+  legit.
+  
+  Here are our rules.
+
+** Conjunction rules
+   #+begin_src haskell
+     andRule :: PropRule
+     andRule f@(And f0 f1, True) = [[(f0, True), (f1, True), f]]
+     andRule f@(And f0 f1, False) = [[(f0, False), f], [(f1, False), f]]
+     andRule f = [[f]]
+   #+end_src
+
+** Disjunction rules
+   #+begin_src haskell
+     orRule :: PropRule
+     orRule f@(Or f0 f1, True) = [[(f0, True), f], [(f1, True), f]]
+     orRule f@(Or f0 f1, False) = [[(f0, False), (f1, False), f]]
+     orRule f = [[f]]
+   #+end_src
+
+** Negation rules
+   #+begin_src haskell
+     notRule :: PropRule
+     notRule f@(Not f0, b) = [[(f0, not b), f]]
+     notRule f = [[f]]
+   #+end_src
+
+** γ rules
+   #+begin_src haskell
+     gammaRule :: Rule
+     gammaRule p f@(Forall v0 f0, True) = [[(subst v0 nameT f0, True), f]]
+       where nameT = N (name 0)
+	       where name i = if (subst v0 (N (Name i)) f0, True) `elem` p
+			      then name (i + 1)
+			      else Name i
+     gammaRule p f@(Exists v0 f0, False) = [[(subst v0 nameF f0, False), f]]
+       where nameF = N (name 0)
+	       where name i = if (subst v0 (N (Name i)) f0, False) `elem` p
+			      then name (i + 1)
+			      else Name i
+     gammaRule _ f = [[f]]
+   #+end_src
+
+** δ rules
+   #+begin_src haskell
+     deltaRule :: Rule
+     deltaRule p f@(Forall v0 f0, False) = [[(subst v0 frshnm f0, False), f]]
+       where frshnm = N (freshN (concatMap (ns . fst) p))
+     deltaRule p f@(Exists v0 f0, True) = [[(subst v0 frshnm f0, True), f]]
+       where frshnm = N (freshN (concatMap (ns . fst) p))
+     deltaRule _ f = [[f]]
+   #+end_src
