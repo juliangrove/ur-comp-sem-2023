@@ -8,7 +8,7 @@
 #+Title: Monadic plumbing
 
 Here we tie up the loose ends of our first-order logic theorem prover by putting
-all [[../nov1/nov1.html#org7d77e5e][the rules]] together.
+all [[../nov1/nov1.html#org116cf02][the rules]] together.
 
 * The list monad
   As a quick reminder, here is the definition of the list monad.
