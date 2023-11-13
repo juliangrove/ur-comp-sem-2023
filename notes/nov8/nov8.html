@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2023-11-13 Mon 15:27 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Monadic plumbing</title>
+<meta name="author" content="Julian Grove" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+<script src="../../jquery.min.js"></script>
+<script src="../../bootstrap.min.js"></script>
+<script type="text/javascript" src="../../readtheorg.js"></script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Monadic plumbing</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgf6b6105">1. The list monad</a></li>
+<li><a href="#org1778582">2. Promoting rules</a>
+<ul>
+<li><a href="#org2f4085e">2.1. <code>applyRule</code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+Here we tie up the loose ends of our first-order logic theorem prover by putting
+all <a href="../nov1/nov1.html#org7d77e5e">the rules</a> together.
+</p>
+
+<div id="outline-container-orgf6b6105" class="outline-2">
+<h2 id="orgf6b6105"><span class="section-number-2">1.</span> The list monad</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+As a quick reminder, here is the definition of the list monad.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">instance</span> <span style="color: #d3869b;">Monad</span> <span style="color: #d3869b;">[]</span> <span style="color: #fb4933;">where</span>
+  return a     <span style="color: #83a598;">=</span> [a]
+  <span style="color: #d3869b;">[]</span> <span style="color: #83a598;">&gt;&gt;=</span> <span style="color: #fb4933;">_</span>     <span style="color: #83a598;">=</span> <span style="color: #d3869b;">[]</span>
+  (a<span style="color: #d3869b;">:</span>as) <span style="color: #83a598;">&gt;&gt;=</span> k <span style="color: #83a598;">=</span> k a <span style="color: #83a598;">++</span> as <span style="color: #83a598;">&gt;&gt;=</span> k
+</pre>
+</div>
+<p>
+It'll be useful to have this definition on hand as we manipulate lists and the
+functions that act on them!
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1778582" class="outline-2">
+<h2 id="org1778582"><span class="section-number-2">2.</span> Promoting rules</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Recall the type we associate with a <i>rule</i> (remember that a rule is a way of
+extending a tableau at one of its terminal nodes, according to the main
+connective of the formula that occurs at that node and the formula's sign):
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">type</span> <span style="color: #d3869b;">Rule</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Path</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">SignedForm</span> <span style="color: #83a598;">-&gt;</span> [<span style="color: #d3869b;">Branch</span>]
+</pre>
+</div>
+<p>
+where
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">type</span> <span style="color: #d3869b;">SigneForm</span> <span style="color: #83a598;">=</span> (<span style="color: #d3869b;">Form</span>, <span style="color: #d3869b;">Bool</span>)
+<span style="color: #fb4933;">type</span> <span style="color: #d3869b;">Path</span> <span style="color: #83a598;">=</span> [<span style="color: #d3869b;">SignedForm</span>]
+<span style="color: #fb4933;">type</span> <span style="color: #d3869b;">Branch</span> <span style="color: #83a598;">=</span> [<span style="color: #d3869b;">SignedForm</span>]
+</pre>
+</div>
+<p>
+Thus given some path (which the rule might use to determine, e.g., which names
+are fresh), a rule takes a signed formula at some node onto the set of new
+branches that should extend out from that node once the rule has applied.
+</p>
+
+<p>
+What we would like is a way of promoting a <code>Rule</code> to a function which can be
+applied to an entire <code>Path</code>. That is, we require a function
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">applyRule</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Rule</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Path</span> <span style="color: #83a598;">-&gt;</span> [<span style="color: #d3869b;">Path</span>]
+</pre>
+</div>
+<p>
+which applies a rule to each path in some tableau&#x2014;by targeting all the nodes
+on that path&#x2014;in order to give back a new tableau. Then, using <code>applyRule</code>, we
+can write a function
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">allRules</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Path</span> <span style="color: #83a598;">-&gt;</span> [<span style="color: #d3869b;">Path</span>]
+<span style="color: #fabd2f;">allRules</span> p <span style="color: #83a598;">=</span> <span style="color: #fb4933;">do</span> p0 <span style="color: #83a598;">&lt;-</span> applyRule (const andRule) p
+                p1 <span style="color: #83a598;">&lt;-</span> applyRule (const orRule) p0
+                p2 <span style="color: #83a598;">&lt;-</span> applyRule (const notRule) p1
+                p3 <span style="color: #83a598;">&lt;-</span> applyRule gammaRule p2
+                p4 <span style="color: #83a598;">&lt;-</span> applyRule deltaRule p3
+                return p4
+</pre>
+</div>
+<p>
+which starts with some path <code>p</code>, and then successively applies each rule to that
+path. That is, first <code>andRule</code> is applied to <code>p</code> via <code>applyRule</code>&#x2014;note that <a href="https://hackage.haskell.org/package/base-4.19.0.0/docs/Prelude.html#v:const"><code>const
+  :: a -&gt; b -&gt; a</code></a> simply allows <code>andRule</code> to ignore the first (<code>Path</code> type)
+argument&#x2014;and then <code>p1</code> is drawn from the result; next, <code>orRule</code> is applied to
+<code>p1</code>, and <code>p2</code> is drawn from the result; etc., until we've applied each rule
+exactly once.
+</p>
+
+<p>
+Given such a function, we can implement a way of <i>looping</i> all the rules over a
+tableau and then checking each path for a contradiction.
+</p>
+
+<p>
+For the latter, we need the function
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">contradiction</span> <span style="color: #83a598;">::</span> [<span style="color: #d3869b;">Path</span>] <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Bool</span>
+<span style="color: #fabd2f;">contradiction</span> <span style="color: #d3869b;">[]</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">False</span>
+<span style="color: #fabd2f;">contradiction</span> ((f, b) <span style="color: #d3869b;">:</span> fs) <span style="color: #83a598;">=</span> (f, not b) <span style="color: #83a598;">`elem`</span> fs <span style="color: #83a598;">||</span> contradiction fs
+</pre>
+</div>
+<p>
+That is, for each signed formula on some path, we check whether the same
+formula, but with opposite sign, occurs somewhere else on the path; if not, we
+check to see if the rest of the path (excluding that signed formula) is
+somehow contradictory.
+</p>
+
+<p>
+Now let's write a function that implements one loop! This function, <code>loop</code>,
+should have type
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">loop</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Tableau</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Tableau</span>
+</pre>
+</div>
+<p>
+where
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">type</span> <span style="color: #d3869b;">Tableau</span> <span style="color: #83a598;">=</span> [<span style="color: #d3869b;">Maybe</span> <span style="color: #d3869b;">Path</span>]
+</pre>
+</div>
+<p>
+In other words, a <code>Tableau</code> is a list of things which <i>might</i> be paths. If some
+path has been determined to be contradictory, it should get replaced by a
+<code>Nothing</code>, indicating that we never have to worry about it again. If not, we
+should apply <code>allRules</code> to it and map <code>Just</code> over the resulting paths, indicating
+that they are still live. Thus we may define <code>loop</code> as
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">loop</span> t <span style="color: #83a598;">=</span> <span style="color: #fb4933;">do</span> maybeP <span style="color: #83a598;">&lt;-</span> t
+            <span style="color: #fb4933;">case</span> maybeP <span style="color: #fb4933;">of</span>
+              <span style="color: #d3869b;">Nothing</span> <span style="color: #83a598;">-&gt;</span> return <span style="color: #d3869b;">Nothing</span>
+              <span style="color: #d3869b;">Just</span> p <span style="color: #83a598;">-&gt;</span> <span style="color: #fb4933;">if</span> contradictory p
+                        <span style="color: #fb4933;">then</span> return <span style="color: #d3869b;">Nothing</span>
+                        <span style="color: #fb4933;">else</span> map <span style="color: #d3869b;">Just</span> (allRules p)
+</pre>
+</div>
+
+<p>
+We are almost there! Now, given a list of signed formulae, we would like to be
+able to check if they are contradictory, given some depth <code>n</code> of application of
+our rules. Thus we write a function
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">depth</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Int</span> <span style="color: #83a598;">-&gt;</span> [<span style="color: #d3869b;">SignedForm</span>] <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Bool</span>
+<span style="color: #fabd2f;">depth</span> n sfs <span style="color: #83a598;">=</span> (iterate loop [map <span style="color: #d3869b;">Just</span> sfs]) <span style="color: #83a598;">!!</span> n
+</pre>
+</div>
+<p>
+which turns the list of signed formulae <code>sfs</code> into a starting <code>Tableau</code> (by doing
+<code>[map Just sfs]</code>) and then loops the rules over it <code>n</code> times, using <a href="https://hackage.haskell.org/package/base-4.19.0.0/docs/Prelude.html#v:iterate"><code>iterate</code></a>. If
+the tableau is contradictory after <code>n</code> loops, we assume we have a contradiction;
+otherwise, we we assume the signed formulae are not contradictory. Note that
+we might sometimes be wrong.<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>
+</p>
+
+<p>
+In terms of our function <code>depth</code>, we my define a function that checks (at some
+depth) whether or not some set of formulae entails another formula. We do this
+by applying <code>depth</code> to a starting tableau in which the possibly-entailed formula
+is paired with <code>False</code> and the other formulae are paired with <code>True</code>. Thus if the
+formula is truly entailed, a contradiction will ensue.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">entails</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Int</span> <span style="color: #83a598;">-&gt;</span> [<span style="color: #d3869b;">Form</span>] <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Form</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Bool</span>
+<span style="color: #fabd2f;">entails</span> n antecedents consequent <span style="color: #83a598;">=</span> depth n sfs
+  <span style="color: #fb4933;">where</span> sfs <span style="color: #83a598;">=</span> (consequent, <span style="color: #d3869b;">False</span>) <span style="color: #d3869b;">:</span> map (, <span style="color: #d3869b;">True</span>) antecedents
+</pre>
+</div>
+<p>
+Yay!
+</p>
+</div>
+
+<div id="outline-container-org2f4085e" class="outline-3">
+<h3 id="org2f4085e"><span class="section-number-3">2.1.</span> <code>applyRule</code></h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Yeah, yeah, but we haven't even defined <code>applyRule</code> yet. Jeez, what is wrong
+with us? That's okay, we can define it now.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">applyRule</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Rule</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Path</span> <span style="color: #83a598;">-&gt;</span> [<span style="color: #d3869b;">Path</span>]
+<span style="color: #fabd2f;">applyRule</span> rule p <span style="color: #83a598;">=</span> applyRule' rule p [<span style="color: #d3869b;">[]</span>]
+  <span style="color: #fb4933;">where</span> applyRule' <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Rule</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Path</span> <span style="color: #83a598;">-&gt;</span> [<span style="color: #d3869b;">Path</span>] <span style="color: #83a598;">-&gt;</span> [<span style="color: #d3869b;">Path</span>]
+        applyRule <span style="color: #fb4933;">_</span> <span style="color: #d3869b;">[]</span> t <span style="color: #83a598;">=</span> t
+        applyRule rule (f<span style="color: #d3869b;">:</span>fs) t <span style="color: #83a598;">=</span> applyRule fs t'
+          <span style="color: #fb4933;">where</span> t' <span style="color: #83a598;">=</span> <span style="color: #fb4933;">do</span> p <span style="color: #83a598;">&lt;-</span> t
+                        b <span style="color: #83a598;">&lt;-</span> rule (f<span style="color: #d3869b;">:</span>fs <span style="color: #83a598;">++</span> p) f
+                        return (p <span style="color: #83a598;">++</span> b)
+</pre>
+</div>
+<p>
+In words, to apply a rule to an entire path, we apply the rule to one node
+(<code>f</code>) of the path and then concatenate the resulting branches to the paths that
+result from applying the rule to the <i>rest</i> of the nodes (<code>fs</code>) of the path.
+</p>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">In general, first-order logic is only
+semi-decideable. Thus if some set of formulae is contradictory, we may in
+principle find the contradiction by running a theorem prover at some depth,
+but this depth is upper bounded by infinity. Indeed, we could try to loop
+forever, but then our algorithm would never terminate on non-contradictory
+sets of formulae.</p></div></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p class="author">Author: Julian Grove</p>
+<p class="date">Created: 2023-11-13 Mon 15:27</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

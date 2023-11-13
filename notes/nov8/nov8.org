@@ -1,0 +1,147 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: Monadic plumbing
+
+Here we tie up the loose ends of our first-order logic theorem prover by putting
+all [[../nov1/nov1.html#org7d77e5e][the rules]] together.
+
+* The list monad
+  As a quick reminder, here is the definition of the list monad.
+  #+begin_src haskell
+    instance Monad [] where
+      return a     = [a]
+      [] >>= _     = []
+      (a:as) >>= k = k a ++ as >>= k
+  #+end_src
+  It'll be useful to have this definition on hand as we manipulate lists and the
+  functions that act on them!
+
+* Promoting rules
+  Recall the type we associate with a /rule/ (remember that a rule is a way of
+  extending a tableau at one of its terminal nodes, according to the main
+  connective of the formula that occurs at that node and the formula's sign):
+  #+begin_src haskell
+    type Rule = Path -> SignedForm -> [Branch]
+  #+end_src
+  where
+  #+begin_src haskell
+    type SigneForm = (Form, Bool)
+    type Path = [SignedForm]
+    type Branch = [SignedForm]
+  #+end_src
+  Thus given some path (which the rule might use to determine, e.g., which names
+  are fresh), a rule takes a signed formula at some node onto the set of new
+  branches that should extend out from that node once the rule has applied.
+
+  What we would like is a way of promoting a ~Rule~ to a function which can be
+  applied to an entire ~Path~. That is, we require a function
+  #+begin_src haskell
+    applyRule :: Rule -> Path -> [Path]
+  #+end_src
+  which applies a rule to each path in some tableau---by targeting all the nodes
+  on that path---in order to give back a new tableau. Then, using ~applyRule~, we
+  can write a function
+  #+begin_src haskell
+    allRules :: Path -> [Path]
+    allRules p = do p0 <- applyRule (const andRule) p
+		    p1 <- applyRule (const orRule) p0
+		    p2 <- applyRule (const notRule) p1
+		    p3 <- applyRule gammaRule p2
+		    p4 <- applyRule deltaRule p3
+                    return p4
+  #+end_src
+  which starts with some path ~p~, and then successively applies each rule to that
+  path. That is, first ~andRule~ is applied to ~p~ via ~applyRule~---note that [[https://hackage.haskell.org/package/base-4.19.0.0/docs/Prelude.html#v:const][~const
+  :: a -> b -> a~]] simply allows ~andRule~ to ignore the first (~Path~ type)
+  argument---and then ~p1~ is drawn from the result; next, ~orRule~ is applied to
+  ~p1~, and ~p2~ is drawn from the result; etc., until we've applied each rule
+  exactly once.
+
+  Given such a function, we can implement a way of /looping/ all the rules over a
+  tableau and then checking each path for a contradiction.
+
+  For the latter, we need the function
+  #+begin_src haskell
+    contradiction :: [Path] -> Bool
+    contradiction [] = False
+    contradiction ((f, b) : fs) = (f, not b) `elem` fs || contradiction fs
+  #+end_src
+  That is, for each signed formula on some path, we check whether the same
+  formula, but with opposite sign, occurs somewhere else on the path; if not, we
+  check to see if the rest of the path (excluding that signed formula) is
+  somehow contradictory.
+
+  Now let's write a function that implements one loop! This function, ~loop~,
+  should have type
+  #+begin_src haskell
+    loop :: Tableau -> Tableau
+  #+end_src
+  where
+  #+begin_src haskell
+    type Tableau = [Maybe Path]
+  #+end_src
+  In other words, a ~Tableau~ is a list of things which /might/ be paths. If some
+  path has been determined to be contradictory, it should get replaced by a
+  ~Nothing~, indicating that we never have to worry about it again. If not, we
+  should apply ~allRules~ to it and map ~Just~ over the resulting paths, indicating
+  that they are still live. Thus we may define ~loop~ as
+  #+begin_src haskell
+    loop t = do maybeP <- t
+		case maybeP of
+		  Nothing -> return Nothing
+		  Just p -> if contradictory p
+			    then return Nothing
+                            else map Just (allRules p)
+  #+end_src
+
+  We are almost there! Now, given a list of signed formulae, we would like to be
+  able to check if they are contradictory, given some depth ~n~ of application of
+  our rules. Thus we write a function
+  #+begin_src haskell
+    depth :: Int -> [SignedForm] -> Bool
+    depth n sfs = (iterate loop [map Just sfs]) !! n
+  #+end_src
+  which turns the list of signed formulae ~sfs~ into a starting ~Tableau~ (by doing
+  ~[map Just sfs]~) and then loops the rules over it ~n~ times, using [[https://hackage.haskell.org/package/base-4.19.0.0/docs/Prelude.html#v:iterate][~iterate~]]. If
+  the tableau is contradictory after ~n~ loops, we assume we have a contradiction;
+  otherwise, we we assume the signed formulae are not contradictory. Note that
+  we might sometimes be wrong.[fn::In general, first-order logic is only
+  semi-decideable. Thus if some set of formulae is contradictory, we may in
+  principle find the contradiction by running a theorem prover at some depth,
+  but this depth is upper bounded by infinity. Indeed, we could try to loop
+  forever, but then our algorithm would never terminate on non-contradictory
+  sets of formulae.]
+
+  In terms of our function ~depth~, we my define a function that checks (at some
+  depth) whether or not some set of formulae entails another formula. We do this
+  by applying ~depth~ to a starting tableau in which the possibly-entailed formula
+  is paired with ~False~ and the other formulae are paired with ~True~. Thus if the
+  formula is truly entailed, a contradiction will ensue.
+  #+begin_src haskell
+    entails :: Int -> [Form] -> Form -> Bool
+    entails n antecedents consequent = depth n sfs
+      where sfs = (consequent, False) : map (, True) antecedents
+  #+end_src
+  Yay!
+
+** ~applyRule~
+   Yeah, yeah, but we haven't even defined ~applyRule~ yet. Jeez, what is wrong
+   with us? That's okay, we can define it now.
+   #+begin_src haskell
+     applyRule :: Rule -> Path -> [Path]
+     applyRule rule p = applyRule' rule p [[]]
+       where applyRule' :: Rule -> Path -> [Path] -> [Path]
+	     applyRule _ [] t = t
+	     applyRule rule (f:fs) t = applyRule fs t'
+	       where t' = do p <- t
+	                     b <- rule (f:fs ++ p) f
+			     return (p ++ b)
+   #+end_src
+   In words, to apply a rule to an entire path, we apply the rule to one node
+   (~f~) of the path and then concatenate the resulting branches to the paths that
+   result from applying the rule to the /rest/ of the nodes (~fs~) of the path.
