@@ -1,0 +1,136 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: Monads
+
+This short set of notes will be all about monads (woohoo!)?
+
+* What is a monad?
+  A monad is a kind of structure which is commonly employed in functional
+  programming, in order to design programs with clearly understood meanings.
+  More concretely, a lot of the time, functional programmers want to write
+  programs that have some kind of /effect/ associated with them---this might be
+  gathering things up into a list, returning a value randomly (given some
+  probability distribution), printing something to standard output, keeping
+  track of a global state, reading information in from an environment, or any
+  number of other things that programmers like to write programs that do. Monads
+  allow one to write functional programs that do those sorts of things in highly
+  structured ways, i.e., by (a) providing tight control over where exactly in a
+  program an effect /happens/, and (b) cleanly separating operations that target
+  ordinary /values/ from operations that target the effects which with which such
+  values might be associated.
+
+** Definition and examples
+   In Haskell, there ~Monad~ provides a class.
+   #+begin_src haskell
+     class Monad f where
+       return :: a -> f a
+       (>>=) :: f a -> (a -> f b) -> f b -- 'bind'
+   #+end_src
+   Technically, a monad is a /functor/---that is, a map from types to
+   types---associated with two operations, ~return~ and ~(>>=)~. The role of ~return~
+   is to bring an ordinary value of type ~a~ into the monad, by turning it into a
+   new thing of type ~f a~. The role of ~(>>=)~ is to sequence programs that have
+   monadic effects. ~(>>=)~ takes a program of type ~f a~, along with a program of
+   type ~f b~, but /indexed/ by a value of type ~a~ (i.e., a function of type ~a -> f
+   b~), and gives back a program of type ~f b~. Essentially, in ~m >>= k~, ~m~ is
+   providing some value of type ~a~, which is allowed to somehow fill in ~k~'s
+   missing ~a~-shaped piece, giving back a result of type ~f b~.
+
+   Monads must satisfy certain laws; in particular the following:
+   #+begin_src haskell
+     return a >>= k   =  k a                     -- Left identity
+     m >>= return     =  m                       -- Right identity
+     (m >>= n) >>= o  =  m >>= (\x -> n x >>= o) -- Associativity
+   #+end_src
+
+   One particular monad is the ~Maybe~ monad. Thus ~Maybe~ has the following monadic
+   instance:
+   #+begin_src haskell
+     instance Monad Maybe where
+       return        = Just
+       Nothing >>= _ = Nothing
+       Just a >>= k  = k a
+   #+end_src
+   Another example is the list monad:
+   #+begin_src haskell
+     instance Monad [] where
+       return a     = [a]
+       [] >>= _     = []
+       (a:as) >>= k = k a ++ as >>= k
+   #+end_src
+
+** ~do~ notation and examples
+   One great thing about using monads in Haskell is the availability of ~do~
+   notation. In particular, rather than writing a monadic program in the form
+   #+begin_src haskell
+     m >>= \x -> k x
+   #+end_src
+   one can write it using ~do~ notation as
+   #+begin_src haskell
+     do x <- m
+        k x
+   #+end_src
+
+   For example, if one wanted to have a program that adds two numbers inside the
+   ~Maybe~ monad, one could do the following:
+   #+begin_src haskell
+     addTwoNumbers :: Maybe Integer
+     addTwoNumbers = do m <- Just 3
+			n <- Just 2
+                        return (m + n)
+   #+end_src
+   By unpacking the ~do~ notation, it's possible to rewrite this program as
+   #+begin_src haskell
+     Just 3 >>= \m -> Just 2 >>= \n -> return (m + n)
+   #+end_src
+   which computes to ~Just 5~. If we wanted to have a program that fails, we could
+   write the following instead:
+   #+begin_src haskell
+     addTwoNumbers :: Maybe Integer
+     addTwoNumbers = do m <- Just 3
+			n <- Just 2
+                        i <- Nothing 
+			return (m + n)
+   #+end_src
+   This program fails because it attempts to pull an integer ~i~ out of a ~Nothing~,
+   i.e., a failed computation. Indeed, such failure results regardless of
+   whether or not the hypothetical value ~i~ is actually used.
+
+   To take another example, imagine we want to do an operation on two  numbers,
+   but which, this time, are extracted from /lists/ of integers. Then we could do,
+   e.g.,
+   #+begin_src haskell
+     combineTwoNumbersFromLists :: [Integer]
+     combineTwoNumbersFromLists = do m <- [1, 2]
+				     n <- [3, 4]
+				     op <- [(+), (*)]
+				     return (m `op` n)
+   #+end_src
+   This program should compute to
+   #+begin_src haskell
+     >>> combineTwoNumbersFromLists
+     [4,3,5,4,5,6,6,8]
+   #+end_src
+   Note that the order of the ~do~ statements affects the order of the integers as
+   they occur in the computed result, although the identity and number of these
+   integers won't vary. In particular, first ~1~ is added to ~3~, then ~1~ is
+   multiplied by ~3~, then ~1~ is added to ~4~, then multiplied by ~4~, and then we do
+   the same thing with ~2~.
+
+** The laws using ~do~ notation
+   In my opinion, the monad laws look a bit nice when presented using ~do~
+   notation.
+      #+begin_src haskell
+	do x <- return a   =  k a           -- Left identity
+	   k x
+	do x <- m          =  m             -- Right Identity
+	   return x
+	do y <- do x <- m  =  do x <- m     -- Associativity
+		   n x           y <- n x
+	   o y                   o y
+   #+end_src

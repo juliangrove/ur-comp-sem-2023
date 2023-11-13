@@ -1,0 +1,342 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{etoolbox}
+\usepackage{lscape}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage[linguistics]{forest}
+\forestset{ downroof/.style={ for children={ if n=1{ edge path'={ (.parent first) -- (!u.parent anchor) -- (!ul.parent last) -- cycle }}{no edge} } } }
+\usepackage{amsthm}
+\theoremstyle{definition}
+\newtheorem{thm}{Theorem}
+\usepackage[inline]{enumitem}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\pagestyle{plain}
+% \usepackage[varqu]{zi4}
+% \usepackage[libertine]{newtxmath}
+% \usepackage[T1]{fontenc}
+\usepackage{tipa}
+\usepackage{tikz}
+\usetikzlibrary{fit}
+\usetikzlibrary{positioning}
+\usepackage[uniquename=false,dashed=false,date=year,url=false,isbn=false,useprefix=true,style=authoryear]{biblatex}
+\addbibresource{../../factive-projection.bib}
+\usepackage{stmaryrd}
+\usepackage{expex}
+\usepackage{stackrel}
+\usepackage{stackengine}
+\usepackage{relsize}
+\usepackage{fixltx2e}
+\raggedbottom
+\usepackage[colorlinks=true,urlcolor=blue!60!black!80,citecolor=blue!60!black!80,linkcolor=black,bookmarks,bookmarksopen,bookmarksdepth=2]{hyperref}
+\renewcommand\UrlFont{\normalsize}
+\renewcommand{\maketitle}{\normalsize\begin{center}\textbf{\thetitle}\end{center}\vspace{-4mm}}
+\titleformat{\section}[runin]{\normalfont\bfseries}{}{0pt}{}\titlespacing{\section}{0pt}{*0.5}{\wordsep}
+\usepackage[normalem]{ulem}
+\newcommand\vect[1]{\bm{#1}}
+\newcommand\abbr[1]{\texttt{\textscale{0.9}{#1}}}
+\def\updownarrows{\mathbin{\raisebox{0.79pt}{$\uparrow$}}\hspace{-0.34em}{\raisebox{-0.79pt}{$\downarrow$}}}
+\newcommand\map[1]{#1\hspace{-0.05em}\textsuperscript{$\updownarrows$}}
+\definecolor{gb-orange}{HTML}{d65d0e}
+\definecolor{gb-blue}{HTML}{458588}
+\def\seqapp{\textcolor{gb-orange}{⊛}}
+\def\doubleseqapp{\textcolor{gb-blue}{⊛}}
+\newtcbox{\purebox}{nobeforeafter,tcbox raise
+  base,boxrule=0.5pt,top=0mm,bottom=0mm,left=0mm,right=0mm,arc=3pt,boxsep=2pt,colframe=gb-orange,colback=white}
+\newtcbox{\doublepurebox}{nobeforeafter,tcbox raise
+  base,boxrule=0.5pt,top=0mm,bottom=0mm,left=0mm,right=0mm,arc=3pt,boxsep=2pt,colframe=gb-blue,colback=white}
+\newtcbox{\genpurebox}{nobeforeafter,tcbox raise
+  base,boxrule=0.5pt,top=0mm,bottom=0mm,left=0mm,right=0mm,arc=3pt,boxsep=2pt,colframe=black,colback=white}
+\newcommand{\genpure}[1]{\genpurebox{\ensuremath{#1}}}
+\newcommand{\pure}[1]{\purebox{\ensuremath{#1}}}
+\newcommand{\doublepure}[1]{\doublepurebox{\ensuremath{#1}}}
+\def\true{\mathbb{T}}
+\def\false{\mathbb{F}}
+\usepackage[verbose]{newunicodechar}
+\newunicodechar{¬}{\ensuremath{\neg}} %
+\newunicodechar{¹}{^1}
+\newunicodechar{²}{^2}
+\newunicodechar{³}{^3}
+\newunicodechar{·}{\ensuremath{\cdot}}
+\newunicodechar{×}{\ensuremath{\times}} %
+\newunicodechar{÷}{\ensuremath{\div}} %
+\newunicodechar{ᵅ}{^α}
+\newunicodechar{ᵃ}{^a}
+\newunicodechar{ᵍ}{^g}
+\newunicodechar{ʲ}{^j}
+\newunicodechar{ˡ}{^l}
+\newunicodechar{ʳ}{^r}
+\newunicodechar{ₒ}{_0}
+\newunicodechar{₁}{_1}
+\newunicodechar{₂}{_2}
+\newunicodechar{₃}{_3}
+\newunicodechar{₄}{_4}
+\newunicodechar{ₐ}{_a}
+\newunicodechar{ₑ}{_e}
+\newunicodechar{ₕ}{_h}
+\newunicodechar{ᵢ}{_i}
+\newunicodechar{ₙ}{_n}
+\newunicodechar{ₚ}{_p}
+\newunicodechar{ᵣ}{_r}
+\newunicodechar{ₛ}{_s}
+\newunicodechar{ₜ}{_t}
+\newunicodechar{̷}{\not} %
+\newunicodechar{Γ}{\ensuremath{\Gamma}}   %
+\newunicodechar{Δ}{\ensuremath{\Delta}} %
+\newunicodechar{Η}{\ensuremath{\textrm{H}}} %
+\newunicodechar{Θ}{\ensuremath{\Theta}} %
+\newunicodechar{Λ}{\ensuremath{\Lambda}} %
+\newunicodechar{Ξ}{\ensuremath{\Xi}} %
+\newunicodechar{Π}{\ensuremath{\Pi}}   %
+\newunicodechar{Σ}{\ensuremath{\Sigma}} %
+\newunicodechar{Φ}{\ensuremath{\Phi}} %
+\newunicodechar{Ψ}{\ensuremath{\Psi}} %
+\newunicodechar{Ω}{\ensuremath{\Omega}} %
+\newunicodechar{α}{\ensuremath{\mathnormal{\alpha}}}
+\newunicodechar{β}{\ensuremath{\beta}} %
+\newunicodechar{γ}{\ensuremath{\mathnormal{\gamma}}} %
+\newunicodechar{δ}{\ensuremath{\mathnormal{\delta}}} %
+\newunicodechar{ε}{\ensuremath{\mathnormal{\varepsilon}}} %
+\newunicodechar{ζ}{\ensuremath{\mathnormal{\zeta}}} %
+\newunicodechar{η}{\ensuremath{\mathnormal{\eta}}} %
+\newunicodechar{θ}{\ensuremath{\mathnormal{\theta}}} %
+\newunicodechar{ι}{\ensuremath{\mathnormal{\iota}}} %
+\newunicodechar{κ}{\ensuremath{\mathnormal{\kappa}}} %
+\newunicodechar{λ}{\ensuremath{\mathnormal{\lambda}}} %
+\newunicodechar{μ}{\ensuremath{\mathnormal{\mu}}} %
+\newunicodechar{ν}{\ensuremath{\mathnormal{\nu}}} %
+\newunicodechar{ξ}{\ensuremath{\mathnormal{\xi}}} %
+\newunicodechar{π}{\ensuremath{\mathnormal{\pi}}}
+\newunicodechar{π}{\ensuremath{\mathnormal{\pi}}} %
+\newunicodechar{ρ}{\ensuremath{\mathnormal{\rho}}} %
+\newunicodechar{σ}{\ensuremath{\mathnormal{\sigma}}} %
+\newunicodechar{τ}{\ensuremath{\mathnormal{\tau}}} %
+\newunicodechar{φ}{\ensuremath{\mathnormal{\phi}}} %
+\newunicodechar{χ}{\ensuremath{\mathnormal{\chi}}} %
+\newunicodechar{ψ}{\ensuremath{\mathnormal{\psi}}} %
+\newunicodechar{ω}{\ensuremath{\mathnormal{\omega}}} %
+\newunicodechar{ϕ}{\ensuremath{\mathnormal{\phi}}} %
+\newunicodechar{ϕ}{\ensuremath{\mathnormal{\varphi}}} %
+\newunicodechar{ϵ}{\ensuremath{\mathnormal{\epsilon}}} %
+\newunicodechar{ᵏ}{^k}
+\newunicodechar{ᵢ}{\ensuremath{_i}} %
+\newunicodechar{ }{\quad}
+\newunicodechar{†}{\dagger}
+\newunicodechar{ }{\,}
+\newunicodechar{′}{\ensuremath{^\prime}}  %
+\newunicodechar{″}{\ensuremath{^\second}} %
+\newunicodechar{‴}{\ensuremath{^\third}}  %
+\newunicodechar{ⁱ}{^i}
+\newunicodechar{⁵}{\ensuremath{^5}}
+\newunicodechar{⁺}{\ensuremath{^+}} %% #+latex_header: \newunicodechar{⁺}{^+}
+\newunicodechar{⁻}{\ensuremath{^-}} %%
+\newunicodechar{ⁿ}{^n}
+\newunicodechar{₀}{\ensuremath{_0}} %
+\newunicodechar{ₗ}{\ensuremath{_l}} %
+\newunicodechar{ₑ}{\ensuremath{_e}} %
+\newunicodechar{ⱼ}{\ensuremath{_j}} %
+\newunicodechar{̺}{\ensuremath{_v}} %
+\newunicodechar{₁}{\ensuremath{_1}} % #+latex_header: \newunicodechar{₁}{_1}
+\newunicodechar{₂}{\ensuremath{_2}} % #+latex_header: \newunicodechar{₂}{_2}
+\newunicodechar{₃}{\ensuremath{_3}}
+\newunicodechar{₊}{\ensuremath{_+}} %%
+\newunicodechar{₋}{\ensuremath{_-}} %%
+\newunicodechar{ₘ}{_m} %
+\newunicodechar{ₙ}{_n} %
+\newunicodechar{ℂ}{\ensuremath{\mathbb{C}}} %
+\newunicodechar{ℒ}{\ensuremath{\mathscr{L}}}
+\newunicodechar{ℕ}{\mathbb{N}} %
+\newunicodechar{ℚ}{\ensuremath{\mathbb{Q}}}
+\newunicodechar{ℝ}{\ensuremath{\mathbb{R}}} %
+\newunicodechar{ℤ}{\ensuremath{\mathbb{Z}}} %
+\newunicodechar{ℳ}{\mathscr{M}}
+\newunicodechar{⅋}{\ensuremath{\parr}} %
+\newunicodechar{←}{\ensuremath{\leftarrow}} %
+\newunicodechar{↑}{\ensuremath{\uparrow}} %
+\newunicodechar{→}{\ensuremath{\rightarrow}} %
+\newunicodechar{↔}{\ensuremath{\leftrightarrow}} %
+\newunicodechar{↖}{\nwarrow} %
+\newunicodechar{↗}{\nearrow} %
+\newunicodechar{↝}{\ensuremath{\leadsto}}
+\newunicodechar{↦}{\ensuremath{\mapsto}}
+\newunicodechar{⇆}{\ensuremath{\leftrightarrows}} %
+\newunicodechar{⇐}{\ensuremath{\Leftarrow}} %
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}} %
+\newunicodechar{⇔}{\ensuremath{\Leftrightarrow}} %
+\newunicodechar{∀}{\ensuremath{\forall}}   %
+\newunicodechar{∂}{\ensuremath{\partial}}
+\newunicodechar{∃}{\ensuremath{\exists}} %
+\newunicodechar{∅}{\ensuremath{\varnothing}} %
+\newunicodechar{∈}{\ensuremath{\in}}
+\newunicodechar{∉}{\ensuremath{\not\in}} %
+\newunicodechar{∋}{\ensuremath{\ni}}  %
+\newunicodechar{∎}{\ensuremath{\qed}}%#+latex_header: \newunicodechar{∎}{\ensuremath{\blacksquare}} % end of proof
+\newunicodechar{∏}{\prod}
+\newunicodechar{∑}{\sum}
+\newunicodechar{∗}{\ensuremath{\ast}} %
+\newunicodechar{∘}{\ensuremath{\circ}} %
+\newunicodechar{∙}{\ensuremath{\bullet}} % #+latex_header: \newunicodechar{∙}{\ensuremath{\cdot}}
+\newunicodechar{⊙}{\ensuremath{\odot}}
+\newunicodechar{∞}{\ensuremath{\infty}} %
+\newunicodechar{∣}{\ensuremath{\mid}} %
+\newunicodechar{∧}{\wedge}%
+\newunicodechar{∨}{\vee}%
+\newunicodechar{∩}{\ensuremath{\cap}} %
+\newunicodechar{∪}{\ensuremath{\cup}} %
+\newunicodechar{∫}{\int}
+\newunicodechar{∷}{::} %
+\newunicodechar{∼}{\ensuremath{\sim}} %
+\newunicodechar{≃}{\ensuremath{\simeq}} %
+\newunicodechar{≔}{\ensuremath{\coloneqq}} %
+\newunicodechar{≅}{\ensuremath{\cong}} %
+\newunicodechar{≈}{\ensuremath{\approx}} %
+\newunicodechar{≜}{\ensuremath{\stackrel{\scriptscriptstyle {\triangle}}{=}}} % #+latex_header: \newunicodechar{≜}{\triangleq}
+\newunicodechar{≝}{\ensuremath{\stackrel{\scriptscriptstyle {\text{def}}}{=}}}
+\newunicodechar{≟}{\ensuremath{\stackrel {_\text{\textbf{?}}}{\text{\textbf{=}}\negthickspace\negthickspace\text{\textbf{=}}}}} % or {\ensuremath{\stackrel{\scriptscriptstyle ?}{=}}}
+\newunicodechar{≠}{\ensuremath{\neq}}%
+\newunicodechar{≡}{\ensuremath{\equiv}}%
+\newunicodechar{≤}{\ensuremath{\le}} %
+\newunicodechar{≥}{\ensuremath{\ge}} %
+\newunicodechar{⊂}{\ensuremath{\subset}} %
+\newunicodechar{⊃}{\ensuremath{\supset}} %
+\newunicodechar{⊆}{\ensuremath{\subseteq}} %
+\newunicodechar{⊇}{\ensuremath{\supseteq}} %
+\newunicodechar{⊎}{\ensuremath{\uplus}} %
+\newunicodechar{⊑}{\ensuremath{\sqsubseteq}} %
+\newunicodechar{⊒}{\ensuremath{\sqsupseteq}} %
+\newunicodechar{⊓}{\ensuremath{\sqcap}} %
+\newunicodechar{⊔}{\ensuremath{\sqcup}} %
+\newunicodechar{⊕}{\ensuremath{\oplus}} %
+\newunicodechar{⊗}{\ensuremath{\otimes}} %
+\newunicodechar{⊛}{\ensuremath{\circledast}}
+\newunicodechar{⊢}{\ensuremath{\vdash}} %
+\newunicodechar{⊤}{\ensuremath{\top}}
+\newunicodechar{⊥}{\ensuremath{\bot}} % bottom
+\newunicodechar{⊧}{\models} %
+\newunicodechar{⊨}{\models} %
+\newunicodechar{⊩}{\Vdash}
+\newunicodechar{⊸}{\ensuremath{\multimap}} %
+\newunicodechar{⋁}{\ensuremath{\bigvee}}
+\newunicodechar{⋃}{\ensuremath{\bigcup}} %
+\newunicodechar{⋄}{\ensuremath{\diamond}} %
+\newunicodechar{⋅}{\ensuremath{\cdot}}
+\newunicodechar{⋆}{\ensuremath{\star}} %
+\newunicodechar{⋮}{\ensuremath{\vdots}} %
+\newunicodechar{⋯}{\ensuremath{\cdots}} %
+\newunicodechar{─}{---}
+\newunicodechar{■}{\ensuremath{\blacksquare}} % black square
+\newunicodechar{□}{\ensuremath{\square}} %
+\newunicodechar{▴}{\ensuremath{\blacktriangledown}}
+\newunicodechar{▵}{\ensuremath{\triangle}}
+\newunicodechar{▹}{\ensuremath{\triangleright}} %
+\newunicodechar{▾}{\ensuremath{\blacktriangle}}
+\newunicodechar{▿}{\ensuremath{\triangledown}}
+\newunicodechar{◃}{\triangleleft{}}
+\newunicodechar{◅}{\ensuremath{\triangleleft{}}}
+\newunicodechar{◇}{\ensuremath{\diamond}} %
+\newunicodechar{◽}{\ensuremath{\square}}
+\newunicodechar{★}{\ensuremath{\star}}   %
+\newunicodechar{♭}{\ensuremath{\flat}} %
+\newunicodechar{♯}{\ensuremath{\sharp}} %
+\newunicodechar{✓}{\ensuremath{\checkmark}} %
+\newunicodechar{⟂}{\ensuremath{^\bot}} % PERPENDICULAR
+\newunicodechar{⟦}{\ensuremath{\llbracket}}
+\newunicodechar{⟧}{\ensuremath{\rrbracket}}
+\newunicodechar{⦇}{\ensuremath{\llparenthesis}}
+\newunicodechar{⦈}{\ensuremath{\rrparenthesis}}
+\newunicodechar{⟨}{\ensuremath{\langle}} %
+\newunicodechar{⟩}{\ensuremath{\rangle}} %
+\newunicodechar{⌜}{\ensuremath{\ulcorner}} %
+\newunicodechar{⌝}{\ensuremath{\urcorner}} %
+\newunicodechar{⟶}{{\longrightarrow}}
+\newunicodechar{⟷} {\ensuremath{\leftrightarrow}}
+\newunicodechar{⟹}{\ensuremath{\Longrightarrow}} %
+\newunicodechar{ⱼ}{_j} %
+\newunicodechar{ₖ}{_k} %
+\newunicodechar{𝒟}{\ensuremath{\mathcal{D}}} %
+\newunicodechar{𝒢}{\ensuremath{\mathcal{G}}}
+\newunicodechar{𝒦}{\ensuremath{\mathcal{K}}} %
+\newunicodechar{𝒫}{\ensuremath{\mathcal{P}}}
+\newunicodechar{𝔸}{\ensuremath{\mathds{A}}} %
+\newunicodechar{𝔹}{\ensuremath{\mathds{B}}} %
+\newunicodechar{𝟙}{\ensuremath{\mathds{1}}} %
+\newunicodechar{𝔼}{\mathds{E}}
+\newunicodechar{⊬}{\not \vdash}
+\newunicodechar{∝}{\propto}
+\newunicodechar{ᶿ}{^\theta}
+\renewcommand{\maketitle}{\normalsize\begin{center}\textbf{\thetitle}\end{center}\vspace{-4mm}}
+\titleformat{\section}[runin]{\normalfont\bfseries}{}{0pt}{}\titlespacing{\section}{0pt}{*0.5}{\wordsep}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\begin{document}
+
+\begin{forest}
+  [{$(φ ∧ ψ)_\true$} [{$φ_\true$} [$ψ_\true$] ] ]
+\end{forest}
+\hspace{1cm}
+\begin{forest}
+  [{$(φ ∧ ψ)_\false$} [$φ_\false$] [$ψ_\false$] ]
+\end{forest}
+
+~\\
+
+\begin{forest}
+  [{$(φ ∨ ψ)_\true$} [$φ_\true$] [$ψ_\true$] ]
+\end{forest}
+\hspace{1cm}
+\begin{forest}
+  [{$(φ ∨ ψ)_\false$} [{$φ_\false$} [$ψ_\false$] ] ]
+\end{forest}
+
+~\\
+
+\begin{forest}
+  [{$(¬φ)_\true$} [$φ_\false$] ]
+\end{forest}
+\hspace{1cm}
+\begin{forest}
+  [{$(¬φ)_\false$} [$φ_\true$] ]
+\end{forest}
+
+~\\
+
+\begin{forest}
+  [{$(∀x.φ(x))_\true$} [$φ(n)_\true$] ]
+\end{forest}
+\hspace{1cm}
+\begin{forest}
+  [{$(∃x.φ(x))_\false$} [$φ(n)_\false$] ]
+\end{forest}
+
+~\\
+
+\begin{forest}
+  [{$(∀x.φ(x))_\false$} [$φ(n_{\text{fresh}})_\false$] ]
+\end{forest}
+\hspace{1cm}
+\begin{forest}
+  [{$(∃x.φ(x))_\true$} [$φ(n_{\text{fresh}})_\true$] ]
+\end{forest}
+
+~\\
+
+\begin{forest}
+  [{$(∀x.¬P(x) ∨ (∃y.P(y)))_\false$}
+  [{$(¬P(n₁) ∨ (∃y.P(y)))_\false$}
+  [{$(¬P(n₁))_\false$}
+  [{$(∃y.P(y))_\false$}
+  [{$P(n₁)_\true$}
+  [{$P(n₁)_\false$} [$×$]
+  ]
+  ]
+  ]
+  ]
+  ]
+  ]
+\end{forest}
+
+\end{document}
