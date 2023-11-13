@@ -91,12 +91,15 @@ all [[../nov1/nov1.html#org7d77e5e][the rules]] together.
   should apply ~allRules~ to it and map ~Just~ over the resulting paths, indicating
   that they are still live. Thus we may define ~loop~ as
   #+begin_src haskell
-    loop t = do maybeP <- t
-		case maybeP of
-		  Nothing -> return Nothing
-		  Just p -> if contradictory p
-			    then return Nothing
-                            else map Just (allRules p)
+    loop tableau = do
+      maybefs <- tableau
+      case maybefs of
+	Nothing -> pure Nothing
+	Just fs -> do
+	  newFs <- allRules fs
+	  if contradictory newFs
+	  then pure Nothing
+	  else pure (Just newFs)
   #+end_src
 
   We are almost there! Now, given a list of signed formulae, we would like to be
@@ -104,18 +107,18 @@ all [[../nov1/nov1.html#org7d77e5e][the rules]] together.
   our rules. Thus we write a function
   #+begin_src haskell
     depth :: Int -> [SignedForm] -> Bool
-    depth n sfs = (iterate loop [map Just sfs]) !! n
+    depth n sfs = all (== Nothing) (iterate loop [map Just sfs] !! n)
   #+end_src
   which turns the list of signed formulae ~sfs~ into a starting ~Tableau~ (by doing
   ~[map Just sfs]~) and then loops the rules over it ~n~ times, using [[https://hackage.haskell.org/package/base-4.19.0.0/docs/Prelude.html#v:iterate][~iterate~]]. If
-  the tableau is contradictory after ~n~ loops, we assume we have a contradiction;
-  otherwise, we we assume the signed formulae are not contradictory. Note that
-  we might sometimes be wrong.[fn::In general, first-order logic is only
-  semi-decideable. Thus if some set of formulae is contradictory, we may in
-  principle find the contradiction by running a theorem prover at some depth,
-  but this depth is upper bounded by infinity. Indeed, we could try to loop
-  forever, but then our algorithm would never terminate on non-contradictory
-  sets of formulae.]
+  the tableau is contradictory after ~n~ loops---that is, if all the branches are
+  ~Nothing~---we assume we have a contradiction; otherwise, we we assume the
+  signed formulae are not contradictory. Note that we might sometimes be
+  wrong.[fn::In general, first-order logic is only semi-decideable. Thus if some
+  set of formulae is contradictory, we may in principle find the contradiction
+  by running a theorem prover at some depth, but this depth is upper bounded by
+  infinity. Indeed, we could try to loop forever, but then our algorithm would
+  never terminate on non-contradictory sets of formulae.]
 
   In terms of our function ~depth~, we my define a function that checks (at some
   depth) whether or not some set of formulae entails another formula. We do this

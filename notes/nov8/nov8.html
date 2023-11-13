@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-11-13 Mon 15:27 -->
+<!-- 2023-11-13 Mon 16:09 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Monadic plumbing</title>
@@ -206,10 +206,10 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgf6b6105">1. The list monad</a></li>
-<li><a href="#org1778582">2. Promoting rules</a>
+<li><a href="#orgcf270e9">1. The list monad</a></li>
+<li><a href="#orgbec53ea">2. Promoting rules</a>
 <ul>
-<li><a href="#org2f4085e">2.1. <code>applyRule</code></a></li>
+<li><a href="#orgff20969">2.1. <code>applyRule</code></a></li>
 </ul>
 </li>
 </ul>
@@ -220,8 +220,8 @@ Here we tie up the loose ends of our first-order logic theorem prover by putting
 all <a href="../nov1/nov1.html#org7d77e5e">the rules</a> together.
 </p>
 
-<div id="outline-container-orgf6b6105" class="outline-2">
-<h2 id="orgf6b6105"><span class="section-number-2">1.</span> The list monad</h2>
+<div id="outline-container-orgcf270e9" class="outline-2">
+<h2 id="orgcf270e9"><span class="section-number-2">1.</span> The list monad</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 As a quick reminder, here is the definition of the list monad.
@@ -240,8 +240,8 @@ functions that act on them!
 </div>
 </div>
 
-<div id="outline-container-org1778582" class="outline-2">
-<h2 id="org1778582"><span class="section-number-2">2.</span> Promoting rules</h2>
+<div id="outline-container-orgbec53ea" class="outline-2">
+<h2 id="orgbec53ea"><span class="section-number-2">2.</span> Promoting rules</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Recall the type we associate with a <i>rule</i> (remember that a rule is a way of
@@ -343,12 +343,15 @@ should apply <code>allRules</code> to it and map <code>Just</code> over the resu
 that they are still live. Thus we may define <code>loop</code> as
 </p>
 <div class="org-src-container">
-<pre class="src src-haskell"><span style="color: #fabd2f;">loop</span> t <span style="color: #83a598;">=</span> <span style="color: #fb4933;">do</span> maybeP <span style="color: #83a598;">&lt;-</span> t
-            <span style="color: #fb4933;">case</span> maybeP <span style="color: #fb4933;">of</span>
-              <span style="color: #d3869b;">Nothing</span> <span style="color: #83a598;">-&gt;</span> return <span style="color: #d3869b;">Nothing</span>
-              <span style="color: #d3869b;">Just</span> p <span style="color: #83a598;">-&gt;</span> <span style="color: #fb4933;">if</span> contradictory p
-                        <span style="color: #fb4933;">then</span> return <span style="color: #d3869b;">Nothing</span>
-                        <span style="color: #fb4933;">else</span> map <span style="color: #d3869b;">Just</span> (allRules p)
+<pre class="src src-haskell"><span style="color: #fabd2f;">loop</span> tableau <span style="color: #83a598;">=</span> <span style="color: #fb4933;">do</span>
+  maybefs <span style="color: #83a598;">&lt;-</span> tableau
+  <span style="color: #fb4933;">case</span> maybefs <span style="color: #fb4933;">of</span>
+    <span style="color: #d3869b;">Nothing</span> <span style="color: #83a598;">-&gt;</span> pure <span style="color: #d3869b;">Nothing</span>
+    <span style="color: #d3869b;">Just</span> fs <span style="color: #83a598;">-&gt;</span> <span style="color: #fb4933;">do</span>
+      newFs <span style="color: #83a598;">&lt;-</span> allRules fs
+      <span style="color: #fb4933;">if</span> contradictory newFs
+      <span style="color: #fb4933;">then</span> pure <span style="color: #d3869b;">Nothing</span>
+      <span style="color: #fb4933;">else</span> pure (<span style="color: #d3869b;">Just</span> newFs)
 </pre>
 </div>
 
@@ -359,15 +362,16 @@ our rules. Thus we write a function
 </p>
 <div class="org-src-container">
 <pre class="src src-haskell"><span style="color: #fabd2f;">depth</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Int</span> <span style="color: #83a598;">-&gt;</span> [<span style="color: #d3869b;">SignedForm</span>] <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Bool</span>
-<span style="color: #fabd2f;">depth</span> n sfs <span style="color: #83a598;">=</span> (iterate loop [map <span style="color: #d3869b;">Just</span> sfs]) <span style="color: #83a598;">!!</span> n
+<span style="color: #fabd2f;">depth</span> n sfs <span style="color: #83a598;">=</span> all (<span style="color: #83a598;">==</span> <span style="color: #d3869b;">Nothing</span>) (iterate loop [map <span style="color: #d3869b;">Just</span> sfs] <span style="color: #83a598;">!!</span> n)
 </pre>
 </div>
 <p>
 which turns the list of signed formulae <code>sfs</code> into a starting <code>Tableau</code> (by doing
 <code>[map Just sfs]</code>) and then loops the rules over it <code>n</code> times, using <a href="https://hackage.haskell.org/package/base-4.19.0.0/docs/Prelude.html#v:iterate"><code>iterate</code></a>. If
-the tableau is contradictory after <code>n</code> loops, we assume we have a contradiction;
-otherwise, we we assume the signed formulae are not contradictory. Note that
-we might sometimes be wrong.<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>
+the tableau is contradictory after <code>n</code> loops&#x2014;that is, if all the branches are
+<code>Nothing</code>&#x2014;we assume we have a contradiction; otherwise, we we assume the
+signed formulae are not contradictory. Note that we might sometimes be
+wrong.<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>
 </p>
 
 <p>
@@ -388,8 +392,8 @@ Yay!
 </p>
 </div>
 
-<div id="outline-container-org2f4085e" class="outline-3">
-<h3 id="org2f4085e"><span class="section-number-3">2.1.</span> <code>applyRule</code></h3>
+<div id="outline-container-orgff20969" class="outline-3">
+<h3 id="orgff20969"><span class="section-number-3">2.1.</span> <code>applyRule</code></h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 Yeah, yeah, but we haven't even defined <code>applyRule</code> yet. Jeez, what is wrong
@@ -418,19 +422,18 @@ result from applying the rule to the <i>rest</i> of the nodes (<code>fs</code>) 
 <h2 class="footnotes">Footnotes: </h2>
 <div id="text-footnotes">
 
-<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">In general, first-order logic is only
-semi-decideable. Thus if some set of formulae is contradictory, we may in
-principle find the contradiction by running a theorem prover at some depth,
-but this depth is upper bounded by infinity. Indeed, we could try to loop
-forever, but then our algorithm would never terminate on non-contradictory
-sets of formulae.</p></div></div>
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">In general, first-order logic is only semi-decideable. Thus if some
+set of formulae is contradictory, we may in principle find the contradiction
+by running a theorem prover at some depth, but this depth is upper bounded by
+infinity. Indeed, we could try to loop forever, but then our algorithm would
+never terminate on non-contradictory sets of formulae.</p></div></div>
 
 
 </div>
 </div></div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-11-13 Mon 15:27</p>
+<p class="date">Created: 2023-11-13 Mon 16:09</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

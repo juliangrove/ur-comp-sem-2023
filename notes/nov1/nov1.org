@@ -56,6 +56,7 @@
 	where vnew = freshV (fv f0 ++ fv f1)
 	      f0new = subst v0 (V vnew) f0
 	      f1new = subst v1 (V vnew) f1
+      _ == _ = False
   #+end_src
   To define notions like /fresh variable/, we can declare a class ~Attributes~
   containing methods for representing attributes of an expression in which we

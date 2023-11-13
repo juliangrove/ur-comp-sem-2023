@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-11-12 Sun 15:32 -->
+<!-- 2023-11-13 Mon 16:08 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Implementing first-order logic and tableau rules</title>
@@ -238,22 +238,22 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org0d34a95">1. First-order logic</a></li>
-<li><a href="#org7d77e5e">2. Rules</a>
+<li><a href="#org56595ec">1. First-order logic</a></li>
+<li><a href="#org116cf02">2. Rules</a>
 <ul>
-<li><a href="#orge9b5c31">2.1. Conjunction rules</a></li>
-<li><a href="#org29916b0">2.2. Disjunction rules</a></li>
-<li><a href="#org37fba56">2.3. Negation rules</a></li>
-<li><a href="#org247729b">2.4. γ rules</a></li>
-<li><a href="#orgf26cdc2">2.5. δ rules</a></li>
+<li><a href="#org802f155">2.1. Conjunction rules</a></li>
+<li><a href="#orge0a2b22">2.2. Disjunction rules</a></li>
+<li><a href="#orgb14c20a">2.3. Negation rules</a></li>
+<li><a href="#org4317f3b">2.4. γ rules</a></li>
+<li><a href="#org040cce0">2.5. δ rules</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org0d34a95" class="outline-2">
-<h2 id="org0d34a95"><span class="section-number-2">1.</span> First-order logic</h2>
+<div id="outline-container-org56595ec" class="outline-2">
+<h2 id="org56595ec"><span class="section-number-2">1.</span> First-order logic</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 We start by declaring data types for <i>terms</i>; i.e., variables and names.
@@ -318,6 +318,7 @@ an <code>Eq</code> instance:
     <span style="color: #fb4933;">where</span> vnew <span style="color: #83a598;">=</span> freshV (fv f0 <span style="color: #83a598;">++</span> fv f1)
           f0new <span style="color: #83a598;">=</span> subst v0 (<span style="color: #d3869b;">V</span> vnew) f0
           f1new <span style="color: #83a598;">=</span> subst v1 (<span style="color: #d3869b;">V</span> vnew) f1
+  <span style="color: #fb4933;">_</span> <span style="color: #83a598;">==</span> <span style="color: #fb4933;">_</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">False</span>
 </pre>
 </div>
 <p>
@@ -402,8 +403,8 @@ subtitution on formulae)!
 </div>
 </div>
 
-<div id="outline-container-org7d77e5e" class="outline-2">
-<h2 id="org7d77e5e"><span class="section-number-2">2.</span> Rules</h2>
+<div id="outline-container-org116cf02" class="outline-2">
+<h2 id="org116cf02"><span class="section-number-2">2.</span> Rules</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Here we implement the <a href="../oct30/oct30.html#org2214139">rules</a> associated with analytic tableaux. Each
@@ -453,8 +454,8 @@ Here are our rules.
 </p>
 </div>
 
-<div id="outline-container-orge9b5c31" class="outline-3">
-<h3 id="orge9b5c31"><span class="section-number-3">2.1.</span> Conjunction rules</h3>
+<div id="outline-container-org802f155" class="outline-3">
+<h3 id="org802f155"><span class="section-number-3">2.1.</span> Conjunction rules</h3>
 <div class="outline-text-3" id="text-2-1">
 <div class="org-src-container">
 <pre class="src src-haskell"><span style="color: #fabd2f;">andRule</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">PropRule</span>
@@ -466,8 +467,8 @@ Here are our rules.
 </div>
 </div>
 
-<div id="outline-container-org29916b0" class="outline-3">
-<h3 id="org29916b0"><span class="section-number-3">2.2.</span> Disjunction rules</h3>
+<div id="outline-container-orge0a2b22" class="outline-3">
+<h3 id="orge0a2b22"><span class="section-number-3">2.2.</span> Disjunction rules</h3>
 <div class="outline-text-3" id="text-2-2">
 <div class="org-src-container">
 <pre class="src src-haskell"><span style="color: #fabd2f;">orRule</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">PropRule</span>
@@ -479,8 +480,8 @@ Here are our rules.
 </div>
 </div>
 
-<div id="outline-container-org37fba56" class="outline-3">
-<h3 id="org37fba56"><span class="section-number-3">2.3.</span> Negation rules</h3>
+<div id="outline-container-orgb14c20a" class="outline-3">
+<h3 id="orgb14c20a"><span class="section-number-3">2.3.</span> Negation rules</h3>
 <div class="outline-text-3" id="text-2-3">
 <div class="org-src-container">
 <pre class="src src-haskell"><span style="color: #fabd2f;">notRule</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">PropRule</span>
@@ -491,8 +492,8 @@ Here are our rules.
 </div>
 </div>
 
-<div id="outline-container-org247729b" class="outline-3">
-<h3 id="org247729b"><span class="section-number-3">2.4.</span> γ rules</h3>
+<div id="outline-container-org4317f3b" class="outline-3">
+<h3 id="org4317f3b"><span class="section-number-3">2.4.</span> γ rules</h3>
 <div class="outline-text-3" id="text-2-4">
 <div class="org-src-container">
 <pre class="src src-haskell"><span style="color: #fabd2f;">gammaRule</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Rule</span>
@@ -512,8 +513,8 @@ Here are our rules.
 </div>
 </div>
 
-<div id="outline-container-orgf26cdc2" class="outline-3">
-<h3 id="orgf26cdc2"><span class="section-number-3">2.5.</span> δ rules</h3>
+<div id="outline-container-org040cce0" class="outline-3">
+<h3 id="org040cce0"><span class="section-number-3">2.5.</span> δ rules</h3>
 <div class="outline-text-3" id="text-2-5">
 <div class="org-src-container">
 <pre class="src src-haskell"><span style="color: #fabd2f;">deltaRule</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Rule</span>
@@ -530,7 +531,7 @@ Here are our rules.
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-11-12 Sun 15:32</p>
+<p class="date">Created: 2023-11-13 Mon 16:08</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
