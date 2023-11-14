@@ -5,7 +5,7 @@
 #+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
 
 #+Author: Julian Grove
-#+Title: Translating λ-calculus to first-order logic
+#+Title: Translating λ-calculus into first-order logic
 
 * λ-calculus to FOL
   We've now looked at how to translate terms of the simply typed λ-calculus into
