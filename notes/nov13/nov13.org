@@ -1,0 +1,103 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: Translating λ-calculus to first-order logic
+
+* λ-calculus to FOL
+  We've now looked at how to translate terms of the simply typed λ-calculus into
+  expressions of first-order logic. We can do this based on a set of simply
+  typed λ-terms that includes, for example, the following set of constants:
+  #+begin_src haskell
+    data Constant φ where
+      C :: Constant E
+      J :: Constant E
+      Dog :: Constant (E :-> T)
+      Teach :: Constant (E :-> (E :-> T))
+      And :: Constant (T :-> (T :-> T))
+      Or :: Constant (T :-> (T :-> T))
+      Imp :: Constant (T :-> (T :-> T))
+      Forall :: Constant ((E :-> T) :-> T)
+      Exists :: Constant ((E :-> T) :-> T)
+  #+end_src
+
+  We may then use the following function to carry out this translation:
+  #+begin_src haskell
+    translateTerm :: (forall φ. In φ γ -> FOL.Var) -> Integer -> Term γ φ -> Either FOL.Term FOL.Form
+    translateTerm g n (App (App (Con And) t) u) = Right (FOL.And  t' u')
+      where t' = case translateTerm g n t of Right t' -> t'
+	    u' = case translateTerm g n u of Right u' -> u'
+    translateTerm g n (App (App (Con Or) t) u) = Right (FOL.Or t' u')
+      where t' = case translateTerm g n t of Right t' -> t'
+	    u' = case translateTerm g n u of Right u' -> u'
+    translateTerm g n (App (App (Con Imp) t) u) = Right (FOL.Or (FOL.Not t') u')
+      where t' = case translateTerm g n t of Right t' -> t'
+	    u' = case translateTerm g n u of Right u' -> u'
+    translateTerm g n (App (Con Forall) t) =
+      Right (FOL.Forall (FOL.Var n) t')
+	where t' = case translated of Right t' -> t'
+	      translated = translateTerm (\i -> case i of First -> FOL.Var n; Next j -> g j) (succ n) tapp
+	      tapp = normalForm (App (weaken t) (Var First))
+    translateTerm g n (App (Con Exists) t) =
+      Right (FOL.Exists (FOL.Var n) t')
+	where t' = case translated of Right t' -> t'
+	      translated = translateTerm (\i -> case i of First -> FOL.Var n; Next j -> g j) (succ n) tapp
+	      tapp = normalForm (App (weaken t) (Var First))
+    translateTerm _ _ (Con C) = Left (FOL.N (FOL.Name 0))
+    translateTerm _ _ (Con J) = Left (FOL.N (FOL.Name 1))
+    translateTerm _ _ (Con Dog) = Right (FOL.P 0 [])
+    translateTerm _ _ (Con Teach) = Right (FOL.P 1 [])
+    translateTerm g n (App t u) = case (translateTerm g n t, translateTerm g n u) of
+				    (Right (FOL.P i ts), Left u') -> Right (FOL.P i (ts ++ [u']))
+  #+end_src
+
+  To translate terms of type ~T~, we may now employ the following function:
+  #+begin_src haskell
+    translateTermT :: Term Empty T -> FOL.Form
+    translateTermT t = case translateTerm (\case) 0 t of Right t' -> t'
+  #+end_src
+
+* English to FOL
+  Now we can also translate English expressions to first-order logic! To do so,
+  we simply compose our old interpretation function ~interpExpr~ with
+  ~translateTermT~ (sliding ~normalForm~ in between, in order to ensure that terms
+  are in β-normal form before they are translated).
+  #+begin_src haskell
+    englishToFOL :: Expr S -> FOL.Form
+    englishToFOL = translateTermT . normalForm . interpExpr
+  #+end_src
+  Indeed, we may check if some set of English sentences entails another English
+  sentence (given some depth)!
+  #+begin_src haskell
+    entailsEnglish :: Int -> [Expr S] -> Expr S -> Bool
+    entailsEnglish n sentences sentence =
+      entails n (map englishToFOL sentences) (englishToFOL sentence)
+  #+end_src
+
+  For an example, consider the English sentence /Julian taught Carina/.
+  #+begin_src haskell
+    julianTaughtCarina :: Expr S
+    julianTaughtCarina = (AppL (Lex (Word "julian" IsAnNP)) (AppR (Lex (Word "taught" ((IsAnNP ::\:: IsAnS) ::/:: IsAnNP))) (Lex (Word "carina" IsAnNP))))
+  #+end_src
+  We may check to see if this sentence entails itself, as follows, choosing a
+  depth of 1:
+  #+begin_src haskell
+    >>> entailsEnglish 1 [julianTaughtCarina] julianTaughtCarina
+    True
+  #+end_src
+  Excellent.
+
+* Exercise
+  Show, step by step, how the following Haskell expression is evaluated:
+  #+begin_src haskell
+    translateTermT (App (App (Con Teach) (Con C)) (Con J))
+  #+end_src
+  That is, start by unpacking the definition of ~translateTermT~, then apply the
+  definition, given the pattern it is applied to, and so on, until you have a
+  first-order logic formula. The point of this exercise is to help in
+  understanding what ~translateTermT~ (and ~translateTerm~) is actually doing, i.e.,
+  why it works. It's much easier to see what's going on after working through an
+  example.
