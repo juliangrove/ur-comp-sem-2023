@@ -27,6 +27,7 @@
   We may then use the following function to carry out this translation:
   #+begin_src haskell
     translateTerm :: (forall φ. In φ γ -> FOL.Var) -> Integer -> Term γ φ -> Either FOL.Term FOL.Form
+    translateTerm g n (Var i) = Left (FOL.V (g i))
     translateTerm g n (App (App (Con And) t) u) = Right (FOL.And  t' u')
       where t' = case translateTerm g n t of Right t' -> t'
 	    u' = case translateTerm g n u of Right u' -> u'
