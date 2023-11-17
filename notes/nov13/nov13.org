@@ -81,7 +81,11 @@
   For an example, consider the English sentence /Julian taught Carina/.
   #+begin_src haskell
     julianTaughtCarina :: Expr S
-    julianTaughtCarina = (AppL (Lex (Word "julian" IsAnNP)) (AppR (Lex (Word "taught" ((IsAnNP ::\:: IsAnS) ::/:: IsAnNP))) (Lex (Word "carina" IsAnNP))))
+    julianTaughtCarina = (AppL
+			   (Lex (Word "julian" IsAnNP))
+			   (AppR
+			     (Lex (Word "taught" ((IsAnNP ::\:: IsAnS) ::/:: IsAnNP)))
+			     (Lex (Word "carina" IsAnNP))))
   #+end_src
   We may check to see if this sentence entails itself, as follows, choosing a
   depth of 1:

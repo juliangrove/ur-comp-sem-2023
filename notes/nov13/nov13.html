@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-11-15 Wed 01:29 -->
+<!-- 2023-11-16 Thu 22:26 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Translating λ-calculus into first-order logic</title>
@@ -206,15 +206,15 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org41184ec">1. λ-calculus to FOL</a></li>
-<li><a href="#orgf0a88ff">2. English to FOL</a></li>
-<li><a href="#org20142d9">3. Exercise</a></li>
+<li><a href="#orgbb5e54e">1. λ-calculus to FOL</a></li>
+<li><a href="#org77cd196">2. English to FOL</a></li>
+<li><a href="#orgdb9bda6">3. Exercise</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org41184ec" class="outline-2">
-<h2 id="org41184ec"><span class="section-number-2">1.</span> λ-calculus to FOL</h2>
+<div id="outline-container-orgbb5e54e" class="outline-2">
+<h2 id="orgbb5e54e"><span class="section-number-2">1.</span> λ-calculus to FOL</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 We've now looked at how to translate terms of the simply typed λ-calculus into
@@ -280,8 +280,8 @@ To translate terms of type <code>T</code>, we may now employ the following funct
 </div>
 </div>
 
-<div id="outline-container-orgf0a88ff" class="outline-2">
-<h2 id="orgf0a88ff"><span class="section-number-2">2.</span> English to FOL</h2>
+<div id="outline-container-org77cd196" class="outline-2">
+<h2 id="org77cd196"><span class="section-number-2">2.</span> English to FOL</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Now we can also translate English expressions to first-order logic! To do so,
@@ -310,7 +310,11 @@ For an example, consider the English sentence <i>Julian taught Carina</i>.
 </p>
 <div class="org-src-container">
 <pre class="src src-haskell"><span style="color: #fabd2f;">julianTaughtCarina</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Expr</span> <span style="color: #d3869b;">S</span>
-<span style="color: #fabd2f;">julianTaughtCarina</span> <span style="color: #83a598;">=</span> (<span style="color: #d3869b;">AppL</span> (<span style="color: #d3869b;">Lex</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"julian"</span> <span style="color: #d3869b;">IsAnNP</span>)) (<span style="color: #d3869b;">AppR</span> (<span style="color: #d3869b;">Lex</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"taught"</span> ((<span style="color: #d3869b;">IsAnNP</span> <span style="color: #d3869b;">::\::</span> <span style="color: #d3869b;">IsAnS</span>) <span style="color: #d3869b;">::/::</span> <span style="color: #d3869b;">IsAnNP</span>))) (<span style="color: #d3869b;">Lex</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"carina"</span> <span style="color: #d3869b;">IsAnNP</span>))))
+<span style="color: #fabd2f;">julianTaughtCarina</span> <span style="color: #83a598;">=</span> (<span style="color: #d3869b;">AppL</span>
+                       (<span style="color: #d3869b;">Lex</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"julian"</span> <span style="color: #d3869b;">IsAnNP</span>))
+                       (<span style="color: #d3869b;">AppR</span>
+                         (<span style="color: #d3869b;">Lex</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"taught"</span> ((<span style="color: #d3869b;">IsAnNP</span> <span style="color: #d3869b;">::\::</span> <span style="color: #d3869b;">IsAnS</span>) <span style="color: #d3869b;">::/::</span> <span style="color: #d3869b;">IsAnNP</span>)))
+                         (<span style="color: #d3869b;">Lex</span> (<span style="color: #d3869b;">Word</span> <span style="color: #b8bb26;">"carina"</span> <span style="color: #d3869b;">IsAnNP</span>))))
 </pre>
 </div>
 <p>
@@ -328,8 +332,8 @@ Excellent.
 </div>
 </div>
 
-<div id="outline-container-org20142d9" class="outline-2">
-<h2 id="org20142d9"><span class="section-number-2">3.</span> Exercise</h2>
+<div id="outline-container-orgdb9bda6" class="outline-2">
+<h2 id="orgdb9bda6"><span class="section-number-2">3.</span> Exercise</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Show, step by step, how the following Haskell expression is evaluated:
@@ -351,7 +355,7 @@ example.
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-11-15 Wed 01:29</p>
+<p class="date">Created: 2023-11-16 Thu 22:26</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
