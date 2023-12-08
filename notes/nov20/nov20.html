@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-12-07 Thu 21:16 -->
+<!-- 2023-12-07 Thu 21:21 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Combining continuation semantics and theorem proving</title>
@@ -206,14 +206,14 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org2b0e9d8">1. Interpreting λ-calculus into first-order logic</a></li>
-<li><a href="#org7ee836a">2. English to first-order logic</a></li>
+<li><a href="#org8a20715">1. Interpreting λ-calculus into first-order logic</a></li>
+<li><a href="#org0f0d2be">2. English to first-order logic</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org2b0e9d8" class="outline-2">
-<h2 id="org2b0e9d8"><span class="section-number-2">1.</span> Interpreting λ-calculus into first-order logic</h2>
+<div id="outline-container-org8a20715" class="outline-2">
+<h2 id="org8a20715"><span class="section-number-2">1.</span> Interpreting λ-calculus into first-order logic</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 In <a href="../nov13/nov13.html">previous notes</a>, we showed one way of rendering λ-terms as first-order logic
@@ -308,8 +308,8 @@ Given this function, we can interpret any starting closed λ-term via
 </div>
 </div>
 
-<div id="outline-container-org7ee836a" class="outline-2">
-<h2 id="org7ee836a"><span class="section-number-2">2.</span> English to first-order logic</h2>
+<div id="outline-container-org0f0d2be" class="outline-2">
+<h2 id="org0f0d2be"><span class="section-number-2">2.</span> English to first-order logic</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Given our function <code>interpExpr</code> from <a href="https://juliangrove.github.io/ur-comp-sem-2023/notes/nov15/nov15.html#org1db5e84">the previous notes</a>, we may now write a
@@ -337,12 +337,23 @@ other words, we map applications in the above to function applications in
 Haskell and abstractions to functions in Haskell. So β-redices may be
 interpreted as Haskell functions applied to Haskell arguments.
 </p>
+
+<p>
+Now that we can render English sentences as first-order logic formulae, we may
+also prove entailments between (sets of) English sentences! The following
+function is like our <code>FOL</code> function <code>entails</code>, but for English.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">entailsEnglish</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Int</span> <span style="color: #83a598;">-&gt;</span> [<span style="color: #d3869b;">Expr</span> <span style="color: #d3869b;">S</span>] <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Expr</span> <span style="color: #d3869b;">S</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Bool</span>
+<span style="color: #fabd2f;">entailsEnglish</span> n sentences sentence <span style="color: #83a598;">=</span> entails n (map englishToFOL sentences) (englishToFOL sentence)
+</pre>
+</div>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-12-07 Thu 21:16</p>
+<p class="date">Created: 2023-12-07 Thu 21:21</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

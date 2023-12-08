@@ -99,3 +99,11 @@
   other words, we map applications in the above to function applications in
   Haskell and abstractions to functions in Haskell. So β-redices may be
   interpreted as Haskell functions applied to Haskell arguments.
+
+  Now that we can render English sentences as first-order logic formulae, we may
+  also prove entailments between (sets of) English sentences! The following
+  function is like our ~FOL~ function ~entails~, but for English.
+  #+begin_src haskell
+    entailsEnglish :: Int -> [Expr S] -> Expr S -> Bool
+    entailsEnglish n sentences sentence = entails n (map englishToFOL sentences) (englishToFOL sentence)
+  #+end_src
