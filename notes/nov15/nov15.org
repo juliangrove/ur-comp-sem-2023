@@ -1,0 +1,84 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: Continuation semantics
+
+* Overview
+  Starting with [[https://members.loria.fr/PdeGroote/papers/amsterdam01.pdf][Philippe de Groote's work]], a rich literature in formal semantics
+  has developed which relies on [[https://en.wikipedia.org/wiki/Continuation-passing_style][/continuation passing/]] to model the
+  truth-conditional contributions of quantifiers, like /some dog/ and /every
+  linguist/. Since de Groote's analysis, most work has focused on what are known
+  as /delimited/ or [[https://link-springer-com.ezp.lib.rochester.edu/article/10.1007/BF01019944][/composable/ continuations]]; in particular, [[https://cb125.github.io/][Chris Barker]] and
+  [[https://homes.luddy.indiana.edu/ccshan/][Ken Shan]]'s work (e.g., check out their [[https://global.oup.com/academic/product/continuations-and-natural-language-9780199575022?cc=us&lang=en&][2014 book]], but also [[https://link-springer-com.ezp.lib.rochester.edu/article/10.1023/A:1022183511876][Barker 2003]] for
+  something a little shorter). Composable continuations have some fixed result
+  type, so that the meanings of natural language expressions can be modeled as
+  functions of type $(α → o) → o$ (for some $o$). For example, one can model the
+  meaning of quantifiers by choosing $o$ to be $t$ (the type of extensional
+  propositions), and assigning, e.g., /some dog/ the interpretation
+  $$λk.∃x : dog(x) ∧ k(x)$$
+  which is of type $(e → t) → t$. Meanwhile, other, non-quantificational
+  expressions can be assigned meanings that use their continuation trivially,
+  that is, /by feeding themselves to it/. For example, /barks/ can be assigned the
+  interpretation
+  $$λk.k(bark)$$
+  which is of type $((e → t) → t) → t$. It takes some continuation of type $(e →
+  t) → t$ and feeds it the property $bark$ (of type $e → t$). To compose the
+  meaning of /some dog/ with the meaning of /barks/, we may used /continuized
+  (barkward) functional application/:[fn::Note that the forward variant just
+  switches the binders $λf$ and $λx$, i.e.,
+  $$m ▹ n ≝ λk.m(λf.n(λx.k(f(x))))$$]
+  $$⟦\textit{some dog}⟧ ◃ ⟦\textit{barks}⟧ =$$
+  $$λk.⟦\textit{some dog}⟧(λx.⟦\textit{barks}⟧(λf.k(f(x)))) =$$
+  $$λk.(λk^\prime.∃y : dog(x) ∧
+  k^\prime(y))(λx.(λk^\prime.k^\prime(bark))(λf.k(f(x)))) →_β^*$$
+  $$λk.(λk^\prime.∃y : dog(y) ∧ k^\prime(y))(λx.k(bark(x))) →_β^*$$
+  $$λk.∃y : dog(y) ∧ k(bark(y))$$
+  Having obtained a continuized meaning for the entire sentence, we can /lower/ it
+  to a value of type $t$ by feeding it the identity function:
+  $$(λk.∃y : dog(y) ∧ k(bark(y)))(λb.b) →_β^* ∃y : dog(y) ∧ bark(y)$$
+
+* Interpreting via continuations in Haskell
+  Recall our type family ~SemType~, which takes grammatical categories of
+  applicative categorial grammar onto types of the λ-calculus:
+  #+begin_src haskell
+    type family SemType (c :: Cat) where
+      SemType NP = E
+      SemType N = E :-> T
+      SemType S = T
+      SemType (c1 :\: c2) = SemType c1 :-> SemType c2
+      SemType (c2 :/: c1) = SemType c1 :-> SemType c2
+  #+end_src
+  In terms of this map, we may implement a function ~interpExpr~, which takes
+  expressions of English onto λ-terms of /continuized/ types. Rather than map an
+  expression of category ~c~ directly onto its semantic type, we map it onto a
+  closed term of type ~(SemType c :-> T) :-> T~, using continuized functional
+  application:
+  #+begin_src haskell
+    interpExpr :: Expr c -> Term Empty ((SemType c :-> T) :-> T)
+    interpExpr (Lex w) = interpWord w
+    interpExpr (AppL e1 e2) = Lam (App (weaken (interpExpr e1)) (Lam (App (weaken (weaken (interpExpr e2))) (Lam (App (Var (Next (Next First))) (App (Var First) (Var (Next First))))))))
+    interpExpr (AppR e1 e2) = Lam (App (weaken (interpExpr e1)) (Lam (App (weaken (weaken (interpExpr e2))) (Lam (App (Var (Next (Next First))) (App (Var (Next First)) (Var First)))))))
+  #+end_src
+  To interpret individual words (though note that we're considering /some dog/ a
+  word for our purposes - try to think about what difficulties we encounter if
+  we try to compose /every/ with /dog/ using our current system), we may write a
+  function ~interpWord~ taking words of some category ~c~ onto closed terms of type
+  ~(SemType c :-> T) :-> T~:
+  #+begin_src haskell
+    interpWord :: Word c -> Term Empty ((SemType c :-> T) :-> T)
+    interpWord (Word "some dog" IsAnNP) = Lam (App (Con Exists) (Lam (App (App (Con And) (App (Con Dog) (Var First))) (App (Var (Next First)) (Var First)))))
+    interpWord (Word "barks" (IsAnNP ::\:: IsAnS)) = Lam (App (Var First) (Con Bark))
+  #+end_src
+  Note that for this to be well typed, our constants should have the following
+  types:
+  #+begin_src haskell
+    data Constant (φ :: Type) where
+      Exists :: Constant ((E :-> T) :-> T)
+      And :: Constant (T :-> (T :-> T))
+      Dog :: Constant (E :-> T)
+      Bark :: Constant (E :-> T)
+  #+end_src
