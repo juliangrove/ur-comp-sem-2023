@@ -1,0 +1,101 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: Combining continuation semantics and theorem proving
+
+* Interpreting λ-calculus into first-order logic
+  In [[../nov13/nov13.html][previous notes]], we showed one way of rendering λ-terms as first-order logic
+  formulae. There, we translated terms of type ~E~ as ~FOL.Term~'s and terms of any
+  other type as ~FOL.Form~'s. In this set of notes, we'll do this in a somewhat
+  different fashion; in particular, by using a /homomorphism/ from λ-calculus
+  terms to Haskell functions. We do this by relying on a /type homomorphism/,
+  encoded as the type family ~Domain~:
+  #+begin_src haskell
+    type family Domain (φ :: Type) where
+      Domain E = FOL.Term
+      Domain T = FOL.Form
+      Domain (α :-> β) = Domain α -> Domain β
+      Domain (α :/\ β) (Domain α, Domain β)
+  #+end_src
+  Having a determined which λ-calculus types should get mapped to which Haskell
+  types, we can start encoding an interpretation of constants, that is, before
+  we get to λ-terms themselves. Given the set of constants
+  #+begin_src haskell
+    data Constant (φ :: Type) where
+      Forall :: Constant ((E :-> T) :-> T)
+      Exists :: Constant ((E :-> T) :-> T)
+      And :: Constant (T :-> (T :-> T))
+      Or :: Constant (T :-> (T :-> T))
+      Imp :: Constant (T :-> (T :-> T))
+      Not :: Constant (T :-> T)
+      Dog :: Constant (E :-> T)
+      Person :: Constant (E :-> T)
+      Bark :: Constant (E :-> T)
+      Sleep :: Constant (E :-> T)
+      Teach :: Constant (E :-> (E :-> T))
+      C :: Constant E
+      J :: Constant E
+  #+end_src
+  we can start writing things like
+  #+begin_src haskell
+    interpCon :: Integer -> Constant φ -> Domain φ
+    interpCon n Forall = \f -> FOL.Forall (FOL.Var n) (f (FOL.V (FOL.Var n)))
+    interpCon n Exists = \f -> FOL.Exists (FOL.Var n) (f (FOL.V (FOL.Var n)))
+    interpCon _ And = \p q -> FOL.And p q
+    interpCon _ Or = \p q -> FOL.Or p q
+    interpCon _ Imp = \p q -> FOL.Or (FOL.Not p) q
+    interpCon _ Not = \p -> FOL.Not p
+    interpCon _ Dog = \x -> FOL.P 3 [x]
+    interpCon _ Person = \x -> FOL.P 0 [x]
+    interpCon _ Bark = \x -> FOL.P 2 [x]
+    interpCon _ Sleep = \x -> FOL.P 1 [x]
+    interpCon _ Teach = \x y -> FOL.P 4 [y, x]
+    interpCon _ C = FOL.N (FOL.Name 0)
+    interpCon _ J = FOL.N (FOL.Name 1)
+  #+end_src
+  that is, by keeping track of which variable names have so far been used in the
+  interpretation via an ~Integer~ argument.
+
+  We may now define a function ~interpTerm~ as
+  #+begin_src haskell
+    interpTerm :: Integer -> (forall φ.In φ γ -> Domain φ) -> Term γ ψ -> Domain ψ
+    interpTerm _ g (Var i) = g i
+    interpTerm n _ (Con c) = interpCon n c
+    interpTerm n g (App t u) = interpTerm n g t (interpTerm (succ n) g u)
+    interpTerm n g (Lam t) = \x -> interpTerm n (\i -> case i of First -> x; Next j -> g j) t
+    interpTerm n g (Pair t u) = (interpTerm n g t, interpTerm n g u)
+  #+end_src
+  Note that we increment the integer we use by 1 every time an application
+  occurs; in particular, in the argument of the application. We do this in order
+  to prevent any new quantifiers introduced in the scope of some quantifier from
+  binding a variable of the same name.
+
+  Given this function, we can interpret any starting closed λ-term via
+  #+begin_src haskell
+    interpClosedTerm :: Term Empty φ -> Domain φ
+    interpClosedTerm = interpTerm 0 (\case)
+  #+end_src
+
+* English to first-order logic
+  Given our function ~interpExpr~ from [[https://juliangrove.github.io/ur-comp-sem-2023/notes/nov15/nov15.html#org1db5e84][the previous notes]], we may now write a
+  function
+  #+begin_src haskell
+    englishToFOL :: Expr S -> FOL.Form
+    englishToFOL = interpClosedTerm . lower . interpExpr
+  #+end_src
+  where we define ~lower~ as
+  #+begin_src haskell
+    lower :: Term γ ((T :-> T) :-> T) -> Term γ T
+    lower t = App t (Lam (Var First))
+  #+end_src
+  Note that ~englishToFOL~ doesn't actually require that the λ-term interpreting
+  an English expression be normalized at any point (in contrast to the strategy
+  taken in [[../nov13/nov13.html#org77cd196][an earlier set of notes]]. That's because we defined the map from any
+  given ~Term γ φ~ to ~Domain φ~ as a homomorphism from λ-calculus to Haskell! In
+  other words, we map applications in the above to function applications in
+  Haskell and abstractions to functions in Haskell. So β-redices may be
+  interpreted as Haskell functions applied to Haskell arguments.
