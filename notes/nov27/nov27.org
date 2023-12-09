@@ -1,0 +1,69 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: Probabilistic programming: introduction
+
+* A DSL for probabilistic programming
+  Let's start putting together a little domain-specific language (DSL) for
+  constructing probabilistic programs. To do this, let's first introduce a new
+  atomic type, $r$, representing the type of real numbers, in addition to $e$
+  and $t$. Second, let's introduce a new type constructor $\mathtt{P}$, which
+  takes any type $α$ onto the type $\mathtt{P} α$ of probabilistic programs
+  which /compute/ things of type $α$. That is, if $m : \mathtt{P} α$, then m
+  encode a probability distribution over things of type $α$.
+
+  Our DSL may be associated with the following terms, which we'll describe in
+  turn:
+  $$return : α → \mathtt{P} α$$
+  $$(∼) : \mathtt{P} α → (α → \mathtt{P} β) → \mathtt{P} β$$
+  $$factor : r → \mathtt{P} ⋄$$
+  $$𝔼_{(·)} : \mathtt{P} α → (α → r) → r$$
+  $$𝟙 : t → r$$
+
+** $return$
+   $return$ is used to create trivial probabilistic programs; that is, ones
+   which correspond to distributions assigning all of their mass to the returned
+   value (a.k.a. [[https://en.wikipedia.org/wiki/Degenerate_distribution][/degenerate/ distributions]]). For example $return(j)$ is the
+   program of type $\mathtt{P} e$ which has a probability of 1 of returning $j$
+   and a probability of 0 of returning any $x$ of type $e$ which is not $j$.
+  
+** $(∼)$
+   $(∼)$ (pronounced 'bind') lets you sample a value from one probabilistic
+   program (of type $\mathtt{P} α$) and feed it into another probabilistic
+   program that depends on a value of type $α$ (i.e., a function of type $α →
+   \mathtt{P}$), in order to get back a new probabilistic program of type
+   $\mathtt{P} β$. In general, we will write binds in the form
+   $$\begin{array}{l} \mbox{} x ∼ m \\ k(x) \end{array}$$
+   instead of $m ∼ λx.k(x)$, in order to suggest an imperative metaphor whereby
+   $x$ is /sampled/ from $m$ before the program continues with $k(x)$.
+
+** $factor$
+   Given a real number $r$, $factor(x)$ weights its continuation by $x$. That
+   is,
+   $$\begin{array}{l} x ∼ m \\ factor(r) \\ k(x) \end{array}$$
+   is the program which samples $x$ from $m$ and then weights by $r$ the
+   probability of continuing the program with $k(x)$. For example, if some value
+   $y$ were to then be sampled from $k(x)$, the probability associated with $y$
+   will now be scaled by $r$.
+
+** $𝔼_{(·)}$
+   $𝔼_{(·)}$ is the /expected value operator/. Given a probabilistic program $m$
+   of type $\mathtt{P} α$ and a function $f$ mapping any given $α$ to a real
+   number ($f : α → r$), $𝔼_m(f)$ is the expected value of $f$, given the
+   distribution represented by $m$. For example, $m$ might be a distribution
+   over people, and $f$ might be a function mapping each person to their
+   height. In that case, $𝔼_m(f)$ is a weighted average of heights of people in
+   the distribution $m$.
+
+** $𝟙$
+   $𝟙$ is the /indicator function/ mapping inhabitants of $t$ to $r$ (i.e., $𝟙 : t
+   → r$). If $t$ is $Bool$, we'd have $𝟙(\mathtt{T}) = 1$ and $𝟙(\mathtt{F}) =
+   0$. Note that we can define an operator that returns the /probability/ associated
+   with a program of type $\mathtt{P} t$ by taking the expected value of the
+   indicator function:
+   $$ℙ : \mathtt{P} t → r$$
+   $$ℙ(m) = 𝔼_m(𝟙)$$
