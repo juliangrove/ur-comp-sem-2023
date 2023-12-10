@@ -1,0 +1,9 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: Interpreting probabilistic programs
+

@@ -88,9 +88,9 @@
   | November 27   | Probabilistic programming: introduction                                            | [[./notes/nov27/nov27.html][Nov27 notes]]                       | [[./readings/grove_factivity_2023.pdf][Grove and White: factivity paper]], [[./readings/grove_probabilistic_2023.pdf][Grove and Bernardy: Probabilistic compositional semantics, purely]] |
   | November 29   | Implementing probabilistic programs in Haskell                                     | [[./notes/nov29/nov29.html][Nov29 notes]]                       |                                                                                                     |
   | December 4    | Hybrid probabilistic/FOL systems                                                   |                                   |                                                                                                     |
-  | December 6    | Expanding the probabilistic interface                                              |                                   |                                                                                                     |
-  | December 11   | Two levels of probabilistic involvement                                            |                                   |                                                                                                     |
-  | December 13   | Probabilistic programs as Bayesian models                                          |                                   |                                                                                                     |
+  | December 6    | Encoding a probabilistic knowledge base                                            |                                   |                                                                                                     |
+  | December 11   | Rational Speech Act models via theorem proving                                     |                                   |                                                                                                     |
+  | December 13   | Probabilistic programs as Bayesian models of inference data                        |                                   |                                                                                                     |
 
 * Installing Haskell
   This course will be [[https://www.haskell.org/][Haskell]]-based, so if you don't have a Haskell development
