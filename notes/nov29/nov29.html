@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-12-10 Sun 14:20 -->
+<!-- 2023-12-10 Sun 15:18 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Implementing probabilistic programs in Haskell</title>
@@ -206,15 +206,15 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org3b6eb0e">1. Overview</a></li>
-<li><a href="#org32cacd7">2. New types and constructors</a></li>
-<li><a href="#org6a27493">3. Updated operational semantics</a></li>
+<li><a href="#org622298c">1. Overview</a></li>
+<li><a href="#org797be3d">2. New types and constructors</a></li>
+<li><a href="#orgd8d4886">3. Updated operational semantics</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org3b6eb0e" class="outline-2">
-<h2 id="org3b6eb0e"><span class="section-number-2">1.</span> Overview</h2>
+<div id="outline-container-org622298c" class="outline-2">
+<h2 id="org622298c"><span class="section-number-2">1.</span> Overview</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Here we extend our existing data types <code>Term</code> and <code>Constant</code>, in order to
@@ -225,8 +225,8 @@ constructors.
 </div>
 </div>
 
-<div id="outline-container-org32cacd7" class="outline-2">
-<h2 id="org32cacd7"><span class="section-number-2">2.</span> New types and constructors</h2>
+<div id="outline-container-org797be3d" class="outline-2">
+<h2 id="org797be3d"><span class="section-number-2">2.</span> New types and constructors</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Besides our old types <code>E</code> and <code>T</code> and our arrow and product constructors, we may
@@ -277,8 +277,8 @@ and we'll extend <code>Constant</code> with constructors for the other expressio
 </div>
 </div>
 
-<div id="outline-container-org6a27493" class="outline-2">
-<h2 id="org6a27493"><span class="section-number-2">3.</span> Updated operational semantics</h2>
+<div id="outline-container-orgd8d4886" class="outline-2">
+<h2 id="orgd8d4886"><span class="section-number-2">3.</span> Updated operational semantics</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Given our new <code>Term</code> constructors, we should extend our functions <code>reorder</code> and
@@ -344,6 +344,22 @@ We can give a new definition of <code>normalForm</code> as follows:
 </pre>
 </div>
 <p>
+where <code>weaken</code> and <code>weaken2</code> are defined as
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #928374;">-- </span><span style="color: #928374;">weaken, targetting the first position in the context</span>
+<span style="color: #fabd2f;">weaken</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Term</span> &#947; &#966; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> (<span style="color: #d3869b;">Cons</span> &#968; &#947;) &#966;
+<span style="color: #fabd2f;">weaken</span> <span style="color: #83a598;">=</span> reorder <span style="color: #d3869b;">Next</span>
+
+<span style="color: #928374;">-- </span><span style="color: #928374;">weaken, targeting the second position in the context</span>
+<span style="color: #fabd2f;">weaken2</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Term</span> (<span style="color: #d3869b;">Cons</span> &#966; &#947;) &#968; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> (<span style="color: #d3869b;">Cons</span> &#966; (<span style="color: #d3869b;">Cons</span> &#967; &#947;)) &#968;
+<span style="color: #fabd2f;">weaken2</span> <span style="color: #83a598;">=</span> reorder g
+  <span style="color: #fb4933;">where</span> g <span style="color: #83a598;">::</span> <span style="color: #d3869b;">In</span> &#968; (<span style="color: #d3869b;">Cons</span> &#966; &#947;) <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">In</span> &#968; (<span style="color: #d3869b;">Cons</span> &#966; (<span style="color: #d3869b;">Cons</span> &#967; &#947;))
+        g <span style="color: #d3869b;">First</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">First</span>
+        g (<span style="color: #d3869b;">Next</span> i) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Next</span> (<span style="color: #d3869b;">Next</span> i)
+</pre>
+</div>
+<p>
 It can be seen that the <i>normal form</i> of a term with <code>Let</code> and <code>Return</code> reduces any
 programs as allowed by Left Identity, as well as re-brackets programs so that
 such reductions may potentially be applied. 
@@ -353,7 +369,7 @@ such reductions may potentially be applied.
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-12-10 Sun 14:20</p>
+<p class="date">Created: 2023-12-10 Sun 15:18</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

@@ -108,6 +108,19 @@
 	Let t' u' -> normalForm (Let t' (Let u' (weaken2 (normalForm u)))) -- Here we rebracket, potentially leading to another reduction based on Left Identity.
 	t' -> Let t' (normalForm u) -- Here we don't do anything.
   #+end_src
+  where ~weaken~ and ~weaken2~ are defined as
+  #+begin_src haskell
+    -- weaken, targetting the first position in the context
+    weaken :: Term γ φ -> Term (Cons ψ γ) φ
+    weaken = reorder Next
+
+    -- weaken, targeting the second position in the context
+    weaken2 :: Term (Cons φ γ) ψ -> Term (Cons φ (Cons χ γ)) ψ
+    weaken2 = reorder g
+      where g :: In ψ (Cons φ γ) -> In ψ (Cons φ (Cons χ γ))
+	    g First = First
+	    g (Next i) = Next (Next i)
+  #+end_src
   It can be seen that the /normal form/ of a term with ~Let~ and ~Return~ reduces any
   programs as allowed by Left Identity, as well as re-brackets programs so that
   such reductions may potentially be applied. 
