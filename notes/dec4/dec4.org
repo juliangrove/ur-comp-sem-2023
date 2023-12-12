@@ -125,7 +125,7 @@
    Meanwhile, ~Let~ is interpreted using the bind of the same monad.
    #+begin_src haskell
      interpTerm n g (Let t u) =
-     interpTerm n g t >>= \x -> interpTerm n (\i -> case i of First -> x; Next j -> g j) u
+       interpTerm n g t >>= \x -> interpTerm n (\i -> case i of First -> x; Next j -> g j) u
    #+end_src
    Notice our use of variable assignments (things of type ~forall φ.In φ γ ->
    Domain φ~) here, which is analogous to how we use them when we interpret

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-12-12 Tue 17:52 -->
+<!-- 2023-12-12 Tue 17:54 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Interpreting probabilistic programs</title>
@@ -238,20 +238,20 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgf19c85b">1. Overview</a></li>
-<li><a href="#orgacc8eb7">2. The meanings of λ-calculus types</a></li>
-<li><a href="#org5e0135a">3. The meaning of λ-calculus terms</a>
+<li><a href="#orgf37584b">1. Overview</a></li>
+<li><a href="#org4778b75">2. The meanings of λ-calculus types</a></li>
+<li><a href="#org15f1a21">3. The meaning of λ-calculus terms</a>
 <ul>
-<li><a href="#org1661078">3.1. Constants</a></li>
-<li><a href="#org2a60a84">3.2. Monadic constructors</a></li>
+<li><a href="#orge8d50e8">3.1. Constants</a></li>
+<li><a href="#org37e68d1">3.2. Monadic constructors</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgf19c85b" class="outline-2">
-<h2 id="orgf19c85b"><span class="section-number-2">1.</span> Overview</h2>
+<div id="outline-container-orgf37584b" class="outline-2">
+<h2 id="orgf37584b"><span class="section-number-2">1.</span> Overview</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 In <a href="../nov29/nov29.html">the previous notes</a>, we gave a syntactic encoding in the λ-calculus of our
@@ -268,8 +268,8 @@ functions.
 </div>
 </div>
 
-<div id="outline-container-orgacc8eb7" class="outline-2">
-<h2 id="orgacc8eb7"><span class="section-number-2">2.</span> The meanings of λ-calculus types</h2>
+<div id="outline-container-org4778b75" class="outline-2">
+<h2 id="org4778b75"><span class="section-number-2">2.</span> The meanings of λ-calculus types</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 We can update our map <code>Domain</code> from λ-calculus types to Haskell types as
@@ -328,8 +328,8 @@ Important for our interpretation is that <code>ProbProg</code> gives rise to a m
 </div>
 </div>
 
-<div id="outline-container-org5e0135a" class="outline-2">
-<h2 id="org5e0135a"><span class="section-number-2">3.</span> The meaning of λ-calculus terms</h2>
+<div id="outline-container-org15f1a21" class="outline-2">
+<h2 id="org15f1a21"><span class="section-number-2">3.</span> The meaning of λ-calculus terms</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Given this encoding encoding of types, we can begin assigning meanings to
@@ -337,8 +337,8 @@ terms of the λ-calculus representing probabilistic programs.
 </p>
 </div>
 
-<div id="outline-container-org1661078" class="outline-3">
-<h3 id="org1661078"><span class="section-number-3">3.1.</span> Constants</h3>
+<div id="outline-container-orge8d50e8" class="outline-3">
+<h3 id="orge8d50e8"><span class="section-number-3">3.1.</span> Constants</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 Let's look at constants first.
@@ -406,8 +406,8 @@ broader context, this weight is now also scaled by <code>r</code>.
 </div>
 </div>
 
-<div id="outline-container-org2a60a84" class="outline-3">
-<h3 id="org2a60a84"><span class="section-number-3">3.2.</span> Monadic constructors</h3>
+<div id="outline-container-org37e68d1" class="outline-3">
+<h3 id="org37e68d1"><span class="section-number-3">3.2.</span> Monadic constructors</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 Let's now interpret our monadic constructors <code>Return</code> and <code>Let</code>. <code>Return</code> gets
@@ -423,7 +423,7 @@ Meanwhile, <code>Let</code> is interpreted using the bind of the same monad.
 </p>
 <div class="org-src-container">
 <pre class="src src-haskell"><span style="color: #fabd2f;">interpTerm</span> n g (<span style="color: #d3869b;">Let</span> t u) <span style="color: #83a598;">=</span>
-<span style="color: #fabd2f;">interpTerm</span> n g t <span style="color: #83a598;">&gt;&gt;=</span> <span style="color: #83a598;">\</span>x <span style="color: #83a598;">-&gt;</span> interpTerm n (<span style="color: #83a598;">\</span>i <span style="color: #83a598;">-&gt;</span> <span style="color: #fb4933;">case</span> i <span style="color: #fb4933;">of</span> <span style="color: #d3869b;">First</span> <span style="color: #83a598;">-&gt;</span> x; <span style="color: #d3869b;">Next</span> j <span style="color: #83a598;">-&gt;</span> g j) u
+  interpTerm n g t <span style="color: #83a598;">&gt;&gt;=</span> <span style="color: #83a598;">\</span>x <span style="color: #83a598;">-&gt;</span> interpTerm n (<span style="color: #83a598;">\</span>i <span style="color: #83a598;">-&gt;</span> <span style="color: #fb4933;">case</span> i <span style="color: #fb4933;">of</span> <span style="color: #d3869b;">First</span> <span style="color: #83a598;">-&gt;</span> x; <span style="color: #d3869b;">Next</span> j <span style="color: #83a598;">-&gt;</span> g j) u
 </pre>
 </div>
 <p>
@@ -445,7 +445,7 @@ Notice our use of variable assignments (things of type <code>forall φ.In φ γ 
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-12-12 Tue 17:52</p>
+<p class="date">Created: 2023-12-12 Tue 17:54</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
