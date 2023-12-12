@@ -7,3 +7,111 @@
 #+Author: Julian Grove
 #+Title: Interpreting probabilistic programs
 
+* Overview
+  In [[../nov29/nov29.html][the previous notes]], we gave a syntactic encoding in the λ-calculus of our
+  probabilistic programming DSL. This set of notes sets the program for
+  interpreting this DSL into Haskell, using our theorem prover. Thus it extends
+  the system we developed [[../nov20/nov20.html][here]].
+
+  To extend this interpretation scheme to our DSL, we should update our map from
+  λ-calculus types to Haskell types, as well as our map from terms to Haskell
+  functions.
+  
+* The meanings of λ-calculus types
+  We can update our map ~Domain~ from λ-calculus types to Haskell types as
+  follows:
+  #+begin_src haskell
+    type family Domain (φ :: Type) where
+      Domain E = FOL.Term
+      Domain T = FOL.Form
+      Domain I = [FOL.Form]
+      Domain U = Expr S
+      Domain R = Double
+      Domain (φ :-> ψ) = Domain φ -> Domain ψ
+      Domain (φ :/\ ψ) = (Domain φ, Domain ψ)
+      Domain Unit = ()
+      Domain (P φ) = ProbProg (Domain φ)
+  #+end_src
+  Crucially, we encode the type ~R~ of real numbers as the type ~Double~ in
+  Haskell. We also encode our newer type ~I~ of possible worlds as the type
+  ~[FOL.Form]~ of /lists of first-order formulae/. The idea behind this choice is
+  that the role of a possible world is just to settle what the facts of the
+  matter are, potentially about some domain. Thus any given possible world may
+  regarded as a /list/ of facts (encoded as first-order formulae) which hold at
+  that world.
+
+  As for the type of probabilistic programs, we rely on a new type constructor
+  ~ProbProg~. Following ideas in [[../../readings/grove_probabilistic_2023.pdf][Grove and Bernardy 2023]], we can encode
+  probabilistic programs in Haskell by giving them a continuation semantics.
+  #+begin_src haskell
+    newtype ProbProg a = PP { unPP :: (a -> Double) -> Double }
+  #+end_src
+  Specifically, any given probabilistic program that represents a probability
+  distribution over values of type $α$ may be viewed as a function which takes
+  some /projection function/ $f : α → r$, in order to give back a real number.
+  Such a probabilistic program is therefore of type $(α → r) → r$. The idea is
+  that, given the projection function $f$, $m$ computes the expected value of
+  $f$, given the distribution over values of type $α$ that it represents.
+
+  Important for our interpretation is that ~ProbProg~ gives rise to a monad:
+  #+begin_src haskell
+    instance Monad ProbProg where
+      return a = PP (\f -> f a)
+      PP m >>= k = PP (\f -> m (\x -> unPP (k x) f))
+  #+end_src
+  
+* The meaning of λ-calculus terms
+  Given this encoding encoding of types, we can begin assigning meanings to
+  terms of the λ-calculus representing probabilistic programs.
+
+** Constants
+   Let's look at
+   constants first.
+   #+begin_src haskell
+     interpCon :: Integer -> Constant φ -> Domain φ
+     -- First-order logic stuff
+     interpCon _ C = FOL.N (FOL.Name 0)
+     interpCon _ J = FOL.N (FOL.Name 1)
+     interpCon _ (ToReal r) = r
+     interpCon _ And = \p q -> FOL.And p q
+     interpCon _ Or = \p q -> FOL.Or p q
+     interpCon _ Imp = \p q -> FOL.Or (FOL.Not p) (FOL.Not q)
+     interpCon n Forall =
+       \p -> FOL.Forall (FOL.Var n) (p (FOL.V (FOL.Var n)))
+     interpCon n Exists =
+       \p -> FOL.Exists (FOL.Var n) (p (FOL.V (FOL.Var n)))
+     interpCon _ Not = \p -> FOL.Not p
+     interpCon _ Sleep = sleep
+     interpCon _ Teach = teach
+     -- Probabilistic programming stuff
+     interpCon _ Indi = indi
+     interpCon _ ExpVal = expVal 
+     interpCon _ Factor = factor
+   #+end_src
+   The functions dedicated specifically to interpreting probabilistic programs
+   are ~indi~, ~expVal~, and ~factor~. We define in the following way. Given a
+   formula, the indicator function checks that it is necessarily true; if so, it
+   returns 1, otherwise 0.
+   #+begin_src haskell
+     indi :: FOL.Form -> Double -- i.e., Domain (T :-> R)
+     indi φ = if entails 11 [] φ then 1 else 0
+   #+end_src
+   To compute the expected value of some projection function $f$, given a
+   program $m$, we feed $f$ to $m$ as its continuation, which gives us a
+   weighted average the results of applying $f$ to the values returned by $m$.
+   The relevant weights might not sum to 1, however, so we divide $m(f)$ by
+   $m(λb.1)$. This latter quantity represents the entire mass assigned by $m$ to
+   the values it returns; i.e., it is the sum of all of its weights.
+   #+begin_src haskell
+     expVal :: ProbProg α -> (α -> Double) -> Double -- i.e., Domain (P α :-> ((α :-> R) :-> R))
+     expVal (PP m) f = m f / f (\b -> 1)
+   #+end_src
+   ~factor~ is defined as a program which simply factors the result of its
+   continuation by some weight.
+   #+begin_src haskell
+     factor :: Double -> ProbProg ()
+     factor r = PP (\f -> r * f ())
+   #+end_src
+   When ~factor r~ is sequenced with some other program, that program effectively
+   acts as its continuation. Thus whatever weight the program is assigned in the
+   broader context, this weight is now also scaled by ~r~.
