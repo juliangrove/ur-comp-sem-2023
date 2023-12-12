@@ -65,8 +65,7 @@
   terms of the λ-calculus representing probabilistic programs.
 
 ** Constants
-   Let's look at
-   constants first.
+   Let's look at constants first.
    #+begin_src haskell
      interpCon :: Integer -> Constant φ -> Domain φ
      -- First-order logic stuff
@@ -115,3 +114,26 @@
    When ~factor r~ is sequenced with some other program, that program effectively
    acts as its continuation. Thus whatever weight the program is assigned in the
    broader context, this weight is now also scaled by ~r~.
+
+** Monadic constructors
+   Let's now interpret our monadic constructors ~Return~ and ~Let~. ~Return~ gets
+   interpreted as---you guessed it---the ~return~ of the monad ~ProbProg~.
+   #+begin_src haskell
+     interpTerm :: Integer -> (forall φ.In φ γ -> Domain φ) -> Term γ ψ -> Domain ψ
+     interpTerm n g (Return t) = return (interpTerm n g t)
+   #+end_src
+   Meanwhile, ~Let~ is interpreted using the bind of the same monad.
+   #+begin_src haskell
+     interpTerm n g (Let t u) =
+     interpTerm n g t >>= \x -> interpTerm n (\i -> case i of First -> x; Next j -> g j) u
+   #+end_src
+   Notice our use of variable assignments (things of type ~forall φ.In φ γ ->
+   Domain φ~) here, which is analogous to how we use them when we interpret
+   λ-terms built using the ~Lam~ constructor.
+   #+begin_src haskell
+     interpTerm n _ (Con c) = interpCon n c
+     interpTerm _ g (Var v) = g v
+     interpTerm n g (App t u) = interpTerm (succ n) g t (interpTerm (succ n) g u)
+     interpTerm n g (Lam t) =
+       \x -> interpTerm n (\i -> case i of First -> x; Next j -> g j) t   
+   #+end_src
