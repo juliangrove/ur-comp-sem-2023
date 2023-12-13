@@ -1,0 +1,156 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: Updating a probabilistic context set
+
+* Overview
+  This short set of notes shows how we may begin to use our probabilistic DSL,
+  along with its associated interpretation scheme, to describe common grounds as
+  probability distributions over sets of possible worlds, and sentence
+  interpretations as /updates/ to such sets.
+
+* Context sets as probability distributions
+  How might that be done? Let's say we have a constant
+  #+begin_src haskell
+    data Constant (φ :: Type) where
+      ...
+      WorldKnowledge :: P I
+      ...
+  #+end_src
+  representing a probabilistic program that returns possible worlds. Such a
+  constant can represent a starting common ground; that is, a probability
+  distribution over the set of possible worlds determined by our general world
+  knowledge---knowledge of which sets of facts are probable.
+
+  For example, we might want to consider four possible worlds, where each one
+  settles whether or not Julian sleeps, as well as whether or not Carina
+  sleeps. Then to ~WorldKnowledge~, we might assign the meaning
+  #+begin_src haskell
+    interpCon _ WorldKnowedge = worldKnowledge
+      where worldKnowledge :: ProbProg [FOL.Form]
+	    worldKnowledge = do f1 <- categorical [0.5, 0.5] [id, FOL.Not]
+				f2 <- categorical [0.5, 0.5] [id, FOL.Not]
+				return [ f1 (sleep (FOL.N (FOL.Name 0)))
+				       , f2 (sleep (FOL.N (FOL.Name 1))) ]
+	    categorical :: [Double] -> [a] -> ProbProg a
+            categorical ws vs = PP (\f -> sum (zipWith (*) ws (map f vs)))
+  #+end_src
+  Here, ~worldKnowledge~ returns any of these four possible worlds with equal
+  probability---it thus provides a kind of uniform distribution. Note the use in
+  its definition of a function ~categorical~, which takes a list of numbers, along
+  with a list of values of the same length, in order to give back a
+  probabilistic program that returns the \(n\)th value with probability
+  proportion to the \(n\)th number. For example,
+  #+begin_src haskell
+    categorical [1, 2, 3] ['a', 'b', 'c']
+  #+end_src
+  is a probabilistic program of type ~ProbProg Char~ which returns ~'a'~ with
+  probability $1/(1 + 2 + 3) = 1/6$, ~'b'~ with probability $1/3$ and ~'c'~ with
+  probability $1/2$. ~categorical~ is defined using [[https://hackage.haskell.org/package/base-4.19.0.0/docs/Prelude.html#v:zipWith][~zipWith~]], which allows a
+  weight to be paired up with each value that might be returned.
+
+* Updating context sets with English sentences
+  What we would like to do now is to determine a way of interpreting sentences
+  of English as true or false at a given possible world, and to use such an
+  interpretation scheme to update a context set---that is, a probability
+  distribution over possible worlds---given a sentence. One way we can do this
+  is by encoding an /interpretation function/ directly in our λ-calculus; that is,
+  a map from sentences to sets of possible worlds.
+
+  To set this up, we should introduce a new atomic type ~U~ for /utterances/ to our
+  λ-calculus, so that our full set of types is
+  #+begin_src haskell
+    data Type = E | T | I | U | R
+	      | Type :-> Type
+	      | Type :/\ Type
+	      | Unit
+              | P Type
+  #+end_src
+  The type family ~Domain~ should then be extended, in order to handle utterances.
+  These can be interpreted as Haskell values of type ~Expr S~ (i.e., we may
+  represent an utterance using our Haskell encoding of English sentences).
+  #+begin_src haskell
+    type family Domain (φ :: Type) where
+      Domain E = FOL.Term
+      Domain T = FOL.Form
+      Domain I = [FOL.Form]
+      Domain U = Expr S
+      Domain R = Double
+      Domain (φ :-> ψ) = Domain φ -> Domain ψ
+      Domain (φ :/\ ψ) = (Domain φ, Domain ψ)
+      Domain Unit = ()
+      Domain (P φ) = ProbProg (Domain φ)
+  #+end_src
+
+  Finally, we should add a couple of new constants to our λ-calculus which will
+  allow us to both represent and interpret English utterances.
+  #+begin_src haskell
+    data Constant (φ :: Type) where
+      ...
+      ToUtt :: Expr S -> Constant U
+      Interp :: Constant (U :-> (I :-> T))
+      ...
+  #+end_src
+  ~ToUtt~ allows us to represent an English expression (encoded in our applicative
+  categorial grammar fragment) in the λ-calculus, as term of type ~U~, while
+  ~Interp~ allows us to take an utterance onto what is effectively a set of
+  worlds---that is, a function of type ~I :-> T~. We may in turn interpret these
+  constants by extending our definition of ~interpCon~.
+  #+begin_src haskell
+    interpCon _ (ToUtt u) = u
+    interpCon _ Interp = \φ i -> if entails 11
+				(englishToFOL φ : i)
+				false
+			        then false
+			        else true
+  #+end_src
+  Recall from [[../nov20/nov20.html#org0f0d2be][here]] that ~englishToFOL~ is defined as
+  #+begin_src haskell
+    englishToFOL :: Expr S -> FOL.Form
+    englishToFOL = interpClosedTerm . lower . interpExpr
+  #+end_src
+  Thus for an English sentence to be /true/ at some possible world is for its
+  translation into first-order logic to be logically compatible for the formulae
+  which are true at that possible world.
+
+  We are now able to encode discourses involving English sentences (woohoo!)?
+  Take the following one, for instance.
+  $$\begin{array}{l}w ∼ worldKnowledge \\ observe(⟦\textit{someone sleeps}⟧^w)
+  \\ return(w)\end{array}$$
+  We can encode this discourse as a probabilistic program in our λ-calculus as
+  follows:
+  #+begin_src haskell
+    example :: Term γ (P I)
+    example = Let (Con WorldKnowledge) (Let (App observe (App (App (Con Interp) (Con (ToUtt someoneSleeps))) (Var First))) (Return (Var (Next First))))
+  #+end_src
+  Recall that ~observe~ is defined by applying ~Factor~ to the indicator function.
+  #+begin_src haskell
+    observe :: Term γ (T :-> P Unit)
+    observe = Lam (App (Con Factor) (App (Con Indi) (Var First)))
+  #+end_src
+
+  Indeed, if we interpret this new context set and check whether or not Carina
+  sleeps in the result,
+  #+begin_src haskell
+    runTest :: ProbProg Bool
+    runTest = do i <- interpClosedTerm example
+	         return (entails 11 i (sleep (FOL.N (FOL.Name 0))))
+  #+end_src
+  we get a program in Haskell from which we may extract a probability. For this,
+  we can define a function
+  #+begin_src haskell
+    p :: ProbProg Bool -> Double
+    p m = expVal m indi
+  #+end_src
+  which takes the probability of the indicator function (i.e., computes a
+  probability from something of type ~ProbProg Bool~). Now we can take the
+  probability of ~runTest~!
+  #+begin_src haskell
+    >>> p runTest
+    0.6666666666666666
+  #+end_src
+  Hm, why do you think this is the result?
