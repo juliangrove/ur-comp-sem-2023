@@ -44,7 +44,7 @@
   its definition of a function ~categorical~, which takes a list of numbers, along
   with a list of values of the same length, in order to give back a
   probabilistic program that returns the \(n\)th value with probability
-  proportion to the \(n\)th number. For example,
+  proportional to the \(n\)th number. For example,
   #+begin_src haskell
     categorical [1, 2, 3] ['a', 'b', 'c']
   #+end_src
@@ -56,10 +56,10 @@
 * Updating context sets with English sentences
   What we would like to do now is to determine a way of interpreting sentences
   of English as true or false at a given possible world, and to use such an
-  interpretation scheme to update a context set---that is, a probability
-  distribution over possible worlds---given a sentence. One way we can do this
-  is by encoding an /interpretation function/ directly in our λ-calculus; that is,
-  a map from sentences to sets of possible worlds.
+  interpretation scheme to update a context set---which are encoding as a
+  probability distribution over possible worlds---given a sentence. One way we
+  can do this is by encoding an /interpretation function/ directly in our
+  λ-calculus; that is, a map from sentences to sets of possible worlds.
 
   To set this up, we should introduce a new atomic type ~U~ for /utterances/ to our
   λ-calculus, so that our full set of types is
@@ -114,8 +114,8 @@
     englishToFOL = interpClosedTerm . lower . interpExpr
   #+end_src
   Thus for an English sentence to be /true/ at some possible world is for its
-  translation into first-order logic to be logically compatible for the formulae
-  which are true at that possible world.
+  translation into first-order logic to be logically compatible with the
+  formulae which are true at that possible world.
 
   We are now able to encode discourses involving English sentences (woohoo!)?
   Take the following one, for instance.
@@ -140,15 +140,16 @@
     runTest = do i <- interpClosedTerm example
 	         return (entails 11 i (sleep (FOL.N (FOL.Name 0))))
   #+end_src
-  we get a program in Haskell from which we may extract a probability. For this,
-  we can define a function
+  we get a program in Haskell from which we may extract a probability. To do
+  this, we may define a function
   #+begin_src haskell
     p :: ProbProg Bool -> Double
     p m = expVal m indi
   #+end_src
-  which takes the probability of the indicator function (i.e., computes a
-  probability from something of type ~ProbProg Bool~). Now we can take the
-  probability of ~runTest~!
+  which takes the expected value of the indicator function; that is, it computes
+  a /probability/ from a program of type ~ProbProg Bool~ as the proportion of the
+  mass it assigns to either ~True~ or ~False~ that it assigns to ~True~. Now we can
+  take the probability of ~runTest~!
   #+begin_src haskell
     >>> p runTest
     0.6666666666666666

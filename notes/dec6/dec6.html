@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-12-13 Wed 16:03 -->
+<!-- 2023-12-13 Wed 18:36 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Updating a probabilistic context set</title>
@@ -238,15 +238,15 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org29dd47c">1. Overview</a></li>
-<li><a href="#orgb66f029">2. Context sets as probability distributions</a></li>
-<li><a href="#org8e3a0f2">3. Updating context sets with English sentences</a></li>
+<li><a href="#org9801606">1. Overview</a></li>
+<li><a href="#org28c3994">2. Context sets as probability distributions</a></li>
+<li><a href="#orgeaad7c8">3. Updating context sets with English sentences</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org29dd47c" class="outline-2">
-<h2 id="org29dd47c"><span class="section-number-2">1.</span> Overview</h2>
+<div id="outline-container-org9801606" class="outline-2">
+<h2 id="org9801606"><span class="section-number-2">1.</span> Overview</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 This short set of notes shows how we may begin to use our probabilistic DSL,
@@ -257,8 +257,8 @@ interpretations as <i>updates</i> to such sets.
 </div>
 </div>
 
-<div id="outline-container-orgb66f029" class="outline-2">
-<h2 id="orgb66f029"><span class="section-number-2">2.</span> Context sets as probability distributions</h2>
+<div id="outline-container-org28c3994" class="outline-2">
+<h2 id="org28c3994"><span class="section-number-2">2.</span> Context sets as probability distributions</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 How might that be done? Let's say we have a constant
@@ -299,7 +299,7 @@ probability&#x2014;it thus provides a kind of uniform distribution. Note the use
 its definition of a function <code>categorical</code>, which takes a list of numbers, along
 with a list of values of the same length, in order to give back a
 probabilistic program that returns the \(n\)th value with probability
-proportion to the \(n\)th number. For example,
+proportional to the \(n\)th number. For example,
 </p>
 <div class="org-src-container">
 <pre class="src src-haskell"><span style="color: #fabd2f;">categorical</span> [1, 2, 3] [<span style="color: #b8bb26;">'a'</span>, <span style="color: #b8bb26;">'b'</span>, <span style="color: #b8bb26;">'c'</span>]
@@ -314,16 +314,16 @@ weight to be paired up with each value that might be returned.
 </div>
 </div>
 
-<div id="outline-container-org8e3a0f2" class="outline-2">
-<h2 id="org8e3a0f2"><span class="section-number-2">3.</span> Updating context sets with English sentences</h2>
+<div id="outline-container-orgeaad7c8" class="outline-2">
+<h2 id="orgeaad7c8"><span class="section-number-2">3.</span> Updating context sets with English sentences</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 What we would like to do now is to determine a way of interpreting sentences
 of English as true or false at a given possible world, and to use such an
-interpretation scheme to update a context set&#x2014;that is, a probability
-distribution over possible worlds&#x2014;given a sentence. One way we can do this
-is by encoding an <i>interpretation function</i> directly in our λ-calculus; that is,
-a map from sentences to sets of possible worlds.
+interpretation scheme to update a context set&#x2014;which are encoding as a
+probability distribution over possible worlds&#x2014;given a sentence. One way we
+can do this is by encoding an <i>interpretation function</i> directly in our
+λ-calculus; that is, a map from sentences to sets of possible worlds.
 </p>
 
 <p>
@@ -395,8 +395,8 @@ Recall from <a href="../nov20/nov20.html#org0f0d2be">here</a> that <code>english
 </div>
 <p>
 Thus for an English sentence to be <i>true</i> at some possible world is for its
-translation into first-order logic to be logically compatible for the formulae
-which are true at that possible world.
+translation into first-order logic to be logically compatible with the
+formulae which are true at that possible world.
 </p>
 
 <p>
@@ -432,8 +432,8 @@ sleeps in the result,
 </pre>
 </div>
 <p>
-we get a program in Haskell from which we may extract a probability. For this,
-we can define a function
+we get a program in Haskell from which we may extract a probability. To do
+this, we may define a function
 </p>
 <div class="org-src-container">
 <pre class="src src-haskell"><span style="color: #fabd2f;">p</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">ProbProg</span> <span style="color: #d3869b;">Bool</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Double</span>
@@ -441,9 +441,10 @@ we can define a function
 </pre>
 </div>
 <p>
-which takes the probability of the indicator function (i.e., computes a
-probability from something of type <code>ProbProg Bool</code>). Now we can take the
-probability of <code>runTest</code>!
+which takes the expected value of the indicator function; that is, it computes
+a <i>probability</i> from a program of type <code>ProbProg Bool</code> as the proportion of the
+mass it assigns to either <code>True</code> or <code>False</code> that it assigns to <code>True</code>. Now we can
+take the probability of <code>runTest</code>!
 </p>
 <div class="org-src-container">
 <pre class="src src-haskell"><span style="color: #83a598;">&gt;&gt;&gt;</span> p runTest
@@ -458,7 +459,7 @@ Hm, why do you think this is the result?
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-12-13 Wed 16:03</p>
+<p class="date">Created: 2023-12-13 Wed 18:36</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
