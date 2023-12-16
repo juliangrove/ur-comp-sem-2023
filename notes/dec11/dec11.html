@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2023-12-16 Sat 16:43 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rational Speech Act models via theorem proving</title>
+<meta name="author" content="Julian Grove" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+<script src="../../jquery.min.js"></script>
+<script src="../../bootstrap.min.js"></script>
+<script type="text/javascript" src="../../readtheorg.js"></script>
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Rational Speech Act models via theorem proving</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org5e1b8f3">1. Overview</a></li>
+<li><a href="#org190e5be">2. The Rational Speech Act framework</a></li>
+<li><a href="#org2ac5c59">3. Encoding RSA models in typed λ-calculus</a></li>
+<li><a href="#org7be4081">4. Doing it all in Haskell</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org5e1b8f3" class="outline-2">
+<h2 id="org5e1b8f3"><span class="section-number-2">1.</span> Overview</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+We have now shown how typed λ-calculus, equipped with a DSL for characterizing
+probabilistic programs, can be implemented in Haskell and given an
+interpretation in which probabilistic reasoning is carried out using a theorem
+prover. One consequence of our system is that we can encode probabilistic
+programs characterizing models of inference and pragmatic reasoning; that is,
+by having a type \(u\) of utterances and a type \(i\) of possible worlds. This set
+of notes shows how our system may be used to implement one particular
+framework for Bayesian models of pragmatics&#x2014;the <a href="http://www.problang.org/chapters/01-introduction.html">Rational Speech Act</a> (RSA)
+framework.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org190e5be" class="outline-2">
+<h2 id="org190e5be"><span class="section-number-2">2.</span> The Rational Speech Act framework</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Here I describe what is sometimes called <i>vanilla</i> RSA. Vanilla RSA (yum) is RSA
+more or less as it was originally formulated <a href="https://web.stanford.edu/~ngoodman/papers/FrankGoodman-Science2012.pdf">here</a>. The basic idea is that
+there are two sets of models, <i>listener</i> models, and <i>speaker</i> models, which are
+kind of mirror images of each other.
+</p>
+
+<p>
+In particular, any given listener model \(L_i\) characterizes a probability
+distribution over possible worlds \(w\), given some utterance \(u\).
+\[\begin{aligned}
+  P_{L_0}(w | u) &= \frac{\begin{cases}
+  P_{L_0}(w) & ⟦u⟧^w = \mathtt{T} \\
+  0 & ⟦u⟧^w = \mathtt{F}
+  \end{cases}}{∑_{w^\prime}\begin{cases}
+  P_{L_0}(w^\prime) & ⟦u⟧^{w^\prime} = \mathtt{T} \\
+  0 & ⟦u⟧^{w^\prime} = \mathtt{F}
+  \end{cases}} \\[2mm]
+  P_{L_i}(w | u) &= \frac{P_{L_i}(u | w) * P_{L_i}(w)}{∑_{w^\prime}P_{L_i}(u | w^\prime) *
+  P_{L_i}(w^\prime)}\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,(i > 0) \\[2mm]
+  & = \frac{P_{L_i}(u | w) * P_{L_i}(w)}{P_{L_i}(u)}
+  \end{aligned}\]
+In words, \(P_{L_0}(w | u)\) depends only on whether or not \(u\) and \(w\) are
+compatible. It thus acts as a <i>filter</i>, eliminating possible worlds from the
+prior in which the utterance \(u\) is false.
+</p>
+
+<p>
+The definition of \(P_{L_i}(w | u)\) for \(i > 0\) uses <a href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes' theorem</a>. To state
+that this definition <i>uses</i> Bayes' theorem is kind of a tautology when viewed
+simply as a mathematical description. Thus what this statement really means is
+something more operational: RSA models make distinguishing choices about the
+definitions of \(P_{L_i}(u | w)\) and \(P_{L_i}(w)\), and it is these latter
+choices which are used, in turn, to compute \(P_{L_i}(w | u)\).
+</p>
+
+<p>
+In general, the choice \(P_{L_i}(w)\) of a prior distribution over \(w\) is made
+once and for all, regardless of the particular model, so we can just call this
+choice \(P(w)\). \(P(w)\) can be seen to give a representation of the <i>context set</i>
+in a given discourse; that is, the distribution over possible worlds known in
+common among the interlocutors, before anything is uttered.
+</p>
+
+<p>
+The definition of \(P_{L_i}(u | w)\), on the other hand, is chosen to reflect
+the model \(S_i\) of the <i>speaker</i>, which brings us to the <i>other</i> set of
+models. Thus \(P_{L_i}(u | w) = P_{S_i}(u | w)\), where
+\[\begin{aligned}
+  P_{S_i}(u | w) &= \frac{e^{α * 𝕌_{S_i}(u; w)}}{∑_{u^\prime}e^{α *
+  𝕌_{S_i}(u^\prime; w)}}
+  \end{aligned}\]
+\(𝕌_{S_i}(u; w)\) is the <i>utility</i> \(S_i\) assigns to the utterance \(u\), given its
+intention to communicate the world \(w\). Utility for \(S_i\) is typically defined
+as \[𝕌_{S_i}(u; w) = log(P_{L_{i-1}}(w | u)) - C(u)\]
+that is, the (natural) log of the probability that \(L_{i-1}\) assigns to \(w\)
+(given \(u\)), minus \(u\)'s cost (\(C(u)\)). \(α\) is known as the <i>temperature</i>
+(a.k.a. the  <i>rationality parameter</i>) associated with \(S_i\). When \(α = 0\), \(S_i\)
+chooses utterances randomly (from a uniform distribution), without attending
+to their utility in communicating \(w\), while when \(α\) tends toward \(∞\), \(S_i\)
+becomes more and more deterministic in its choice of utterance, assigning more
+an more probability mass to the utterance that maximizes the utility in
+communicating \(w\). Formally,
+\[\lim_{α → ∞}\frac{e^{α * 𝕌_{S_i}(u; w)}}{∑_{u^\prime}e^{α *
+  𝕌_{S_i}(u^\prime; w)}} = \begin{cases}
+  1 & u = \arg\max_{u^\prime}(𝕌_{S_i}(u^\prime; w)) \\
+  0 & u ≠ \arg\max_{u^\prime}(𝕌_{S_i}(u^\prime; w))
+  \end{cases}\]
+Because the cost \(C(u)\) only depends on \(u\), it is nice to view \(e^{α *
+  𝕌_{S_i}(u; w)}\) as factored into a prior and a likelihood, so that
+\(P_{S_i}(u | w)\) has a formulation symmetrical to that of \(P_{L_i}(w | u)\)
+(when \(i > 0\)); that is, it can be formulated in the following way:
+\[\begin{aligned}
+  e^{𝕌_{S_i}(u; w)} &= P_{L_{i - 1}}(w | u)^α * \frac{1}{e^{α * C(u)}} \\[2mm]
+  &∝ P_{S_i}(w | u) * P_{S_i}(u) \\[2mm]
+  &= P_{S_i}(w | u) * P(u)
+  \end{aligned}\]
+In effect, we can define \(P_{S_i}(w | u)\) to be proportional to \(P_{L_{i -
+  1}}(w | u)^α\); meanwhile, we can define \(P(u)\), the prior probability over
+utterances, to be proportional to \(\frac{1}{e^{C(u)}}\). (Note that if we
+ignore cost altogether, so that \(C(u)\) is always, say, 0, then \(P(u)\) just
+becomes a uniform distribution.)
+</p>
+
+<p>
+Taking these points into consideration, we may reformulate our speaker model,
+\(S_i\), as follows:
+\[\begin{aligned}
+  P_{S_i}(u | w) &= \frac{P_{S_i}(w | u) * P(u)}{∑_{u^\prime}P_{S_i}(w |
+  u^\prime) * P(u^\prime)} \\[2mm]
+  &= \frac{P_{S_i}(w | u) * P(u)}{P_{S_i}(w)}
+  \end{aligned}\]
+In words, the speaker model, just like the listener model, may be viewed
+operationally in terms of Bayes' theorem. Note that \(P_{S_i}(w)\), in general,
+defines a different distribution from \(P(w)\), the listener's prior
+distribution over worlds (i.e., the context set). The former represents, not
+prior knowledge about the <i>context</i>, but rather something more like the relative
+"communicability" of a given possible world, given the distribution \(P(u)\)
+over utterances; that is, how likely a random utterance makes \(w\), though with
+the exponential \(α\) applied.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2ac5c59" class="outline-2">
+<h2 id="org2ac5c59"><span class="section-number-2">3.</span> Encoding RSA models in typed λ-calculus</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Cool, so there's a way of regarding listener models and speaker models as
+symmetrical, in the sense that they both can be characterized operationally in
+terms of Bayes's theorem, but the positions of \(w\) and the \(u\) in the relevant
+equations are swapped. In summary, when \(i > 0\),
+\[\begin{aligned}
+  P_{L_i}(w | u) &= \frac{P_{L_i}(u | w) * P(w)}{P_{L_i}(u)} \\[2mm]
+  P_{S_i}(u | w) &= \frac{P_{S_i}(w | u) * P(u)}{P_{S_i}(w)}
+  \end{aligned}\]
+and when \(i = 0\),
+\[P_{L_0}(w | u) = \frac{\begin{cases}
+  P(w) & ⟦u⟧^w = \mathtt{T} \\
+  0 & ⟦u⟧^w = \mathtt{F}
+  \end{cases}}{∑_{w^\prime}\begin{cases}
+  P(w^\prime) & ⟦u⟧^{w^\prime} = \mathtt{T} \\
+  0 & ⟦u⟧^{w^\prime} = \mathtt{F}
+  \end{cases}}\]
+Presenting RSA models this way provides insight into how they may be
+formulated type-theoretically. In particular, We can regard our listener and
+speaker models as <i>probabilistic programs</i> with the following type signatures:
+\[\begin{aligned}
+  L_{(·)} &: ℕ → u → \mathtt{P} i \\[2mm]
+  S_{(·)} &: ℕ → i → \mathtt{P} u
+  \end{aligned}\]
+That is, the listener model \(L\) takes a natural number \(i\) and an utterance
+\(u\), and returns a probabilistic program that encodes the probability
+distribution \(P_{L_i}(w | u)\). The speaker model \(S\) takes a natural number
+\(i\) and a possible world \(w\), and returns a probabilistic program that encodes
+the probability distribution \(P_{S_i}(u | w)\). The definitions of these models
+as probabilistic programs may then be given as
+\[\begin{aligned}
+  L_0(u) &= \begin{array}[t]{l}
+  w ∼ \mathtt{context} \\
+  observe(⟦u⟧^w = \mathtt{T}) \\
+  return(w)
+  \end{array} \\[1cm]
+  L_i(u) &= \begin{array}[t]{l}
+  w ∼ \mathtt{context} \\
+  factor(P_{L_i}(u | w)) \\
+  return(w)
+  \end{array}\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,(i > 0) \\[2mm]
+  &= \begin{array}[t]{l}
+  w ∼ \mathtt{context} \\
+  factor(P_{S_i}(u | w)) \\
+  return(w)
+  \end{array} \\[1cm]
+  S_i(w) &= \begin{array}[t]{l}
+  u ∼ \mathtt{utterances} \\
+  factor(P_{S_i}(w | u)) \\
+  return(u)
+  \end{array}\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,(i > 0) \\[2mm]
+  &= \begin{array}[t]{l}
+  u ∼ \mathtt{utterances} \\
+  factor(P_{L_{i-1}}(w | u)^α) \\
+  return(u)
+  \end{array}
+  \end{aligned}\]
+where \(\mathtt{context}\) is the probabilistic program of type \(\mathtt{P} i\)
+representing the prior \(P(w)\), and \(\mathtt{utterances}\) is the probabilistic
+program of type \(\mathtt{P} u\) representing the prior \(P(u)\).
+</p>
+
+<p>
+The one big remaining question is how we go about computing probability <i>masses</i>
+and <i>densities</i> of the kind represented by \(P_{S_i}(u | w)\) and \(P_{L_i}(w | u)\)
+(for a given \(i\)). To do this, let's introduce one more constant into our DSL,
+which takes the <i>density function</i> on \(α\)'s associated with a given
+probabilistic program whose values are of type \(α\).
+\[D_{(·)} : \mathtt{P} α → α → r\]
+We will eventually have to give an interpretation to this constant, but let's
+not worry about that right now; let us just assume we have it. We may now
+formulate the recursive branches of our speaker and listener models as
+follows:
+\[\begin{aligned}
+  S_i(w) &= \begin{array}[t]{l}
+  u ∼ \mathtt{utterances} \\
+  factor(D_{L_{i-1}(u)}(w)) \\
+  return(u)
+  \end{array}\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,(i > 0) \\[1cm]
+  L_i(u) &= \begin{array}[t]{l}
+  w ∼ \mathtt{context} \\
+  factor(D_{S_i(w)}(u)) \\
+  return(w)
+  \end{array}\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,(i > 0)
+  \end{aligned}\]
+We now have a full-blown typed implementation of (vanilla) RSA. Neat!
+</p>
+</div>
+</div>
+
+<div id="outline-container-org7be4081" class="outline-2">
+<h2 id="org7be4081"><span class="section-number-2">4.</span> Doing it all in Haskell</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+The rest is kind of straightforward: we only need to add a constant (or
+constants, rather) to encode \(D\), as well as a constant to encode \(α\), along
+with constants representing the probabilistic programs that encode prior
+distributions over possible worlds and utterances, respectively.
+</p>
+
+<p>
+Note that in the models above, \(D\) is only ever used to extract density
+functions of type \(i → r\) and type \(u → r\), so we really only need two
+constants in this case.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Constant</span> (&#966; <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Type</span>) <span style="color: #fb4933;">where</span>
+  <span style="color: #83a598;">...</span>
+  <span style="color: #d3869b;">DensityI</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Constant</span> (<span style="color: #d3869b;">P</span> <span style="color: #d3869b;">I</span> <span style="color: #d3869b;">:-&gt;</span> (<span style="color: #d3869b;">I</span> <span style="color: #d3869b;">:-&gt;</span> <span style="color: #d3869b;">R</span>))
+  <span style="color: #d3869b;">DensityU</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Constant</span> (<span style="color: #d3869b;">P</span> <span style="color: #d3869b;">U</span> <span style="color: #d3869b;">:-&gt;</span> (<span style="color: #d3869b;">U</span> <span style="color: #d3869b;">:-&gt;</span> <span style="color: #d3869b;">R</span>))
+  <span style="color: #83a598;">...</span>
+</pre>
+</div>
+<p>
+To encode \(α\), we can add a constant which takes two real numbers and
+exponentiates the second constant to the first.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Constant</span> (&#966; <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Type</span>) <span style="color: #fb4933;">where</span>
+  <span style="color: #83a598;">...</span>
+  <span style="color: #d3869b;">Alpha</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Constant</span> (<span style="color: #d3869b;">R</span> <span style="color: #d3869b;">:-&gt;</span> (<span style="color: #d3869b;">R</span> <span style="color: #d3869b;">:-&gt;</span> <span style="color: #d3869b;">R</span>))
+  <span style="color: #83a598;">...</span>
+</pre>
+</div>
+<p>
+Finally the constants representing possible world and utterance priors receive
+the types of probabilistic programs.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">data</span> <span style="color: #d3869b;">Constant</span> (&#966; <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Type</span>) <span style="color: #fb4933;">where</span>
+  <span style="color: #83a598;">...</span>
+  <span style="color: #d3869b;">Context</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Constant</span> (<span style="color: #d3869b;">P</span> <span style="color: #d3869b;">I</span>)
+  <span style="color: #d3869b;">Utterances</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Constant</span> (<span style="color: #d3869b;">P</span> <span style="color: #d3869b;">U</span>)
+  <span style="color: #83a598;">...</span>
+</pre>
+</div>
+
+<p>
+The listener and speaker models may now be encoded as follows:
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">l</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Integer</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; (<span style="color: #d3869b;">U</span> <span style="color: #d3869b;">:-&gt;</span> <span style="color: #d3869b;">P</span> <span style="color: #d3869b;">I</span>)
+<span style="color: #fabd2f;">l</span> 0 <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">Let</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">Context</span>) (<span style="color: #d3869b;">Let</span> (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">Factor</span>) (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">Indi</span>) (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">Interp</span>) (<span style="color: #d3869b;">Var</span> (<span style="color: #d3869b;">Next</span> <span style="color: #d3869b;">First</span>))) (<span style="color: #d3869b;">Var</span> <span style="color: #d3869b;">First</span>)))) (<span style="color: #d3869b;">Return</span> (<span style="color: #d3869b;">Var</span> (<span style="color: #d3869b;">Next</span> <span style="color: #d3869b;">First</span>)))))
+<span style="color: #fabd2f;">l</span> i <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">Let</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">Context</span>) (<span style="color: #d3869b;">Let</span> (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">Factor</span>) (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">DensityU</span>) (<span style="color: #d3869b;">App</span> (s i) (<span style="color: #d3869b;">Var</span> <span style="color: #d3869b;">First</span>))) (<span style="color: #d3869b;">Var</span> (<span style="color: #d3869b;">Next</span> <span style="color: #d3869b;">First</span>)))) (<span style="color: #d3869b;">Return</span> (<span style="color: #d3869b;">Var</span> (<span style="color: #d3869b;">Next</span> <span style="color: #d3869b;">First</span>))))a
+
+<span style="color: #fabd2f;">s</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Integer</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Term</span> &#947; (<span style="color: #d3869b;">I</span> <span style="color: #d3869b;">:-&gt;</span> <span style="color: #d3869b;">P</span> <span style="color: #d3869b;">U</span>)
+<span style="color: #fabd2f;">s</span> i <span style="color: #83a598;">=</span> <span style="color: #d3869b;">Lam</span> (<span style="color: #d3869b;">Let</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">Utterances</span>) (<span style="color: #d3869b;">Let</span> (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">Factor</span>) (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">Alpha</span>) (<span style="color: #d3869b;">Con</span> (<span style="color: #d3869b;">ToReal</span> 1))) (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">DensityI</span>) (<span style="color: #d3869b;">App</span> (l (i<span style="color: #83a598;">-</span>1)) (<span style="color: #d3869b;">Var</span> <span style="color: #d3869b;">First</span>))) (<span style="color: #d3869b;">Var</span> (<span style="color: #d3869b;">Next</span> <span style="color: #d3869b;">First</span>))))) (<span style="color: #d3869b;">Return</span> (<span style="color: #d3869b;">Var</span> (<span style="color: #d3869b;">Next</span> <span style="color: #d3869b;">First</span>)))))
+</pre>
+</div>
+<p>
+Note that we have chosen the speaker model's \(α\) to be 4.
+</p>
+
+<p>
+All that's left is to provide interpretations to the new constants, via
+<code>interpCon</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">interpCon</span> <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Integer</span> <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Constant</span> &#966; <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">Domain</span> &#966;
+</pre>
+</div>
+<p>
+The most straightforward case is <code>Alpha</code>, which we can interpret as
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">interpCon</span> <span style="color: #fb4933;">_</span> <span style="color: #d3869b;">Alpha</span> <span style="color: #83a598;">=</span> <span style="color: #83a598;">\</span>x y <span style="color: #83a598;">-&gt;</span> y <span style="color: #83a598;">**</span> x
+</pre>
+</div>
+<p>
+Here, <code>(**)</code> is Haskell's function for exponentiation using the <code>Double</code> data
+type.
+</p>
+
+<p>
+Let's take care of the prior knowledge represented by <code>Utterances</code> and <code>Context</code>.
+We can assume <code>Utterances</code> represents, say, a uniform distribution over three
+utterances.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">interpCon</span> <span style="color: #fb4933;">_</span> <span style="color: #d3869b;">Utterances</span> <span style="color: #83a598;">=</span> utterances
+  <span style="color: #fb4933;">where</span> utterances <span style="color: #83a598;">::</span> <span style="color: #d3869b;">ProbProg</span> (<span style="color: #d3869b;">Expr</span> <span style="color: #d3869b;">S</span>)
+        utterances <span style="color: #83a598;">=</span> categorical [0.33, 0.33, 0.33] [ everyoneSleeps
+                                                    , someoneSleeps
+                                                    , noOneSleeps ]
+        categorical <span style="color: #83a598;">::</span> [<span style="color: #d3869b;">Double</span>] <span style="color: #83a598;">-&gt;</span> [a] <span style="color: #83a598;">-&gt;</span> <span style="color: #d3869b;">ProbProg</span> a
+        categorical ws vs <span style="color: #83a598;">=</span> <span style="color: #d3869b;">PP</span> (<span style="color: #83a598;">\</span>f <span style="color: #83a598;">-&gt;</span> sum (zipWith (<span style="color: #83a598;">*</span>) ws (map f vs)))
+</pre>
+</div>
+<p>
+<code>Context</code> can be interpreted the same way <code>WorldKnowedge</code> was in <a href="../dec6/dec6.html">the last set of
+notes</a>.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fabd2f;">interpCon</span> <span style="color: #fb4933;">_</span> <span style="color: #d3869b;">WorldKnowledge</span> <span style="color: #83a598;">=</span> worldKnowledge
+</pre>
+</div>
+
+<p>
+That's it! If we want to test this out, we could, say, check the mass that <code>l 1</code>
+assigns to some example possible world <code>i0</code>, when it is applied to the utterance
+<code>someoneSleeps</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #928374;">-- </span><span style="color: #928374;">An example possible world</span>
+<span style="color: #fabd2f;">i0</span> <span style="color: #83a598;">::</span> [<span style="color: #d3869b;">FOL.Form</span>]
+<span style="color: #fabd2f;">i0</span> <span style="color: #83a598;">=</span> [sleep (<span style="color: #d3869b;">FOL.N</span> (<span style="color: #d3869b;">FOL.Name</span> 1)), <span style="color: #d3869b;">FOL.Not</span> (sleep (<span style="color: #d3869b;">FOL.N</span> (<span style="color: #d3869b;">FOL.Name</span> 0)))]
+</pre>
+</div>
+<p>
+(<code>i0</code> is the world where Julian (<code>FOL.N (FOL.Name 1)</code>) sleeps but Carina (<code>FOL.N
+  (FOL.Name 0)</code>) doesn't.)
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #83a598;">&gt;&gt;&gt;</span>  interpClosedTerm (<span style="color: #d3869b;">App</span> (<span style="color: #d3869b;">Con</span> <span style="color: #d3869b;">DensityI</span>) (<span style="color: #d3869b;">App</span> (l 1) (<span style="color: #d3869b;">Con</span> (<span style="color: #d3869b;">ToUtt</span> someoneSleeps)))) i0
+0.49696969696969695
+</pre>
+</div>
+<p>
+Thus when the relevant utterance is <i>someone sleeps</i>, \(L_1\) assigns about half
+the mass to the possible world in which one person sleeps and the other
+doesn't. Indeed, close to all of the remaining mass will be assigned to the
+possible world in which the sleepers are switched; that is, in which Carina
+sleeps, but Julian doesn't. Close to no mass at all is assigned to the
+possible world in which both Julian and Carina sleeps. Hence, we end up with
+something like a <i>quantity implicature</i>, due to the choice of a prior over
+utterances which includes the utterance <i>everyone sleeps</i>.
+</p>
+
+<p>
+You can check that the difference between the \(L_0\) model and the \(L_1\) model
+is effectively the presence of this implicature; the \(L_0\) model just spits
+out the mass assigned by the prior probability over worlds to worlds in which
+at least one person sleeps, consistent with the semantics of the quantifier
+<i>some</i>.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Julian Grove</p>
+<p class="date">Created: 2023-12-16 Sat 16:43</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

@@ -89,7 +89,7 @@
   | November 29   | Implementing probabilistic programs in Haskell                                     | [[./notes/nov29/nov29.html][Nov29 notes]]                       |                                                                                                     |
   | December 4    | Hybrid probabilistic/FOL systems                                                   | [[./notes/dec4/dec4.html][Dec4 notes]]                        |                                                                                                     |
   | December 6    | Encoding a probabilistic knowledge base                                            | [[./notes/dec6/dec6.html][Dec6 notes]]                        |                                                                                                     |
-  | December 11   | Rational Speech Act models via theorem proving                                     |                                   |                                                                                                     |
+  | December 11   | Rational Speech Act models via theorem proving                                     | [[./notes/dec11/dec11.html][Dec11 notes]]                       |                                                                                                     |
   | December 13   | Probabilistic programs as Bayesian models of inference data                        |                                   |                                                                                                     |
 
 * Installing Haskell

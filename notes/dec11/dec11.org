@@ -1,0 +1,299 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: Rational Speech Act models via theorem proving
+
+* Overview
+  We have now shown how typed λ-calculus, equipped with a DSL for characterizing
+  probabilistic programs, can be implemented in Haskell and given an
+  interpretation in which probabilistic reasoning is carried out using a theorem
+  prover. One consequence of our system is that we can encode probabilistic
+  programs characterizing models of inference and pragmatic reasoning; that is,
+  by having a type $u$ of utterances and a type $i$ of possible worlds. This set
+  of notes shows how our system may be used to implement one particular
+  framework for Bayesian models of pragmatics---the [[http://www.problang.org/chapters/01-introduction.html][Rational Speech Act]] (RSA)
+  framework.
+
+* The Rational Speech Act framework
+  Here I describe what is sometimes called /vanilla/ RSA. Vanilla RSA (yum) is RSA
+  more or less as it was originally formulated [[https://web.stanford.edu/~ngoodman/papers/FrankGoodman-Science2012.pdf][here]]. The basic idea is that
+  there are two sets of models, /listener/ models, and /speaker/ models, which are
+  kind of mirror images of each other.
+
+  In particular, any given listener model $L_i$ characterizes a probability
+  distribution over possible worlds $w$, given some utterance $u$.
+  $$\begin{aligned}
+  P_{L_0}(w | u) &= \frac{\begin{cases}
+  P_{L_0}(w) & ⟦u⟧^w = \mathtt{T} \\
+  0 & ⟦u⟧^w = \mathtt{F}
+  \end{cases}}{∑_{w^\prime}\begin{cases}
+  P_{L_0}(w^\prime) & ⟦u⟧^{w^\prime} = \mathtt{T} \\
+  0 & ⟦u⟧^{w^\prime} = \mathtt{F}
+  \end{cases}} \\[2mm]
+  P_{L_i}(w | u) &= \frac{P_{L_i}(u | w) * P_{L_i}(w)}{∑_{w^\prime}P_{L_i}(u | w^\prime) *
+  P_{L_i}(w^\prime)}\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,(i > 0) \\[2mm]
+  & = \frac{P_{L_i}(u | w) * P_{L_i}(w)}{P_{L_i}(u)}
+  \end{aligned}$$
+  In words, $P_{L_0}(w | u)$ depends only on whether or not $u$ and $w$ are
+  compatible. It thus acts as a /filter/, eliminating possible worlds from the
+  prior in which the utterance $u$ is false.
+
+  The definition of $P_{L_i}(w | u)$ for $i > 0$ uses [[https://en.wikipedia.org/wiki/Bayes%27_theorem][Bayes' theorem]]. To state
+  that this definition /uses/ Bayes' theorem is kind of a tautology when viewed
+  simply as a mathematical description. Thus what this statement really means is
+  something more operational: RSA models make distinguishing choices about the
+  definitions of $P_{L_i}(u | w)$ and $P_{L_i}(w)$, and it is these latter
+  choices which are used, in turn, to compute $P_{L_i}(w | u)$.
+  
+  In general, the choice $P_{L_i}(w)$ of a prior distribution over $w$ is made
+  once and for all, regardless of the particular model, so we can just call this
+  choice $P(w)$. $P(w)$ can be seen to give a representation of the /context set/
+  in a given discourse; that is, the distribution over possible worlds known in
+  common among the interlocutors, before anything is uttered.
+
+  The definition of $P_{L_i}(u | w)$, on the other hand, is chosen to reflect
+  the model $S_i$ of the /speaker/, which brings us to the /other/ set of
+  models. Thus $P_{L_i}(u | w) = P_{S_i}(u | w)$, where
+  $$\begin{aligned}
+  P_{S_i}(u | w) &= \frac{e^{α * 𝕌_{S_i}(u; w)}}{∑_{u^\prime}e^{α *
+  𝕌_{S_i}(u^\prime; w)}}
+  \end{aligned}$$
+  $𝕌_{S_i}(u; w)$ is the /utility/ $S_i$ assigns to the utterance $u$, given its
+  intention to communicate the world $w$. Utility for $S_i$ is typically defined
+  as $$𝕌_{S_i}(u; w) = log(P_{L_{i-1}}(w | u)) - C(u)$$
+  that is, the (natural) log of the probability that $L_{i-1}$ assigns to $w$
+  (given $u$), minus \(u\)'s cost ($C(u)$). $α$ is known as the /temperature/
+  (a.k.a. the  /rationality parameter/) associated with $S_i$. When $α = 0$, $S_i$
+  chooses utterances randomly (from a uniform distribution), without attending
+  to their utility in communicating $w$, while when $α$ tends toward $∞$, $S_i$
+  becomes more and more deterministic in its choice of utterance, assigning more
+  an more probability mass to the utterance that maximizes the utility in
+  communicating $w$. Formally,
+  $$\lim_{α → ∞}\frac{e^{α * 𝕌_{S_i}(u; w)}}{∑_{u^\prime}e^{α *
+  𝕌_{S_i}(u^\prime; w)}} = \begin{cases}
+  1 & u = \arg\max_{u^\prime}(𝕌_{S_i}(u^\prime; w)) \\
+  0 & u ≠ \arg\max_{u^\prime}(𝕌_{S_i}(u^\prime; w))
+  \end{cases}$$
+  Because the cost $C(u)$ only depends on $u$, it is nice to view $e^{α *
+  𝕌_{S_i}(u; w)}$ as factored into a prior and a likelihood, so that
+  $P_{S_i}(u | w)$ has a formulation symmetrical to that of $P_{L_i}(w | u)$
+  (when $i > 0$); that is, it can be formulated in the following way:
+  $$\begin{aligned}
+  e^{𝕌_{S_i}(u; w)} &= P_{L_{i - 1}}(w | u)^α * \frac{1}{e^{α * C(u)}} \\[2mm]
+  &∝ P_{S_i}(w | u) * P_{S_i}(u) \\[2mm]
+  &= P_{S_i}(w | u) * P(u)
+  \end{aligned}$$
+  In effect, we can define $P_{S_i}(w | u)$ to be proportional to $P_{L_{i -
+  1}}(w | u)^α$; meanwhile, we can define $P(u)$, the prior probability over
+  utterances, to be proportional to $\frac{1}{e^{C(u)}}$. (Note that if we
+  ignore cost altogether, so that $C(u)$ is always, say, 0, then $P(u)$ just
+  becomes a uniform distribution.)
+
+  Taking these points into consideration, we may reformulate our speaker model,
+  $S_i$, as follows:
+  $$\begin{aligned}
+  P_{S_i}(u | w) &= \frac{P_{S_i}(w | u) * P(u)}{∑_{u^\prime}P_{S_i}(w |
+  u^\prime) * P(u^\prime)} \\[2mm]
+  &= \frac{P_{S_i}(w | u) * P(u)}{P_{S_i}(w)}
+  \end{aligned}$$
+  In words, the speaker model, just like the listener model, may be viewed
+  operationally in terms of Bayes' theorem. Note that $P_{S_i}(w)$, in general,
+  defines a different distribution from $P(w)$, the listener's prior
+  distribution over worlds (i.e., the context set). The former represents, not
+  prior knowledge about the /context/, but rather something more like the relative
+  "communicability" of a given possible world, given the distribution $P(u)$
+  over utterances; that is, how likely a random utterance makes $w$, though with
+  the exponential $α$ applied.
+
+* Encoding RSA models in typed λ-calculus
+  Cool, so there's a way of regarding listener models and speaker models as
+  symmetrical, in the sense that they both can be characterized operationally in
+  terms of Bayes's theorem, but the positions of $w$ and the $u$ in the relevant
+  equations are swapped. In summary, when $i > 0$,
+  $$\begin{aligned}
+  P_{L_i}(w | u) &= \frac{P_{L_i}(u | w) * P(w)}{P_{L_i}(u)} \\[2mm]
+  P_{S_i}(u | w) &= \frac{P_{S_i}(w | u) * P(u)}{P_{S_i}(w)}
+  \end{aligned}$$
+  and when $i = 0$,
+  $$P_{L_0}(w | u) = \frac{\begin{cases}
+  P(w) & ⟦u⟧^w = \mathtt{T} \\
+  0 & ⟦u⟧^w = \mathtt{F}
+  \end{cases}}{∑_{w^\prime}\begin{cases}
+  P(w^\prime) & ⟦u⟧^{w^\prime} = \mathtt{T} \\
+  0 & ⟦u⟧^{w^\prime} = \mathtt{F}
+  \end{cases}}$$
+  Presenting RSA models this way provides insight into how they may be
+  formulated type-theoretically. In particular, We can regard our listener and
+  speaker models as /probabilistic programs/ with the following type signatures:
+  $$\begin{aligned}
+  L_{(·)} &: ℕ → u → \mathtt{P} i \\[2mm]
+  S_{(·)} &: ℕ → i → \mathtt{P} u
+  \end{aligned}$$
+  That is, the listener model $L$ takes a natural number $i$ and an utterance
+  $u$, and returns a probabilistic program that encodes the probability
+  distribution $P_{L_i}(w | u)$. The speaker model $S$ takes a natural number
+  $i$ and a possible world $w$, and returns a probabilistic program that encodes
+  the probability distribution $P_{S_i}(u | w)$. The definitions of these models
+  as probabilistic programs may then be given as
+  $$\begin{aligned}
+  L_0(u) &= \begin{array}[t]{l}
+  w ∼ \mathtt{context} \\
+  observe(⟦u⟧^w = \mathtt{T}) \\
+  return(w)
+  \end{array} \\[1cm]
+  L_i(u) &= \begin{array}[t]{l}
+  w ∼ \mathtt{context} \\
+  factor(P_{L_i}(u | w)) \\
+  return(w)
+  \end{array}\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,(i > 0) \\[2mm]
+  &= \begin{array}[t]{l}
+  w ∼ \mathtt{context} \\
+  factor(P_{S_i}(u | w)) \\
+  return(w)
+  \end{array} \\[1cm]
+  S_i(w) &= \begin{array}[t]{l}
+  u ∼ \mathtt{utterances} \\
+  factor(P_{S_i}(w | u)) \\
+  return(u)
+  \end{array}\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,(i > 0) \\[2mm]
+  &= \begin{array}[t]{l}
+  u ∼ \mathtt{utterances} \\
+  factor(P_{L_{i-1}}(w | u)^α) \\
+  return(u)
+  \end{array}
+  \end{aligned}$$
+  where $\mathtt{context}$ is the probabilistic program of type $\mathtt{P} i$
+  representing the prior $P(w)$, and $\mathtt{utterances}$ is the probabilistic
+  program of type $\mathtt{P} u$ representing the prior $P(u)$.
+
+  The one big remaining question is how we go about computing probability /masses/
+  and /densities/ of the kind represented by $P_{S_i}(u | w)$ and $P_{L_i}(w | u)$
+  (for a given $i$). To do this, let's introduce one more constant into our DSL,
+  which takes the /density function/ on \(α\)'s associated with a given
+  probabilistic program whose values are of type $α$.
+  $$D_{(·)} : \mathtt{P} α → α → r$$
+  We will eventually have to give an interpretation to this constant, but let's
+  not worry about that right now; let us just assume we have it. We may now
+  formulate the recursive branches of our speaker and listener models as
+  follows:
+  $$\begin{aligned}
+  S_i(w) &= \begin{array}[t]{l}
+  u ∼ \mathtt{utterances} \\
+  factor(D_{L_{i-1}(u)}(w)) \\
+  return(u)
+  \end{array}\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,(i > 0) \\[1cm]
+  L_i(u) &= \begin{array}[t]{l}
+  w ∼ \mathtt{context} \\
+  factor(D_{S_i(w)}(u)) \\
+  return(w)
+  \end{array}\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,(i > 0)
+  \end{aligned}$$
+  We now have a full-blown typed implementation of (vanilla) RSA. Neat!
+  
+* Doing it all in Haskell
+  The rest is kind of straightforward: we only need to add a constant (or
+  constants, rather) to encode $D$, as well as a constant to encode $α$, along
+  with constants representing the probabilistic programs that encode prior
+  distributions over possible worlds and utterances, respectively.
+
+  Note that in the models above, $D$ is only ever used to extract density
+  functions of type $i → r$ and type $u → r$, so we really only need two
+  constants in this case.
+  #+begin_src haskell
+    data Constant (φ :: Type) where
+      ...
+      DensityI :: Constant (P I :-> (I :-> R))
+      DensityU :: Constant (P U :-> (U :-> R))
+      ...
+  #+end_src
+  To encode $α$, we can add a constant which takes two real numbers and
+  exponentiates the second constant to the first.
+  #+begin_src haskell
+    data Constant (φ :: Type) where
+      ...
+      Alpha :: Constant (R :-> (R :-> R))
+      ...
+  #+end_src
+  Finally the constants representing possible world and utterance priors receive
+  the types of probabilistic programs.
+  #+begin_src haskell
+    data Constant (φ :: Type) where
+      ...
+      Context :: Constant (P I)
+      Utterances :: Constant (P U)
+      ...
+  #+end_src
+
+    The listener and speaker models may now be encoded as follows:
+    #+begin_src haskell
+      l :: Integer -> Term γ (U :-> P I)
+      l 0 = Lam (Let (Con Context) (Let (App (Con Factor) (App (Con Indi) (App (App (Con Interp) (Var (Next First))) (Var First)))) (Return (Var (Next First)))))
+      l i = Lam (Let (Con Context) (Let (App (Con Factor) (App (App (Con DensityU) (App (s i) (Var First))) (Var (Next First)))) (Return (Var (Next First))))a
+
+      s :: Integer -> Term γ (I :-> P U)
+      s i = Lam (Let (Con Utterances) (Let (App (Con Factor) (App (App (Con Alpha) (Con (ToReal 1))) (App (App (Con DensityI) (App (l (i-1)) (Var First))) (Var (Next First))))) (Return (Var (Next First)))))
+  #+end_src
+  Note that we have chosen the speaker model's $α$ to be 4.
+
+  All that's left is to provide interpretations to the new constants, via
+  ~interpCon~.
+  #+begin_src haskell
+    interpCon :: Integer -> Constant φ -> Domain φ
+  #+end_src
+  The most straightforward case is ~Alpha~, which we can interpret as
+  #+begin_src haskell
+    interpCon _ Alpha = \x y -> y ** x
+  #+end_src
+  Here, ~(**)~ is Haskell's function for exponentiation using the ~Double~ data
+  type.
+
+  Let's take care of the prior knowledge represented by ~Utterances~ and ~Context~.
+  We can assume ~Utterances~ represents, say, a uniform distribution over three
+  utterances.
+  #+begin_src haskell
+    interpCon _ Utterances = utterances
+      where utterances :: ProbProg (Expr S)
+	    utterances = categorical [0.33, 0.33, 0.33] [ everyoneSleeps
+							, someoneSleeps
+							, noOneSleeps ]
+            categorical :: [Double] -> [a] -> ProbProg a
+            categorical ws vs = PP (\f -> sum (zipWith (*) ws (map f vs)))
+  #+end_src
+  ~Context~ can be interpreted the same way ~WorldKnowedge~ was in [[../dec6/dec6.html][the last set of
+  notes]].
+  #+begin_src haskell
+    interpCon _ WorldKnowledge = worldKnowledge
+  #+end_src 
+
+  That's it! If we want to test this out, we could, say, check the mass that ~l 1~
+  assigns to some example possible world ~i0~, when it is applied to the utterance
+  ~someoneSleeps~.
+  #+begin_src haskell
+    -- An example possible world
+    i0 :: [FOL.Form]
+    i0 = [sleep (FOL.N (FOL.Name 1)), FOL.Not (sleep (FOL.N (FOL.Name 0)))]
+  #+end_src
+  (~i0~ is the world where Julian (~FOL.N (FOL.Name 1)~) sleeps but Carina (~FOL.N
+  (FOL.Name 0)~) doesn't.)
+  #+begin_src haskell
+    >>>  interpClosedTerm (App (Con DensityI) (App (l 1) (Con (ToUtt someoneSleeps)))) i0
+    0.49696969696969695
+  #+end_src
+  Thus when the relevant utterance is /someone sleeps/, $L_1$ assigns about half
+  the mass to the possible world in which one person sleeps and the other
+  doesn't. Indeed, close to all of the remaining mass will be assigned to the
+  possible world in which the sleepers are switched; that is, in which Carina
+  sleeps, but Julian doesn't. Close to no mass at all is assigned to the
+  possible world in which both Julian and Carina sleeps. Hence, we end up with
+  something like a /quantity implicature/, due to the choice of a prior over
+  utterances which includes the utterance /everyone sleeps/.
+
+  You can check that the difference between the $L_0$ model and the $L_1$ model
+  is effectively the presence of this implicature; the $L_0$ model just spits
+  out the mass assigned by the prior probability over worlds to worlds in which
+  at least one person sleeps, consistent with the semantics of the quantifier
+  /some/.
