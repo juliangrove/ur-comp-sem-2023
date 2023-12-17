@@ -83,13 +83,13 @@
   $P_{S_i}(u | w)$ has a formulation symmetrical to that of $P_{L_i}(w | u)$
   (when $i > 0$); that is, it can be formulated in the following way:
   $$\begin{aligned}
-  e^{𝕌_{S_i}(u; w)} &= P_{L_{i - 1}}(w | u)^α * \frac{1}{e^{α * C(u)}} \\[2mm]
-  &∝ P_{S_i}(w | u) * P_{S_i}(u) \\[2mm]
+  e^{α * 𝕌_{S_i}(u; w)} &= P_{L_{i - 1}}(w | u)^α * \frac{1}{e^{α * C(u)}}
+  \\[2mm] &∝ P_{S_i}(w | u) * P_{S_i}(u) \\[2mm]
   &= P_{S_i}(w | u) * P(u)
   \end{aligned}$$
   In effect, we can define $P_{S_i}(w | u)$ to be proportional to $P_{L_{i -
   1}}(w | u)^α$; meanwhile, we can define $P(u)$, the prior probability over
-  utterances, to be proportional to $\frac{1}{e^{C(u)}}$. (Note that if we
+  utterances, to be proportional to $\frac{1}{e^{α * C(u)}}$. (Note that if we
   ignore cost altogether, so that $C(u)$ is always, say, 0, then $P(u)$ just
   becomes a uniform distribution.)
 
