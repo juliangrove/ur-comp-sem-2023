@@ -71,7 +71,7 @@
   chooses utterances randomly (from a uniform distribution), without attending
   to their utility in communicating $w$, while when $α$ tends toward $∞$, $S_i$
   becomes more and more deterministic in its choice of utterance, assigning more
-  an more probability mass to the utterance that maximizes the utility in
+  and more probability mass to the utterance that maximizes the utility in
   communicating $w$. Formally,
   $$\lim_{α → ∞}\frac{e^{α * 𝕌_{S_i}(u; w)}}{∑_{u^\prime}e^{α *
   𝕌_{S_i}(u^\prime; w)}} = \begin{cases}
@@ -183,7 +183,7 @@
   $$\begin{aligned}
   S_i(w) &= \begin{array}[t]{l}
   u ∼ \mathtt{utterances} \\
-  factor(D_{L_{i-1}(u)}(w)) \\
+  factor(D_{L_{i-1}(u)}(w)^α) \\
   return(u)
   \end{array}\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,\,(i > 0) \\[1cm]
   L_i(u) &= \begin{array}[t]{l}
@@ -200,61 +200,64 @@
   with constants representing the probabilistic programs that encode prior
   distributions over possible worlds and utterances, respectively.
 
-  Note that in the models above, $D$ is only ever used to extract density
-  functions of type $i → r$ and type $u → r$, so we really only need two
-  constants in this case.
-  #+begin_src haskell
-    data Constant (φ :: Type) where
-      ...
-      DensityI :: Constant (P I :-> (I :-> R))
-      DensityU :: Constant (P U :-> (U :-> R))
-      ...
-  #+end_src
-  To encode $α$, we can add a constant which takes two real numbers and
-  exponentiates the second constant to the first.
-  #+begin_src haskell
-    data Constant (φ :: Type) where
-      ...
-      Alpha :: Constant (R :-> (R :-> R))
-      ...
-  #+end_src
-  Finally the constants representing possible world and utterance priors receive
-  the types of probabilistic programs.
-  #+begin_src haskell
-    data Constant (φ :: Type) where
-      ...
-      Context :: Constant (P I)
-      Utterances :: Constant (P U)
-      ...
-  #+end_src
+  
+** New constants
+   Note that in the models above, $D$ is only ever used to extract density
+   functions of type $i → r$ and type $u → r$, so we really only need two
+   constants in this case.
+   #+begin_src haskell
+     data Constant (φ :: Type) where
+       ...
+       DensityI :: Constant (P I :-> (I :-> R))
+       DensityU :: Constant (P U :-> (U :-> R))
+       ...
+   #+end_src
+   To encode $α$, we can add a constant which takes two real numbers and
+   exponentiates the second one to the value of the first.
+   #+begin_src haskell
+     data Constant (φ :: Type) where
+       ...
+       Alpha :: Constant (R :-> (R :-> R))
+       ...
+   #+end_src
+   Finally the constants representing possible world and utterance priors
+   receive the types of probabilistic programs.
+   #+begin_src haskell
+     data Constant (φ :: Type) where
+       ...
+       Context :: Constant (P I)
+       Utterances :: Constant (P U)
+       ...
+   #+end_src
 
-    The listener and speaker models may now be encoded as follows:
-    #+begin_src haskell
-      l :: Integer -> Term γ (U :-> P I)
-      l 0 = Lam (Let (Con Context) (Let (App (Con Factor) (App (Con Indi) (App (App (Con Interp) (Var (Next First))) (Var First)))) (Return (Var (Next First)))))
-      l i = Lam (Let (Con Context) (Let (App (Con Factor) (App (App (Con DensityU) (App (s i) (Var First))) (Var (Next First)))) (Return (Var (Next First))))a
+   The listener and speaker models may now be encoded as follows:
+   #+begin_src haskell
+     l :: Integer -> Term γ (U :-> P I)
+     l 0 = Lam (Let (Con Context) (Let (App (Con Factor) (App (Con Indi) (App (App (Con Interp) (Var (Next First))) (Var First)))) (Return (Var (Next First)))))
+     l i = Lam (Let (Con Context) (Let (App (Con Factor) (App (App (Con DensityU) (App (s i) (Var First))) (Var (Next First)))) (Return (Var (Next First))))a
 
-      s :: Integer -> Term γ (I :-> P U)
-      s i = Lam (Let (Con Utterances) (Let (App (Con Factor) (App (App (Con Alpha) (Con (ToReal 1))) (App (App (Con DensityI) (App (l (i-1)) (Var First))) (Var (Next First))))) (Return (Var (Next First)))))
-  #+end_src
-  Note that we have chosen the speaker model's $α$ to be 4.
+     s :: Integer -> Term γ (I :-> P U)
+     s i = Lam (Let (Con Utterances) (Let (App (Con Factor) (App (App (Con Alpha) (Con (ToReal 1))) (App (App (Con DensityI) (App (l (i-1)) (Var First))) (Var (Next First))))) (Return (Var (Next First)))))
+   #+end_src
+   Note that we have chosen the speaker model's $α$ to be 4.
 
-  All that's left is to provide interpretations to the new constants, via
-  ~interpCon~.
-  #+begin_src haskell
-    interpCon :: Integer -> Constant φ -> Domain φ
-  #+end_src
-  The most straightforward case is ~Alpha~, which we can interpret as
-  #+begin_src haskell
-    interpCon _ Alpha = \x y -> y ** x
-  #+end_src
-  Here, ~(**)~ is Haskell's function for exponentiation using the ~Double~ data
-  type.
+** New interpretations   
+   All that's left is to provide interpretations to the new constants, via
+   ~interpCon~.
+   #+begin_src haskell
+     interpCon :: Integer -> Constant φ -> Domain φ
+   #+end_src
+   The most straightforward case is ~Alpha~, which we can interpret as
+   #+begin_src haskell
+     interpCon _ Alpha = \x y -> y ** x
+   #+end_src
+   Here, ~(**)~ is Haskell's function for exponentiation using the ~Double~ data
+   type.
 
-  Let's take care of the prior knowledge represented by ~Utterances~ and ~Context~.
-  We can assume ~Utterances~ represents, say, a uniform distribution over three
-  utterances.
-  #+begin_src haskell
+   Let's take care of the prior knowledge represented by ~Utterances~ and ~Context~.
+   We can assume ~Utterances~ represents, say, a uniform distribution over three
+   utterances.
+   #+begin_src haskell
     interpCon _ Utterances = utterances
       where utterances :: ProbProg (Expr S)
 	    utterances = categorical [0.33, 0.33, 0.33] [ everyoneSleeps
@@ -262,38 +265,57 @@
 							, noOneSleeps ]
             categorical :: [Double] -> [a] -> ProbProg a
             categorical ws vs = PP (\f -> sum (zipWith (*) ws (map f vs)))
-  #+end_src
-  ~Context~ can be interpreted the same way ~WorldKnowedge~ was in [[../dec6/dec6.html][the last set of
-  notes]].
-  #+begin_src haskell
-    interpCon _ WorldKnowledge = worldKnowledge
-  #+end_src 
+   #+end_src
+   ~Context~ can be interpreted the same way ~WorldKnowedge~ was in [[../dec6/dec6.html][the last set of
+   notes]].
+   #+begin_src haskell
+     interpCon _ WorldKnowledge = worldKnowledge
+   #+end_src 
 
-  That's it! If we want to test this out, we could, say, check the mass that ~l 1~
-  assigns to some example possible world ~i0~, when it is applied to the utterance
-  ~someoneSleeps~.
-  #+begin_src haskell
-    -- An example possible world
-    i0 :: [FOL.Form]
-    i0 = [sleep (FOL.N (FOL.Name 1)), FOL.Not (sleep (FOL.N (FOL.Name 0)))]
-  #+end_src
-  (~i0~ is the world where Julian (~FOL.N (FOL.Name 1)~) sleeps but Carina (~FOL.N
-  (FOL.Name 0)~) doesn't.)
-  #+begin_src haskell
-    >>>  interpClosedTerm (App (Con DensityI) (App (l 1) (Con (ToUtt someoneSleeps)))) i0
-    0.49696969696969695
-  #+end_src
-  Thus when the relevant utterance is /someone sleeps/, $L_1$ assigns about half
-  the mass to the possible world in which one person sleeps and the other
-  doesn't. Indeed, close to all of the remaining mass will be assigned to the
-  possible world in which the sleepers are switched; that is, in which Carina
-  sleeps, but Julian doesn't. Close to no mass at all is assigned to the
-  possible world in which both Julian and Carina sleeps. Hence, we end up with
-  something like a /quantity implicature/, due to the choice of a prior over
-  utterances which includes the utterance /everyone sleeps/.
+   Finally, let's interpret the constants that extract density functions from
+   probabilistic programs.
+   #+begin_src haskell
+     interpCon _ DensityI = \m i -> expVal m (indicator . (mutualEntails 11 i))
+       where mutualEntails :: Int -> [FOL.Form] -> [FOL.Form] -> Bool
+	     mutualEntails n fs1 fs2 = all (entails n fs1) fs2 && all (entails n fs2) fs1
 
-  You can check that the difference between the $L_0$ model and the $L_1$ model
-  is effectively the presence of this implicature; the $L_0$ model just spits
-  out the mass assigned by the prior probability over worlds to worlds in which
-  at least one person sleeps, consistent with the semantics of the quantifier
-  /some/.
+     interpCon _ DensityU = \m u -> expVal m (indicator . (== u))
+   #+end_src
+   In words, ~DensityI~ is interpreted as a function, of type ~ProbProg [FOL.Form]
+   -> [FOL.Form] -> Double~; that is, which reads in a probabilistic program of
+   type ~ProbProg [FOL.Form]~ and a possible world ~i~ (of type ~[FOL.Form]~), in
+   order to take the probability that the program returns a possible world which
+   is in a mutual entailment relationship with ~i~.
+
+   The interpretation of ~DensityU~, which is of type ~ProbProg (Expr S) -> Expr S
+   -> Double~, is similar; but it rather takes the probability that the relevant
+   program returns the relevant input utterance ~u~. 
+
+   That's it! If we want to test this out, we could, say, check the mass that ~l
+   1~ assigns to some example possible world ~i0~, when it is applied to the
+   utterance ~someoneSleeps~.
+   #+begin_src haskell
+   -- An example possible world
+   i0 :: [FOL.Form]
+   i0 = [sleep (FOL.N (FOL.Name 1)), FOL.Not (sleep (FOL.N (FOL.Name 0)))]
+   #+end_src
+   (~i0~ is the world where Julian (~FOL.N (FOL.Name 1)~) sleeps but Carina (~FOL.N
+   (FOL.Name 0)~) doesn't.)
+   #+begin_src haskell
+     >>>  interpClosedTerm (App (Con DensityI) (App (l 1) (Con (ToUtt someoneSleeps)))) i0
+     0.49696969696969695
+   #+end_src
+   Thus when the relevant utterance is /someone sleeps/, $L_1$ assigns about half
+   the mass to the possible world in which one person sleeps and the other
+   doesn't. Indeed, close to all of the remaining mass will be assigned to the
+   possible world in which the sleepers are switched; that is, in which Carina
+   sleeps, but Julian doesn't. Close to no mass at all is assigned to the
+   possible world in which both Julian and Carina sleeps. Hence, we end up with
+   something like a /quantity implicature/, due to the choice of a prior over
+   utterances which includes the utterance /everyone sleeps/.
+   
+   You can check that the difference between the $L_0$ model and the $L_1$ model
+   is effectively the presence of this implicature; the $L_0$ model just spits
+   out the mass assigned by the prior probability over worlds to worlds in which
+   at least one person sleeps, consistent with the semantics of the quantifier
+   /some/.
