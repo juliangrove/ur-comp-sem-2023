@@ -269,7 +269,7 @@
    ~Context~ can be interpreted the same way ~WorldKnowedge~ was in [[../dec6/dec6.html][the last set of
    notes]].
    #+begin_src haskell
-     interpCon _ WorldKnowledge = worldKnowledge
+     interpCon _ Context = worldKnowledge
    #+end_src 
 
    Finally, let's interpret the constants that extract density functions from
