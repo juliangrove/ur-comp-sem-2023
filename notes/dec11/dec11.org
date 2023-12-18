@@ -237,7 +237,7 @@
      l i = Lam (Let (Con Context) (Let (App (Con Factor) (App (App (Con DensityU) (App (s i) (Var First))) (Var (Next First)))) (Return (Var (Next First))))a
 
      s :: Integer -> Term γ (I :-> P U)
-     s i = Lam (Let (Con Utterances) (Let (App (Con Factor) (App (App (Con Alpha) (Con (ToReal 1))) (App (App (Con DensityI) (App (l (i-1)) (Var First))) (Var (Next First))))) (Return (Var (Next First)))))
+     s i = Lam (Let (Con Utterances) (Let (App (Con Factor) (App (App (Con Alpha) (Con (ToReal 4))) (App (App (Con DensityI) (App (l (i-1)) (Var First))) (Var (Next First))))) (Return (Var (Next First)))))
    #+end_src
    Note that we have chosen the speaker model's $α$ to be 4.
 
