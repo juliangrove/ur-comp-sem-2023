@@ -1,0 +1,546 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2023-12-18 Mon 22:25 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Computational semantics: final assignment</title>
+<meta name="author" content="Julian Grove" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+<script src="../../jquery.min.js"></script>
+<script src="../../bootstrap.min.js"></script>
+<script type="text/javascript" src="../../readtheorg.js"></script>
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
+
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Computational semantics: final assignment</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgcf69066">1. Overview</a></li>
+<li><a href="#org3f656a6">2. Making things intensional</a>
+<ul>
+<li><a href="#org65e8e7e">2.1. Exercise 1</a></li>
+<li><a href="#org84daf2c">2.2. Exercise 2</a></li>
+<li><a href="#org3dbf1ed">2.3. Exercise 3</a></li>
+<li><a href="#org548735a">2.4. Exercise 4</a></li>
+<li><a href="#org973ed94">2.5. Exercise 5</a></li>
+</ul>
+</li>
+<li><a href="#orgbb7913a">3. Assigning new interpretations to λ-terms</a>
+<ul>
+<li><a href="#org952c466">3.1. Exercise 6</a></li>
+<li><a href="#org414e87e">3.2. Exercise 7</a></li>
+<li><a href="#org9c8cadf">3.3. Exercise 8</a></li>
+<li><a href="#org4af80d4">3.4. Exercise 9</a></li>
+<li><a href="#org3445c3a">3.5. Exercise 10</a></li>
+<li><a href="#orgdf27ea5">3.6. Exercise 11</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgcf69066" class="outline-2">
+<h2 id="orgcf69066"><span class="section-number-2">1.</span> Overview</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+This is the final assignment for this class. I've tried my best to make it
+short and sweet! It asks you to add some new functionality to existing Haskell
+code that implements our probabilistic programming DSL for finite
+distributions, by extending it with continuous distributions. Doing this
+allows us to model the semantics of, e.g., gradable adjectives, which
+introduce degrees, and the like. There will be design choices that you have to
+make along the way, which require thinking precisely both about the
+compositional semantics of English and the types of information which need to
+be encoded in lexical meanings. As usual, inference judgments are our guide:
+the information we encode in lexical meanings is there to help us characterize
+these judgments, while our probabilistic interface allows us to account for
+nuanced aspects of inference, like vagueness, as well as some sophisticated
+aspects of pragmatic reasoning (as <a href="../dec11/dec11.html">here</a>, for instance).
+</p>
+
+<p>
+To start, you should clone <a href="https://github.com/juliangrove/lambda-to-fol">this repo</a> by doing
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">git clone --recurse-submodules git@github.com:juliangrove/lambda-to-fol
+</pre>
+</div>
+<p>
+in your terminal and opening up <code>Assignment.hs</code> in the <code>/src</code> directory. You
+should enter your answers in this file, as well as <code>Term.hs</code>, and when you're
+done, zip the whole repository and send it to me. Please, make sure everything
+compiles before you do.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3f656a6" class="outline-2">
+<h2 id="org3f656a6"><span class="section-number-2">2.</span> Making things intensional</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+To start out, we're going to adopt a new interpretation scheme for English, by
+interpreting English sentences as <i>intensions</i> instead of as <i>extensions</i> (as we
+had been doing previously). That is, we want the semantic types of sentences
+to be \(i → t\), rather than \(t\); and more generally, anytime an expression's
+semantic type had an occurence of \(t\) somewhere in it according to our old
+interpretation scheme, we want it to now have an occurrence of \(i → t\)
+instead.
+</p>
+
+<p>
+The reason for this change is that you are going to add a vague predicate,
+<i>tall</i>, to your English fragment, and in order for such predicates to be given a
+probabilistic, vague semantics, they need access to a degree representing
+their <i>standard</i> threshold; that is, the contextually determined degree
+representing how tall one needs to be, in order to be considered "tall". You
+are going to need to provide this information about the degree threshold in a
+new encoding of possible worlds, which you will implement. So in order for the
+predicate to gain access to information about its standard threshold, it will
+be useful to interpret it as a function of type \(e → i → t\).
+</p>
+
+<p>
+Recall our old definition of semantic types (introduced <a href="../oct25/oct25.html#org9ad32df">here</a>).
+</p>
+<div class="org-src-container">
+<pre class="src src-haskell"><span style="color: #fb4933;">type</span> <span style="color: #fb4933;">family</span> <span style="color: #d3869b;">SemType</span> (c <span style="color: #83a598;">::</span> <span style="color: #d3869b;">Cat</span>) <span style="color: #fb4933;">where</span>
+  <span style="color: #d3869b;">SemType</span> <span style="color: #d3869b;">NP</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">E</span>
+  <span style="color: #d3869b;">SemType</span> <span style="color: #d3869b;">N</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">E</span> <span style="color: #d3869b;">:-&gt;</span> <span style="color: #d3869b;">T</span>
+  <span style="color: #d3869b;">SemType</span> <span style="color: #d3869b;">S</span> <span style="color: #83a598;">=</span> <span style="color: #d3869b;">T</span>
+  <span style="color: #d3869b;">SemType</span> (c1 <span style="color: #d3869b;">:\:</span> c2) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">SemType</span> c1 <span style="color: #d3869b;">:-&gt;</span> <span style="color: #d3869b;">SemType</span> c2
+  <span style="color: #d3869b;">SemType</span> (c2 <span style="color: #d3869b;">:/:</span> c1) <span style="color: #83a598;">=</span> <span style="color: #d3869b;">SemType</span> c1 <span style="color: #d3869b;">:-&gt;</span> <span style="color: #d3869b;">SemType</span> c2
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org65e8e7e" class="outline-3">
+<h3 id="org65e8e7e"><span class="section-number-3">2.1.</span> Exercise 1</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Un-comment lines 100&#x2013;105 in <code>Assignment.hs</code> and fill out the new definition of
+<code>SemType</code> there, following the specification given informally above.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org84daf2c" class="outline-3">
+<h3 id="org84daf2c"><span class="section-number-3">2.2.</span> Exercise 2</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Un-comment line 38 in <code>Terms.hs</code> and fill out the type signature for the
+λ-calculus constant <code>Tall</code>, taking into account the new intensional
+interpretation scheme. Do the same for the constant called <code>SleepInt</code> on line
+37, which is meant to encode an intensionalized variant of the extensional
+constant <code>Sleep</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3dbf1ed" class="outline-3">
+<h3 id="org3dbf1ed"><span class="section-number-3">2.3.</span> Exercise 3</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+Un-comment lines 91 and 94 of <code>Assignment.hs</code> and provide syntactic analyses of
+the sentences <i>carina is tall</i> and <i>julian is tall</i>, respectively. You can
+consider <i>is tall</i> a single word, if you like. Make sure to also uncomment the
+type signatures above these lines, and make sure your result is well typed
+(i.e., that it compiles).
+</p>
+</div>
+</div>
+
+<div id="outline-container-org548735a" class="outline-3">
+<h3 id="org548735a"><span class="section-number-3">2.4.</span> Exercise 4</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+Un-comment lines 108&#x2013;119 of <code>Assignment.hs</code> and provide interpretations in the
+λ-calculus for the words <i>sleeps</i> and <i>is tall</i> compatible with the type
+signature of <code>interpWord</code>. Note that we are still working within a
+<i>continuation semantics</i> (following <a href="../nov15/nov15.html#org1db5e84">these notes</a>). But crucially, continuations
+are now of type \(α → i → t\), instead of type \(α → t\), and continuized
+meanings are correspondingly now of type \((α → i → t) → i → t\), rather than
+\((α → t) → t\).
+</p>
+
+<p>
+You can now also un-comment lines 122&#x2013;125, which define <code>interpExpr</code>, thus
+providing the compositional semantics for complex English expressions.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org973ed94" class="outline-3">
+<h3 id="org973ed94"><span class="section-number-3">2.5.</span> Exercise 5</h3>
+<div class="outline-text-3" id="text-2-5">
+<p>
+Un-comment lines 128&#x2013;129 in <code>Assignment.hs</code> and provide a definition of <code>lower</code>
+which matches the type signature it is given. You can see what our old
+definition of <code>lower</code> was <a href="../nov20/nov20.html#org0f0d2be">here</a>.
+</p>
+
+<p>
+You should now also be able to un-comment lines 132&#x2013;133, which provides a
+new definition of the convenience function <code>interpS</code>.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbb7913a" class="outline-2">
+<h2 id="orgbb7913a"><span class="section-number-2">3.</span> Assigning new interpretations to λ-terms</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+This section asks you to define various aspects of the interpretation scheme
+mapping probabilistic programs in the λ-calculus onto Haskell functions that
+query probability distributions.
+</p>
+</div>
+
+<div id="outline-container-org952c466" class="outline-3">
+<h3 id="org952c466"><span class="section-number-3">3.1.</span> Exercise 6</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+First, we need to update the type family <code>Domain</code>, which maps λ-calculus types
+onto Haskell types. This type family is defined on lines 144&#x2013;153 in
+<code>Assignment.hs</code>, with the line interpreting the type <code>I</code> of possible worlds
+commented. Un-comment this line, and replace the underscore <code>_</code> with the
+Haskell type you think should implement possible worlds!
+</p>
+
+<p>
+Note that we need possible worlds to carry two types of information: (1) what
+facts (i.e., formulae) are true at any given world, and (2) what degree
+threshold should be used to evaluate the meaning of the adjective <i>tall</i>. Note
+that we can represent degrees as real numbers, which in Haskell may be
+encoded as the type <code>Double</code>.
+</p>
+
+<p>
+Don't worry about the type wrapper <code>Probabilistic</code> which floats around in
+various places in the definition of <code>Domain</code>. This wrapper is required by the
+imported Markov chain Monte Carlo (MCMC) DSL (which is available on GitHub
+<a href="https://github.com/jyp/ProbProg/tree/main">here</a>). It effectively allows the type it wraps to be <i>sampled</i> from a
+probability distribution. Since you will use an encoding of background
+knowledge that allows values of atomic types to be sampled, such types
+require this wrapper.
+</p>
+
+<p>
+Because expressions of English will not themselves be interpreted directly as
+probabilistic programs, but rather evaluated against a probabilistic model of
+background knowledge, the interpretation scheme for English meanings doesn't
+involve the <code>Probabilistic</code> wrapper. This interpretation scheme is given by
+<code>DomainNL</code> on lines 155&#x2013;163. You should also un-comment line 158 and provide
+your type encoding possible worlds there, as well.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org414e87e" class="outline-3">
+<h3 id="org414e87e"><span class="section-number-3">3.2.</span> Exercise 7</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+Un-comment lines 166&#x2013;184 of <code>Assignment.hs</code> and provide a definition for the
+constant <code>Tall</code> by editing line 183, inside the <code>where</code> block. Note that the
+interpretation of <code>SleepInt</code> is already done for you and might provide a useful
+reference.
+</p>
+
+<p>
+You can (and probably should) use the convenience function <code>height</code> on lines
+86&#x2013;88 in your definition of <code>tall</code>. I made both Carina and Julian 68 inches
+tall, which is accurate for Julian, but may or may not be accurate for
+Carina.
+</p>
+
+<p>
+It would now be worth un-commenting lines 186&#x2013;191, which define
+<code>interpTermNL</code>, as well as lines 194&#x2013;195, which define <code>interpClosedTermNL</code>. The
+former provides interpretations of English meanings into Haskell, while the
+latter is similar, but only for closed terms.
+</p>
+
+<p>
+Finally, you should now also un-comment lines 198&#x2013;232, lines 238&#x2013;247, and
+lines 250&#x2013;251. These functions are similar to their <code>NL</code> variants, but provide
+interpretations of λ-terms into Haskell functions which can form components
+of probabilistic programs written in the MCMC DSL.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org9c8cadf" class="outline-3">
+<h3 id="org9c8cadf"><span class="section-number-3">3.3.</span> Exercise 8</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+Un-comment lines 253&#x2013;254 in <code>Assignment.hs</code> and fill in the definition of
+<code>exercise8</code> with a λ-term characterizing a probabilistic program which samples
+a possible world from the context, observes that the sentence <i>carina is tall</i>
+is true at that possible world, and then returns the possible world.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4af80d4" class="outline-3">
+<h3 id="org4af80d4"><span class="section-number-3">3.4.</span> Exercise 9</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+Un-comment lines 256&#x2013;257 in <code>Assignment.hs</code> and fill in the definition of
+<code>exercise9</code> with a λ-term characterizing a probabilistic program which samples
+a possible world from <code>exercise8</code> and <i>returns</i> a term of type <code>T</code> expressing that
+the sentence <i>julian is tall</i> is true at that possible world.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3445c3a" class="outline-3">
+<h3 id="org3445c3a"><span class="section-number-3">3.5.</span> Exercise 10</h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+Un-comment lines 259&#x2013;260 in <code>Assignment.hs</code> and evaluate <code>exercise10</code>, which
+computes the probability associated with (the interpretation of) <code>exercise9</code>,
+by drawing 100,000 samples.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdf27ea5" class="outline-3">
+<h3 id="orgdf27ea5"><span class="section-number-3">3.6.</span> Exercise 11</h3>
+<div class="outline-text-3" id="text-3-6">
+<p>
+Have a fun holiday break!
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Julian Grove</p>
+<p class="date">Created: 2023-12-18 Mon 22:25</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

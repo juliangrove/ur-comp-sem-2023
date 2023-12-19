@@ -1,0 +1,173 @@
+#+html_head: <link rel="stylesheet" type="text/css" href="../../htmlize.css"/>
+#+html_head: <link rel="stylesheet" type="text/css" href="../../readtheorg.css"/>
+#+html_head: <script src="../../jquery.min.js"></script>
+#+html_head: <script src="../../bootstrap.min.js"></script>
+#+html_head: <script type="text/javascript" src="../../readtheorg.js"></script>
+
+#+Author: Julian Grove
+#+Title: Computational semantics: final assignment
+
+* Overview
+  This is the final assignment for this class. I've tried my best to make it
+  short and sweet! It asks you to add some new functionality to existing Haskell
+  code that implements our probabilistic programming DSL for finite
+  distributions, by extending it with continuous distributions. Doing this
+  allows us to model the semantics of, e.g., gradable adjectives, which
+  introduce degrees, and the like. There will be design choices that you have to
+  make along the way, which require thinking precisely both about the
+  compositional semantics of English and the types of information which need to
+  be encoded in lexical meanings. As usual, inference judgments are our guide:
+  the information we encode in lexical meanings is there to help us characterize
+  these judgments, while our probabilistic interface allows us to account for
+  nuanced aspects of inference, like vagueness, as well as some sophisticated
+  aspects of pragmatic reasoning (as [[../dec11/dec11.html][here]], for instance).
+
+  To start, you should clone [[https://github.com/juliangrove/lambda-to-fol][this repo]] by doing
+  #+begin_src sh
+    git clone --recurse-submodules git@github.com:juliangrove/lambda-to-fol
+  #+end_src
+  in your terminal and opening up ~Assignment.hs~ in the ~/src~ directory. You
+  should enter your answers in this file, as well as ~Term.hs~, and when you're
+  done, zip the whole repository and send it to me. Please, make sure everything
+  compiles before you do.
+
+* Making things intensional
+  To start out, we're going to adopt a new interpretation scheme for English, by
+  interpreting English sentences as /intensions/ instead of as /extensions/ (as we
+  had been doing previously). That is, we want the semantic types of sentences
+  to be $i → t$, rather than $t$; and more generally, anytime an expression's
+  semantic type had an occurence of $t$ somewhere in it according to our old
+  interpretation scheme, we want it to now have an occurrence of $i → t$
+  instead.
+  
+  The reason for this change is that you are going to add a vague predicate,
+  /tall/, to your English fragment, and in order for such predicates to be given a
+  probabilistic, vague semantics, they need access to a degree representing
+  their /standard/ threshold; that is, the contextually determined degree
+  representing how tall one needs to be, in order to be considered "tall". You
+  are going to need to provide this information about the degree threshold in a
+  new encoding of possible worlds, which you will implement. So in order for the
+  predicate to gain access to information about its standard threshold, it will
+  be useful to interpret it as a function of type $e → i → t$.
+
+  Recall our old definition of semantic types (introduced [[../oct25/oct25.html#org9ad32df][here]]).
+  #+begin_src haskell
+    type family SemType (c :: Cat) where
+      SemType NP = E
+      SemType N = E :-> T
+      SemType S = T
+      SemType (c1 :\: c2) = SemType c1 :-> SemType c2
+      SemType (c2 :/: c1) = SemType c1 :-> SemType c2
+  #+end_src
+
+** Exercise 1
+   Un-comment lines 100--105 in ~Assignment.hs~ and fill out the new definition of
+   ~SemType~ there, following the specification given informally above.
+
+** Exercise 2
+   Un-comment line 38 in ~Terms.hs~ and fill out the type signature for the
+   λ-calculus constant ~Tall~, taking into account the new intensional
+   interpretation scheme. Do the same for the constant called ~SleepInt~ on line
+   37, which is meant to encode an intensionalized variant of the extensional
+   constant ~Sleep~.
+
+** Exercise 3
+   Un-comment lines 91 and 94 of ~Assignment.hs~ and provide syntactic analyses of
+   the sentences /carina is tall/ and /julian is tall/, respectively. You can
+   consider /is tall/ a single word, if you like. Make sure to also uncomment the
+   type signatures above these lines, and make sure your result is well typed
+   (i.e., that it compiles).
+
+** Exercise 4
+   Un-comment lines 108--119 of ~Assignment.hs~ and provide interpretations in the
+   λ-calculus for the words /sleeps/ and /is tall/ compatible with the type
+   signature of ~interpWord~. Note that we are still working within a
+   /continuation semantics/ (following [[../nov15/nov15.html#org1db5e84][these notes]]). But crucially, continuations
+   are now of type $α → i → t$, instead of type $α → t$, and continuized
+   meanings are correspondingly now of type $(α → i → t) → i → t$, rather than
+   $(α → t) → t$.
+
+   You can now also un-comment lines 122--125, which define ~interpExpr~, thus
+   providing the compositional semantics for complex English expressions.
+
+** Exercise 5
+   Un-comment lines 128--129 in ~Assignment.hs~ and provide a definition of ~lower~
+   which matches the type signature it is given. You can see what our old
+   definition of ~lower~ was [[../nov20/nov20.html#org0f0d2be][here]].
+
+   You should now also be able to un-comment lines 132--133, which provides a
+   new definition of the convenience function ~interpS~.
+
+* Assigning new interpretations to λ-terms
+  This section asks you to define various aspects of the interpretation scheme
+  mapping probabilistic programs in the λ-calculus onto Haskell functions that
+  query probability distributions.
+
+** Exercise 6
+   First, we need to update the type family ~Domain~, which maps λ-calculus types
+   onto Haskell types. This type family is defined on lines 144--153 in
+   ~Assignment.hs~, with the line interpreting the type ~I~ of possible worlds
+   commented. Un-comment this line, and replace the underscore ~_~ with the
+   Haskell type you think should implement possible worlds!
+
+   Note that we need possible worlds to carry two types of information: (1) what
+   facts (i.e., formulae) are true at any given world, and (2) what degree
+   threshold should be used to evaluate the meaning of the adjective /tall/. Note
+   that we can represent degrees as real numbers, which in Haskell may be
+   encoded as the type ~Double~.
+
+   Don't worry about the type wrapper ~Probabilistic~ which floats around in
+   various places in the definition of ~Domain~. This wrapper is required by the
+   imported Markov chain Monte Carlo (MCMC) DSL (which is available on GitHub
+   [[https://github.com/jyp/ProbProg/tree/main][here]]). It effectively allows the type it wraps to be /sampled/ from a
+   probability distribution. Since you will use an encoding of background
+   knowledge that allows values of atomic types to be sampled, such types
+   require this wrapper.
+
+   Because expressions of English will not themselves be interpreted directly as
+   probabilistic programs, but rather evaluated against a probabilistic model of
+   background knowledge, the interpretation scheme for English meanings doesn't
+   involve the ~Probabilistic~ wrapper. This interpretation scheme is given by
+   ~DomainNL~ on lines 155--163. You should also un-comment line 158 and provide
+   your type encoding possible worlds there, as well.
+
+** Exercise 7
+   Un-comment lines 166--184 of ~Assignment.hs~ and provide a definition for the
+   constant ~Tall~ by editing line 183, inside the ~where~ block. Note that the
+   interpretation of ~SleepInt~ is already done for you and might provide a useful
+   reference.
+
+   You can (and probably should) use the convenience function ~height~ on lines
+   86--88 in your definition of ~tall~. I made both Carina and Julian 68 inches
+   tall, which is accurate for Julian, but may or may not be accurate for
+   Carina.
+
+   It would now be worth un-commenting lines 186--191, which define
+   ~interpTermNL~, as well as lines 194--195, which define ~interpClosedTermNL~. The
+   former provides interpretations of English meanings into Haskell, while the
+   latter is similar, but only for closed terms.
+
+   Finally, you should now also un-comment lines 198--232, lines 238--247, and
+   lines 250--251. These functions are similar to their ~NL~ variants, but provide
+   interpretations of λ-terms into Haskell functions which can form components
+   of probabilistic programs written in the MCMC DSL.
+
+** Exercise 8
+   Un-comment lines 253--254 in ~Assignment.hs~ and fill in the definition of
+   ~exercise8~ with a λ-term characterizing a probabilistic program which samples
+   a possible world from the context, observes that the sentence /carina is tall/
+   is true at that possible world, and then returns the possible world.
+
+** Exercise 9
+   Un-comment lines 256--257 in ~Assignment.hs~ and fill in the definition of
+   ~exercise9~ with a λ-term characterizing a probabilistic program which samples
+   a possible world from ~exercise8~ and /returns/ a term of type ~T~ expressing that
+   the sentence /julian is tall/ is true at that possible world.
+
+** Exercise 10
+   Un-comment lines 259--260 in ~Assignment.hs~ and evaluate ~exercise10~, which
+   computes the probability associated with (the interpretation of) ~exercise9~,
+   by drawing 100,000 samples.
+
+** Exercise 11
+   Have a fun holiday break!
