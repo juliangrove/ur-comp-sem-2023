@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2023-12-18 Mon 12:11 -->
+<!-- 2023-12-19 Tue 01:46 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Rational Speech Act models via theorem proving</title>
@@ -238,21 +238,21 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org6690610">1. Overview</a></li>
-<li><a href="#orge19c4fc">2. The Rational Speech Act framework</a></li>
-<li><a href="#org656f3ba">3. Encoding RSA models in typed λ-calculus</a></li>
-<li><a href="#orge8e70f6">4. Doing it all in Haskell</a>
+<li><a href="#orgddca582">1. Overview</a></li>
+<li><a href="#orge174dbe">2. The Rational Speech Act framework</a></li>
+<li><a href="#orgaac4b4e">3. Encoding RSA models in typed λ-calculus</a></li>
+<li><a href="#orge91509f">4. Doing it all in Haskell</a>
 <ul>
-<li><a href="#org9d120f9">4.1. New constants</a></li>
-<li><a href="#orgb8f84c7">4.2. New interpretations</a></li>
+<li><a href="#orga19aa55">4.1. New constants</a></li>
+<li><a href="#org14c55e3">4.2. New interpretations</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org6690610" class="outline-2">
-<h2 id="org6690610"><span class="section-number-2">1.</span> Overview</h2>
+<div id="outline-container-orgddca582" class="outline-2">
+<h2 id="orgddca582"><span class="section-number-2">1.</span> Overview</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 We have now shown how typed λ-calculus, equipped with a DSL for characterizing
@@ -268,14 +268,14 @@ framework.
 </div>
 </div>
 
-<div id="outline-container-orge19c4fc" class="outline-2">
-<h2 id="orge19c4fc"><span class="section-number-2">2.</span> The Rational Speech Act framework</h2>
+<div id="outline-container-orge174dbe" class="outline-2">
+<h2 id="orge174dbe"><span class="section-number-2">2.</span> The Rational Speech Act framework</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Here I describe what is sometimes called <i>vanilla</i> RSA. Vanilla RSA (yum) is RSA
-more or less as it was originally formulated <a href="https://web.stanford.edu/~ngoodman/papers/FrankGoodman-Science2012.pdf">here</a>. The basic idea is that
-there are two sets of models, <i>listener</i> models, and <i>speaker</i> models, which are
-kind of mirror images of each other.
+more or less as it was originally formulated <a href="https://web.stanford.edu/~ngoodman/papers/FrankGoodman-Science2012.pdf">here</a> and <a href="https://onlinelibrary.wiley.com/doi/full/10.1111/tops.12007">here</a>. The basic idea is
+that there are two sets of models, <i>listener</i> models, and <i>speaker</i> models, which
+are kind of mirror images of each other.
 </p>
 
 <p>
@@ -375,8 +375,8 @@ the exponential \(α\) applied.
 </div>
 </div>
 
-<div id="outline-container-org656f3ba" class="outline-2">
-<h2 id="org656f3ba"><span class="section-number-2">3.</span> Encoding RSA models in typed λ-calculus</h2>
+<div id="outline-container-orgaac4b4e" class="outline-2">
+<h2 id="orgaac4b4e"><span class="section-number-2">3.</span> Encoding RSA models in typed λ-calculus</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 Cool, so there's a way of regarding listener models and speaker models as
@@ -468,8 +468,8 @@ We now have a full-blown typed implementation of (vanilla) RSA. Neat!
 </div>
 </div>
 
-<div id="outline-container-orge8e70f6" class="outline-2">
-<h2 id="orge8e70f6"><span class="section-number-2">4.</span> Doing it all in Haskell</h2>
+<div id="outline-container-orge91509f" class="outline-2">
+<h2 id="orge91509f"><span class="section-number-2">4.</span> Doing it all in Haskell</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 The rest is kind of straightforward: we only need to add a constant (or
@@ -480,8 +480,8 @@ distributions over possible worlds and utterances, respectively.
 </div>
 
 
-<div id="outline-container-org9d120f9" class="outline-3">
-<h3 id="org9d120f9"><span class="section-number-3">4.1.</span> New constants</h3>
+<div id="outline-container-orga19aa55" class="outline-3">
+<h3 id="orga19aa55"><span class="section-number-3">4.1.</span> New constants</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 Note that in the models above, \(D\) is only ever used to extract density
@@ -538,8 +538,8 @@ Note that we have chosen the speaker model's \(α\) to be 4.
 </div>
 </div>
 
-<div id="outline-container-orgb8f84c7" class="outline-3">
-<h3 id="orgb8f84c7"><span class="section-number-3">4.2.</span> New interpretations</h3>
+<div id="outline-container-org14c55e3" class="outline-3">
+<h3 id="org14c55e3"><span class="section-number-3">4.2.</span> New interpretations</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 All that's left is to provide interpretations to the new constants, via
@@ -655,7 +655,7 @@ quantifier <i>some</i>.
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Julian Grove</p>
-<p class="date">Created: 2023-12-18 Mon 12:11</p>
+<p class="date">Created: 2023-12-19 Tue 01:46</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

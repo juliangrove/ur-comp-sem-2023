@@ -20,9 +20,9 @@
 
 * The Rational Speech Act framework
   Here I describe what is sometimes called /vanilla/ RSA. Vanilla RSA (yum) is RSA
-  more or less as it was originally formulated [[https://web.stanford.edu/~ngoodman/papers/FrankGoodman-Science2012.pdf][here]]. The basic idea is that
-  there are two sets of models, /listener/ models, and /speaker/ models, which are
-  kind of mirror images of each other.
+  more or less as it was originally formulated [[https://web.stanford.edu/~ngoodman/papers/FrankGoodman-Science2012.pdf][here]] and [[https://onlinelibrary.wiley.com/doi/full/10.1111/tops.12007][here]]. The basic idea is
+  that there are two sets of models, /listener/ models, and /speaker/ models, which
+  are kind of mirror images of each other.
 
   In particular, any given listener model $L_i$ characterizes a probability
   distribution over possible worlds $w$, given some utterance $u$.
