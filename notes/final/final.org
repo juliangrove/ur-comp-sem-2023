@@ -128,7 +128,7 @@
    probabilistic programs, but rather evaluated against a probabilistic model of
    background knowledge, the interpretation scheme for English meanings doesn't
    involve the ~Probabilistic~ wrapper. This interpretation scheme is given by
-   ~DomainNL~ on lines 155--163. You should also un-comment line 158 and provide
+   ~DomainNL~ on lines 156--164. You should also un-comment line 159 and provide
    your type encoding possible worlds there, as well.
 
 ** Exercise 7
