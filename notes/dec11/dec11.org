@@ -79,19 +79,19 @@
   0 & u ≠ \arg\max_{u^\prime}(𝕌_{S_i}(u^\prime; w))
   \end{cases}$$
   Because the cost $C(u)$ only depends on $u$, it is nice to view $e^{α *
-  𝕌_{S_i}(u; w)}$ as factored into a prior and a likelihood, so that
-  $P_{S_i}(u | w)$ has a formulation symmetrical to that of $P_{L_i}(w | u)$
-  (when $i > 0$); that is, it can be formulated in the following way:
+  𝕌_{S_i}(u; w)}$ as factored into (something like) a prior and a likelihood, so
+  that $P_{S_i}(u | w)$ has a formulation symmetrical to that of $P_{L_i}(w |
+  u)$ (when $i > 0$); that is, it can be formulated in the following way:
   $$\begin{aligned}
   e^{α * 𝕌_{S_i}(u; w)} &= P_{L_{i - 1}}(w | u)^α * \frac{1}{e^{α * C(u)}}
   \\[2mm] &∝ P_{S_i}(w | u) * P_{S_i}(u) \\[2mm]
   &= P_{S_i}(w | u) * P(u)
   \end{aligned}$$
-  In effect, we can define $P_{S_i}(w | u)$ to be proportional to $P_{L_{i -
-  1}}(w | u)^α$; meanwhile, we can define $P(u)$, the prior probability over
-  utterances, to be proportional to $\frac{1}{e^{α * C(u)}}$. (Note that if we
-  ignore cost altogether, so that $C(u)$ is always, say, 0, then $P(u)$ just
-  becomes a uniform distribution.)
+  In effect, we can define $P_{S_i}(w | u)$, viewed as a function of $u$, to be
+  proportional to $P_{L_{i - 1}}(w | u)^α$; meanwhile, we can define $P(u)$, the
+  prior probability over utterances, to be proportional to $\frac{1}{e^{α *
+  C(u)}}$. (Note that if we ignore cost altogether, so that $C(u)$ is always,
+  say, 0, then $P(u)$ just becomes a uniform distribution.)
 
   Taking these points into consideration, we may reformulate our speaker model,
   $S_i$, as follows:
@@ -199,8 +199,7 @@
   constants, rather) to encode $D$, as well as a constant to encode $α$, along
   with constants representing the probabilistic programs that encode prior
   distributions over possible worlds and utterances, respectively.
-
-  
+ 
 ** New constants
    Note that in the models above, $D$ is only ever used to extract density
    functions of type $i → r$ and type $u → r$, so we really only need two
